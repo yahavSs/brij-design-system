@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Brij - Blank One-Pager</title>
+  <link rel="stylesheet" href="../../../colors_and_type.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--brij-cream); font-family: var(--brij-sans); color: var(--fg-1); -webkit-font-smoothing: antialiased; }
+
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 0 48px; }
+
+    header.site {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 24px 0;
+      border-bottom: 1px solid transparent;
+      border-image: linear-gradient(90deg, #f3c06a 0%, #d8e094 50%, #98c6e7 100%) 1;
+      border-image-slice: 0 0 1 0;
+      border-image-width: 0 0 1px 0;
+    }
+    header.site img { height: 24px; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 14px;
+      padding: 12px 22px; border-radius: 52px;
+      font-family: var(--brij-serif); font-size: 17px; color: var(--fg-1);
+      background: var(--brij-gradient-reverse); border: none;
+      cursor: pointer; text-decoration: none;
+    }
+    .btn:hover { opacity: 0.88; }
+
+    .hero {
+      padding: 120px 0 80px;
+    }
+    .hero .label { font-size: 13px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-3); margin-bottom: 28px; }
+    .hero h1 {
+      font-family: var(--brij-sans); font-weight: 700;
+      font-size: clamp(48px, 7vw, 88px); line-height: 1.02; letter-spacing: -0.01em;
+      margin-bottom: 32px; max-width: 18ch;
+    }
+    .hero p { font-size: 20px; line-height: 1.5; color: var(--fg-2); max-width: 56ch; margin-bottom: 48px; letter-spacing: 0.02em; }
+
+    section.section {
+      padding: 80px 0;
+      border-top: 1px solid transparent;
+      border-image: linear-gradient(90deg, #f3c06a 0%, #d8e094 50%, #98c6e7 100%) 1;
+      border-image-slice: 1 0 0 0;
+      border-image-width: 1px 0 0 0;
+    }
+    section.section .label { font-size: 13px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-3); margin-bottom: 20px; }
+    section.section h2 { font-family: var(--brij-serif); font-weight: 400; font-size: clamp(32px, 4vw, 48px); line-height: 1.1; margin-bottom: 20px; max-width: 20ch; }
+    section.section p  { font-size: 18px; line-height: 1.55; color: var(--fg-2); max-width: 60ch; letter-spacing: 0.02em; }
+
+    footer.site {
+      padding: 48px 0 32px;
+      border-top: 1px solid transparent;
+      border-image: linear-gradient(90deg, #f3c06a 0%, #d8e094 50%, #98c6e7 100%) 1;
+      border-image-slice: 1 0 0 0;
+      border-image-width: 1px 0 0 0;
+      margin-top: 80px;
+    }
+    footer.site .row { display: flex; justify-content: space-between; align-items: center; padding-bottom: 18px; border-bottom: 1px solid var(--border); }
+    footer.site a { font-family: var(--brij-serif); font-size: 18px; color: var(--fg-1); text-decoration: none; }
+    footer.site .meta { display: flex; justify-content: space-between; padding-top: 16px; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-3); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <header class="site">
+      <img src="../../../assets/brij-wordmark.svg" alt="Brij" />
+      <a class="btn" href="#">Time to brij
+        <svg width="18" height="14" viewBox="0 0 18 14" fill="none"><path d="M11 1L17 7L11 13M17 7H1" stroke="#181b18" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </a>
+    </header>
+
+    <section class="hero">
+      <div class="label">[ Intelligence Lab ]</div>
+      <h1>Replace this with the page headline.</h1>
+      <p>One-paragraph value proposition. Sharp, direct, confident. No filler. Finish with a promise the reader can feel.</p>
+      <a class="btn" href="#">Time to brij
+        <svg width="18" height="14" viewBox="0 0 18 14" fill="none"><path d="M11 1L17 7L11 13M17 7H1" stroke="#181b18" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </a>
+    </section>
+
+    <section class="section">
+      <div class="label">[ 01 - What we do ]</div>
+      <h2>Section headline goes here.</h2>
+      <p>Body copy.</p>
+    </section>
+
+    <section class="section">
+      <div class="label">[ 02 - How we work ]</div>
+      <h2>Second section headline.</h2>
+      <p>Body copy.</p>
+    </section>
+
+    <footer class="site">
+      <div class="row">
+        <img src="../../../assets/brij-wordmark.svg" alt="Brij" style="height:24px" />
+        <a href="mailto:hello@brijlabs.ai">hello@brijlabs.ai</a>
+      </div>
+      <div class="meta">
+        <span>© 2025 Brij Labs</span>
+        <span>Intelligence Lab. · Tel Aviv</span>
+      </div>
+    </footer>
+
+  </div>
+</body>
+</html>

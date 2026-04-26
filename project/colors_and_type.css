@@ -1,0 +1,292 @@
+/* ══════════════════════════════════════════════════════════════
+   BRIJ — Design System Foundations
+   Source of truth: brandbook.html (Intelligence Lab visual system)
+
+   Both families self-hosted from /fonts — no network dependency.
+   Arbutus Slab — fonts/ArbutusSlab-Regular.ttf (400 only)
+   Plus Jakarta Sans — fonts/PlusJakartaSans-Variable.woff2 (200–800)
+══════════════════════════════════════════════════════════════ */
+
+@font-face {
+  font-family: 'Arbutus Slab';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('fonts/ArbutusSlab-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url('fonts/PlusJakartaSans-Variable.woff2') format('woff2-variations'),
+       url('fonts/PlusJakartaSans-Variable.woff2') format('woff2');
+}
+
+:root {
+  /* ── Surface + Neutral ── */
+  --brij-white:   #ffffff;
+  --brij-cream:   #ffffff;   /* alias of white — the brandbook uses a single white surface */
+  --brij-sage:    #ebede7;   /* panel bg, solid button fill */
+  --brij-border:  #e8e6e1;   /* dividers, hairlines */
+  --brij-ink:     #181b18;   /* headlines, dark surfaces, primary fg */
+
+  /* ── Text Ramp ── */
+  --brij-t1:      #181b18;   /* primary text (same as ink) */
+  --brij-t2:      #6b6b63;   /* body text */
+  --brij-t3:      #a3a39b;   /* labels, captions */
+
+  /* ── Gradient stops (never use solid) ── */
+  --brij-green:   #d8e094;
+  --brij-blue:    #98c6e7;
+  --brij-grad-orange: #f3c06a;
+
+  /* ── Signature gradient ── */
+  --brij-gradient:          linear-gradient(135deg, #f3c06a 0%, #d8e094 46%, #98c6e7 100%);
+  --brij-gradient-reverse:  linear-gradient(28deg,  #98c6e7 14%, #d8e094 49%, #f3c06a 91%);
+
+  /* ── Effects ── */
+  --brij-panel-bg:      rgba(235, 237, 231, 0.1);
+  --brij-panel-radius:  28px;
+  --brij-pill-radius:   52px;
+  --brij-blur:          blur(4px);
+  --brij-blur-circle:   blur(60px);
+  --brij-noise-overlay: rgba(99, 99, 99, 0.15);
+
+  /* ── Semantic (Do/Don't helpers — used in brandbook only) ── */
+  --brij-do:    #5a8a5e;
+  --brij-dont:  #b35c5c;
+
+  /* ── Type families ── */
+  --brij-sans:  'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --brij-serif: 'Arbutus Slab', Georgia, serif;
+
+  /* ── Spacing scale — 5-step doubling rhythm on base 8 ──
+     Use semantic tokens; rare half-steps via calc() if absolutely needed. */
+  --space-xs:  8px;    /* tight gaps — icon ↔ label, list items */
+  --space-sm: 16px;    /* default rhythm — paragraphs, fields */
+  --space-md: 32px;    /* card padding, between content blocks */
+  --space-lg: 64px;    /* section breaks */
+  --space-xl: 128px;   /* hero / page margins */
+
+  /* ── Semantic style vars (use these, not raw values) ── */
+  --fg-1:  var(--brij-t1);
+  --fg-2:  var(--brij-t2);
+  --fg-3:  var(--brij-t3);
+  --bg-1:  var(--brij-cream);     /* page */
+  --bg-2:  var(--brij-white);
+  --bg-3:  var(--brij-sage);      /* soft panel */
+  --accent: var(--brij-gradient);
+  --border: var(--brij-border);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Base reset (opt-in)
+══════════════════════════════════════════════════════════════ */
+.brij-reset,
+.brij-reset *,
+.brij-reset *::before,
+.brij-reset *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Typographic roles — use these class names on real content
+══════════════════════════════════════════════════════════════ */
+
+/* Display — Plus Jakarta Sans 700, 72/48/36 */
+.brij-display {
+  font-family: var(--brij-sans);
+  font-weight: 700;
+  font-size: clamp(42px, 7vw, 72px);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: var(--fg-1);
+}
+
+/* Headline — Arbutus Slab 400, 48/36/30 */
+.brij-headline {
+  font-family: var(--brij-serif);
+  font-weight: 400;
+  font-size: clamp(28px, 4vw, 48px);
+  line-height: 1.1;
+  color: var(--fg-1);
+}
+
+/* Title — Arbutus Slab 24 */
+.brij-title {
+  font-family: var(--brij-serif);
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 1.2;
+  color: var(--fg-1);
+}
+
+/* Body — Plus Jakarta Sans 400, 18, tracking .02 */
+.brij-body {
+  font-family: var(--brij-sans);
+  font-size: 18px;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  color: var(--fg-2);
+}
+
+/* Paragraph — longer-form body, looser leading */
+.brij-p {
+  font-family: var(--brij-sans);
+  font-size: 15px;
+  line-height: 1.85;
+  color: var(--fg-2);
+}
+.brij-p strong { color: var(--fg-1); font-weight: 600; }
+
+/* Label — bracketed micro-label: [ Label ] */
+.brij-label {
+  font-family: var(--brij-sans);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--fg-3);
+}
+
+/* Eyebrow — tag / caps label */
+.brij-eyebrow {
+  font-family: var(--brij-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+
+/* Code / mono */
+.brij-code {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  background: var(--brij-sage);
+  border: 1px solid var(--border);
+  padding: 1px 6px;
+  border-radius: 4px;
+  color: var(--fg-2);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Semantic element mapping (optional)
+══════════════════════════════════════════════════════════════ */
+.brij-scope { font-family: var(--brij-sans); color: var(--fg-1); background: var(--bg-1); }
+.brij-scope h1 { font-family: var(--brij-sans); font-weight: 700; font-size: clamp(42px, 7vw, 72px); line-height: 1.05; }
+.brij-scope h2 { font-family: var(--brij-serif); font-weight: 400; font-size: clamp(28px, 4vw, 48px); line-height: 1.1; }
+.brij-scope h3 { font-family: var(--brij-serif); font-weight: 400; font-size: 24px; line-height: 1.2; }
+.brij-scope p  { font-family: var(--brij-sans); font-size: 18px; line-height: 1.4; letter-spacing: 0.02em; color: var(--fg-2); }
+.brij-scope a  { color: var(--fg-1); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--accent); }
+.brij-scope ::selection { background: var(--accent); color: var(--fg-1); }
+
+/* ══════════════════════════════════════════════════════════════
+   Primitive component styles used across UI kit + slides
+══════════════════════════════════════════════════════════════ */
+
+/* Panel — glass, the primary content container */
+.brij-panel {
+  background: var(--brij-panel-bg);
+  border-radius: var(--brij-panel-radius);
+  padding: 40px;
+  backdrop-filter: var(--brij-blur);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Blur circle — colored halo inside panels (ONLY use orange on surfaces) */
+.brij-blur-circle {
+  position: absolute;
+  border-radius: 50%;
+  filter: var(--brij-blur-circle);
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* Button — pill, Arbutus Slab, pentagon-arrow icon */
+.brij-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 16px;
+  border-radius: var(--brij-pill-radius);
+  font-family: var(--brij-serif);
+  font-size: 18px;
+  color: var(--fg-1);
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: transparent;
+  text-transform: capitalize;
+  transition: transform 120ms ease, opacity 120ms ease;
+}
+.brij-btn:hover   { opacity: 0.85; }
+.brij-btn:active  { transform: scale(0.98); }
+.brij-btn-gradient { border: none; background: var(--brij-gradient-reverse); }
+.brij-btn-solid    { border: none; background: var(--brij-sage); }
+.brij-btn-pill     { font-size: 16px; padding: 8px 16px; }
+.brij-btn .arrow   { width: 19px; height: 18px; flex-shrink: 0; }
+
+/* Horizontal divider */
+.brij-hr { border: none; border-top: 1px solid var(--border); }
+
+/* ══════════════════════════════════════════════════════════════
+   Gradient hairline — elegant decorative element
+══════════════════════════════════════════════════════════════ */
+
+.brij-rule-gradient {
+  display: block;
+  height: 1px;
+  width: 100%;
+  border: none;
+  background: linear-gradient(90deg, #f3c06a 0%, #d8e094 50%, #98c6e7 100%);
+}
+.brij-rule-gradient-v {
+  display: block;
+  width: 1px;
+  height: 100%;
+  border: none;
+  background: linear-gradient(180deg, #f3c06a 0%, #d8e094 50%, #98c6e7 100%);
+}
+.brij-ring-gradient {
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  background:
+    linear-gradient(var(--brij-cream), var(--brij-cream)) padding-box,
+    conic-gradient(from 180deg, #f3c06a, #d8e094, #98c6e7, #d8e094, #f3c06a) border-box;
+  border: 1px solid transparent;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Gradient border utilities — replace neutral hairlines
+   anywhere a 1px decorative rule appears (dividers, separators)
+══════════════════════════════════════════════════════════════ */
+
+/* Single-edge gradient borders. The trick: transparent border + border-image. */
+.brij-border-b-grad {
+  border-bottom: 1px solid transparent;
+  border-image: linear-gradient(90deg, #f3c06a 0%, #d8e094 50%, #98c6e7 100%) 1;
+  border-image-slice: 0 0 1 0;
+  border-image-width: 0 0 1px 0;
+}
+.brij-border-t-grad {
+  border-top: 1px solid transparent;
+  border-image: linear-gradient(90deg, #f3c06a 0%, #d8e094 50%, #98c6e7 100%) 1;
+  border-image-slice: 1 0 0 0;
+  border-image-width: 1px 0 0 0;
+}
+.brij-border-l-grad {
+  border-left: 1px solid transparent;
+  border-image: linear-gradient(180deg, #f3c06a 0%, #d8e094 50%, #98c6e7 100%) 1;
+  border-image-slice: 0 0 0 1;
+  border-image-width: 0 0 0 1px;
+}
+.brij-border-r-grad {
+  border-right: 1px solid transparent;
+  border-image: linear-gradient(180deg, #f3c06a 0%, #d8e094 50%, #98c6e7 100%) 1;
+  border-image-slice: 0 1 0 0;
+  border-image-width: 0 1px 0 0;
+}

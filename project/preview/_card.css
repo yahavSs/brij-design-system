@@ -1,0 +1,34 @@
+@font-face {
+  font-family: 'Arbutus Slab';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/ArbutusSlab-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url('../fonts/PlusJakartaSans-Variable.woff2') format('woff2-variations'),
+       url('../fonts/PlusJakartaSans-Variable.woff2') format('woff2');
+}
+
+:root {
+  --white:#fff; --cream:#faf9f4; --sage:#ebede7; --border:#e8e6e1;
+  --ink:#181b18; --t1:#181b18; --t2:#6b6b63; --t3:#a3a39b;
+  --orange:#ffce65; --green:#d8e094; --blue:#98c6e7; --grad-orange:#f3c06a;
+  --grad: linear-gradient(135deg,#f3c06a 0%,#d8e094 46%,#98c6e7 100%);
+  --grad-rev: linear-gradient(28deg,#98c6e7 14%,#d8e094 49%,#f3c06a 91%);
+  --panel-bg: rgba(235,237,231,0.1);
+  --sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --serif: 'Arbutus Slab', serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 700px; background: var(--cream); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+body { padding: 24px; }
+.eyebrow { font-size: 10px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--t3); }
+.label { font-size: 12px; letter-spacing: .08em; color: var(--t3); }
+.mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; color: var(--t2); }
+.divider { border: none; border-top: 1px solid var(--border); }
+.serif { font-family: var(--serif); font-weight: 400; }

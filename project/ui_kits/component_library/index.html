@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brij - Design System</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg" />
+  <link rel="stylesheet" href="../../colors_and_type.css" />
+  <link rel="stylesheet" href="library.css?v=3" />
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel" src="./Chrome.jsx"></script>
+  <script type="text/babel" src="./Foundations.jsx"></script>
+  <script type="text/babel" src="./TextBlocks.jsx"></script>
+  <script type="text/babel" src="./Actions.jsx"></script>
+  <script type="text/babel" src="./Patterns.jsx"></script>
+  <script type="text/babel" src="./Layouts.jsx"></script>
+
+  <script type="text/babel">
+    // ─── Page renderers (one per route) ──────────────
+    function FoundationsPage() {
+      return (
+        <Section num="01 - Category" title="Foundations"
+          desc="The atomic system. Logo, colors, type, spacing - every other component is built from these.">
+          <FoundationLogo />
+          <FoundationColors />
+          <FoundationGradient />
+          <FoundationType />
+          <FoundationSpacing />
+        </Section>
+      );
+    }
+
+    function TextBlocksPage() {
+      return (
+        <Section num="03 - Building Blocks" title=""
+          desc="The atomic compositions used to assemble the templates. Reference material - every layout in Templates is built from one or more of these.">
+
+          <h3 className="lib-subhead" id="text-blocks-section">Text Blocks</h3>
+          <p className="lib-subhead-desc">Reusable type compositions. These work identically on a web section, a slide, or a document page.</p>
+          <TextLabelHeadline />
+          <TextSectionOpener />
+          <TextPullQuote />
+          <TextCoordinate />
+
+          <h3 className="lib-subhead">Buttons & Chrome</h3>
+          <p className="lib-subhead-desc">Buttons, header, and footer. One primary action per screen. The pentagon arrow is the brand{'\u2019'}s motion signature - use it on every actionable element.</p>
+          <ActionButtons />
+          <ActionHeader />
+          <ActionFooter />
+
+          <h3 className="lib-subhead">Content Patterns</h3>
+          <p className="lib-subhead-desc">Compound layouts built from the text blocks and actions above. Drop them into a deck, doc, or page without re-thinking the structure.</p>
+          <PatternCapabilityRow />
+          <PatternProcessGrid />
+          <PatternCaseStudy />
+          <PatternCTABlock />
+          <PatternDoDont />
+
+          <h3 className="lib-subhead">Usage Rules</h3>
+          <p className="lib-subhead-desc">The non-negotiables. If a design breaks one of these, stop and revisit.</p>
+          <Rules />
+        </Section>
+      );
+    }
+
+    function TemplatesPage() {
+      const TABS = [
+        { id: 'slides',    label: 'Slides',    desc: 'Six core slide layouts. All built on 16:9 \u00b7 1920\u00d71080.' },
+        { id: 'documents', label: 'Documents', desc: 'Patterns for briefs, proposals, and PDFs.' },
+        { id: 'email',     label: 'Email',     desc: 'One canonical email signature for the team.' },
+      ];
+      // Map anchor (sub-item id) → which tab should be open.
+      const anchor = (location.hash.split('/')[2] || '');
+      const navItem = NAV.find(g => g.route === 'templates').items.find(i => i.id === anchor);
+      const initialTab = (navItem && navItem.tab && navItem.tab !== 'starter') ? navItem.tab : 'slides';
+      const [tab, setTab] = React.useState(initialTab);
+      // Switch tab when the user clicks a sidebar sub-item.
+      React.useEffect(() => {
+        const onHash = () => {
+          const a = (location.hash.split('/')[2] || '');
+          const item = NAV.find(g => g.route === 'templates').items.find(i => i.id === a);
+          if (item && item.tab && item.tab !== 'starter') setTab(item.tab);
+        };
+        window.addEventListener('hashchange', onHash);
+        return () => window.removeEventListener('hashchange', onHash);
+      }, []);
+      return (
+        <Section num="02 - Category" title="Templates"
+          desc="Ready-made layouts you can duplicate and edit. Start with a starter file, then drop in any of the layouts below.">
+          <Templates />
+          <div className="lib-subtabs" role="tablist" aria-label="Template categories">
+            {TABS.map((t) => (
+              <button
+                key={t.id}
+                role="tab"
+                aria-selected={tab === t.id}
+                className={`lib-subtab ${tab === t.id ? 'active' : ''}`}
+                onClick={() => setTab(t.id)}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+          <p className="lib-subtab-desc">{TABS.find(t => t.id === tab).desc}</p>
+          {tab === 'slides' && (
+            <React.Fragment>
+              <SlideTitle />
+              <SlideSection />
+              <SlideQuote />
+              <SlideStat />
+              <SlideCase />
+              <SlideClose />
+            </React.Fragment>
+          )}
+          {tab === 'documents' && (
+            <React.Fragment>
+              <DocHeader />
+              <DocSection />
+              <DocCallout />
+            </React.Fragment>
+          )}
+          {tab === 'email' && <ActionEmailSig />}
+        </Section>
+      );
+    }
+
+    const PAGES = {
+      foundations:   FoundationsPage,
+      'building-blocks': TextBlocksPage,
+      templates:     TemplatesPage,
+    };
+
+    function App() {
+      const { route, anchor } = useRoute();
+      const activeRoute = PAGES[route] ? route : 'foundations';
+      const Page = PAGES[activeRoute];
+
+      // Sidebar's effect handles scroll reset + anchor scroll, so nothing
+      // else to do here.
+
+      return (
+        <div className="lib-shell" id="top">
+          <Sidebar route={activeRoute} anchor={anchor} />
+          <main className="lib-main">
+            <div className="lib-page-body" key={activeRoute}>
+              <Page />
+            </div>
+          </main>
+        </div>
+      );
+    }
+
+    // Default route on first load
+    if (!location.hash) {
+      history.replaceState(null, '', '#/foundations');
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
