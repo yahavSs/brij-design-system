@@ -214,15 +214,24 @@ The brand prefers **no icon** over a wrong one. In order of preference:
 3. **Use a word** — a bracketed label like `[ Export ]` is more on-brand than an icon.
 4. **Only if none of the above work**, substitute from **Lucide** (1.5px stroke, `#181B18`, squared-off terminals) and **flag the substitution to the design team** — Lucide is *not officially part of the system* and should not be used without sign-off.
 
-### Logo variants (see `assets/`)
-- `brij-wordmark.svg` — full horizontal wordmark (mark + "brij"). Primary on cream/white.
-- `logotype-black.svg` / `logotype-white.svg` — wordmark only, black or white. For tight contexts.
-- `logo-b-mark.svg` — the standalone B mark.
-- `logo-c-mark.svg` — alternate mark variant.
-- `mark-dark-lg/md/sm.svg` — pentagon, ink fill, white number.
-- `mark-gradient-md.svg` — pentagon, gradient fill, ink number.
-- `mark-3colors.svg` — the three color variants side by side (ink · gradient · ink-with-orange-number).
-- `logo-motion.mp4` — the animated logo loader.
+### Logo variants
+
+The brandbook defines **exactly 3 brand variants**. Every use must map to one of these three. Do not invent a fourth.
+
+1. **Full logo** (mark + wordmark) — the brand named in full. Headers, footers, top of decks, anywhere identification matters. On cream or white. → `assets/brij-wordmark.svg`
+2. **Mark · gradient** — standalone pentagon mark, gradient fill. On dark / ink backgrounds (deck intros, video bumpers, dark surfaces). → `assets/mark-gradient-md.svg`
+3. **Mark · ink** — standalone pentagon mark, ink fill. On cream or white (decorative anchor, section badge, contact CTA at low opacity). → `assets/mark-dark-md.svg` (use `-sm` / `-lg` for size only, same variant).
+
+**Brand motion ident** — `assets/logo-motion.mp4`. The Full Logo in motion. Used at the top of decks, video bumpers, and the home page hero. Plays at 2× speed, looped, muted. Not a fourth variant.
+
+#### Other files in `assets/` — NOT brand variants
+
+These exist for size, reference, or are deprecated drafts. **Do not treat as brand variants. Do not pull from this list without checking with the design team first.**
+
+- `mark-dark-sm.svg` / `mark-dark-lg.svg` — same variant as `mark-dark-md.svg`, different sizes (37 / 54 / 90 px).
+- `logo-3variants.svg`, `mark-3colors.svg` — composite reference images showing all three variants side by side. Documentation only, never embed.
+- `logotype-black.svg` / `logotype-white.svg` — wordmark only, no mark. Reserved for very tight contexts where the mark cannot fit. Treat as a special case, never a default.
+- `logo-b-mark.svg`, `logo-c-mark.svg`, `logo-b-mark-gradient.svg`, `logo-b-mark.png`, `logotype-black.png`, `logotype-white.png` — early drafts and PNG fallbacks. Not part of the brand.
 
 ### Rules
 - Mark always sits **left of the wordmark**.
