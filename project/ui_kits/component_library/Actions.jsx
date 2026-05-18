@@ -151,17 +151,17 @@ function ActionEmailSig() {
         <tr>
           <td valign="middle" style="padding:0 6px 0 0; line-height:0;">
             <a href="${linkifyLinkedIn(fields.linkedin)}" style="text-decoration:none; display:inline-block; line-height:0;">
-              <img src="${ASSET_LINKEDIN}" alt="LinkedIn" width="22" height="22" style="display:block; width:22px; height:22px; border:0; outline:none;" />
+              <img src="${ASSET_LINKEDIN}" alt="" width="22" height="22" style="display:block; width:22px; height:22px; border:0; outline:none;" />
             </a>
           </td>
           <td valign="middle" style="padding:0 6px 0 0; line-height:0;">
             <a href="mailto:${fields.email || 'hello@brijlabs.ai'}" style="text-decoration:none; display:inline-block; line-height:0;">
-              <img src="${ASSET_EMAIL}" alt="Email" width="22" height="22" style="display:block; width:22px; height:22px; border:0; outline:none;" />
+              <img src="${ASSET_EMAIL}" alt="" width="22" height="22" style="display:block; width:22px; height:22px; border:0; outline:none;" />
             </a>
           </td>
           <td valign="middle" style="padding:0; line-height:0;">
             <a href="https://brijlabs.ai" style="text-decoration:none; display:inline-block; line-height:0;">
-              <img src="${ASSET_BRIJ}" alt="Brij Labs" width="22" height="22" style="display:block; width:22px; height:22px; border:0; outline:none;" />
+              <img src="${ASSET_BRIJ}" alt="" width="22" height="22" style="display:block; width:22px; height:22px; border:0; outline:none;" />
             </a>
           </td>
         </tr>
@@ -235,9 +235,9 @@ function ActionEmailSig() {
                     <table cellPadding="0" cellSpacing="0" border="0" role="presentation" style={{ borderCollapse: 'collapse' }}>
                       <tbody>
                         <tr>
-                          <td valign="middle" style={{ padding: '0 6px 0 0', lineHeight: 0 }}><img src={ASSET_LINKEDIN} alt="LinkedIn" width="22" height="22" style={{ display: 'block' }} /></td>
-                          <td valign="middle" style={{ padding: '0 6px 0 0', lineHeight: 0 }}><img src={ASSET_EMAIL} alt="Email" width="22" height="22" style={{ display: 'block' }} /></td>
-                          <td valign="middle" style={{ padding: 0, lineHeight: 0 }}><img src={ASSET_BRIJ} alt="Brij Labs" width="22" height="22" style={{ display: 'block' }} /></td>
+                          <td valign="middle" style={{ padding: '0 6px 0 0', lineHeight: 0 }}><img src={ASSET_LINKEDIN} alt="" width="22" height="22" style={{ display: 'block' }} /></td>
+                          <td valign="middle" style={{ padding: '0 6px 0 0', lineHeight: 0 }}><img src={ASSET_EMAIL} alt="" width="22" height="22" style={{ display: 'block' }} /></td>
+                          <td valign="middle" style={{ padding: 0, lineHeight: 0 }}><img src={ASSET_BRIJ} alt="" width="22" height="22" style={{ display: 'block' }} /></td>
                         </tr>
                       </tbody>
                     </table>
