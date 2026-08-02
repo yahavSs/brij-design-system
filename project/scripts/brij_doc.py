@@ -5,7 +5,7 @@ Usage from a Claude-written script:
 
     from brij_doc import BrijDocument
 
-    doc = BrijDocument(title="Zentx One-Pager")
+    doc = BrijDocument(title="Brij Signal One-Pager")
     doc.eyebrow("01 — INTRODUCTION")
     doc.display("Time to brij.")
     doc.body("Sharp, direct copy goes here.")

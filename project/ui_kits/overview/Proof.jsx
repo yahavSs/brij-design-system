@@ -2,9 +2,9 @@
 function Proof() {
   const studies = [
     {
-      tag: 'Flagship Product', name: 'Zentx',
+      tag: 'Flagship Product', name: 'Brij Signal',
       desc: 'Started as a service engagement with one of Israel\'s biggest PR firms. We built custom AI tooling for media monitoring and crisis detection — and realized this was a product.',
-      outcome: 'Zentx is now a full AI-powered PR monitoring and analytics platform. Production-ready, actively selling in Israel, expanding to the US.',
+      outcome: 'Brij Signal is now a full AI-powered reputation intelligence platform. Production-ready, actively selling in Israel, expanding to the US.',
       features: [
         'Real-time media monitoring across news and social',
         'AI-powered crisis detection and sentiment analysis',
