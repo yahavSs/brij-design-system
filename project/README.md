@@ -38,7 +38,7 @@ All canonical design decisions in this system come from:
 Brij is currently one company, one surface:
 
 1. **brij.ai — marketing website** (only live surface). Narrative landing page following the manifesto arc: chaos → recognition → clarity → Brij. See `ui_kits/website/`.
-2. **Zentx** (product): AI-powered PR monitoring / crisis detection platform. Spun out of a client engagement with one of Israel's largest PR firms. No public product UI yet — not included in this system.
+2. **Brij Signal** (product, formerly Zentx): signal intelligence for reputation. An AI-native operating system for strategic decision-making, spun out of a client engagement with one of Israel's largest PR firms. Its product identity lives in `signal/` (sage surface, navy ink, shared Brij type and logo).
 3. **Eldar Group sector partnership** (real estate). Engagement-first, product to follow. No UI.
 
 ---
@@ -256,5 +256,5 @@ If you need to self-host, download from the same URLs and drop TTFs in `fonts/`.
 ## Caveats (things a designer should know before shipping)
 
 - **Two competing themes exist in the source repo.** Always follow the brandbook (cream / orange / Plus Jakarta / Arbutus Slab). Ignore `src/styles/index.css` (dark / purple / Poppins).
-- **No production product UI exists yet** — Zentx has no public surface. UI kit is website-only.
+- **The product UI (Brij Signal) has its own token set** — for Signal-native artifacts use `signal/signal.css` and `signal/brand.md`, not the website UI kit.
 - **Icon library is intentionally empty.** If you find yourself reaching for a generic icon, reach for a pentagon mark or a word instead.

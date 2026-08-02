@@ -492,6 +492,16 @@ html, body { background: #ffffff; color: var(--brij-ink); font-family: var(--bri
 .lib-copy:hover { opacity: 1; }
 .lib-copy.ok { background: #2d5f34; border-color: #2d5f34; color: #fff; }
 
+/* Sub-brand motion signatures (Products page) */
+@keyframes brij-vb { 0%, 100% { transform: scaleY(0.35); } 50% { transform: scaleY(1); } }
+@keyframes brij-mo1a { 0%, 10%, 90%, 100% { transform: translate(0, 0) rotate(0deg); } 45%, 62% { transform: translate(-8px, -13px) rotate(-5deg); } }
+@keyframes brij-mo1b { 0%, 10%, 90%, 100% { transform: translate(0, 0) rotate(0deg); } 45%, 62% { transform: translate(11px, 15px) rotate(7deg); } }
+@keyframes brij-mo2a { 0%, 12%, 92%, 100% { transform: translateY(0) rotate(0deg); } 50%, 66% { transform: translateY(-26px) rotate(4deg); } }
+@keyframes brij-mo2b { 0%, 12%, 92%, 100% { transform: translateY(0) rotate(0deg); } 50%, 66% { transform: translateY(20px) rotate(-3deg); } }
+
+/* Product motion signatures (Products page) */
+@keyframes brij-vb { 0%, 100% { transform: scaleY(0.35); } 50% { transform: scaleY(1); } }
+
 /* Responsive - collapse sidebar below 900 */
 @media (max-width: 900px) {
   .lib-shell { grid-template-columns: 1fr; }

@@ -2,9 +2,11 @@
    BRIJ — Design System Foundations
    Source of truth: brandbook.html (Intelligence Lab visual system)
 
-   Both families self-hosted from /fonts — no network dependency.
-   Arbutus Slab — fonts/ArbutusSlab-Regular.ttf (400 only)
-   Plus Jakarta Sans — fonts/PlusJakartaSans-Variable.woff2 (200–800)
+   All families self-hosted from /fonts — no network dependency.
+   Arbutus Slab — fonts/ArbutusSlab-Regular.ttf (400 only) — Latin only
+   Plus Jakarta Sans — fonts/PlusJakartaSans-Variable.woff2 (200–800) — Latin only
+   Heebo — fonts/Heebo-*-Variable.woff2 (300–800) — HEBREW. The Latin fonts
+   carry no Hebrew glyphs, so any Hebrew text falls through to Heebo.
 ══════════════════════════════════════════════════════════════ */
 
 @font-face {
@@ -22,6 +24,25 @@
   font-display: swap;
   src: url('fonts/PlusJakartaSans-Variable.woff2') format('woff2-variations'),
        url('fonts/PlusJakartaSans-Variable.woff2') format('woff2');
+}
+
+/* Heebo — the brand's HEBREW typeface. Two subsets so Hebrew + Latin
+   digits/punctuation both render in Heebo when inside Hebrew copy. */
+@font-face {
+  font-family: 'Heebo';
+  font-style: normal;
+  font-weight: 300 800;
+  font-display: swap;
+  src: url('fonts/Heebo-Hebrew-Variable.woff2') format('woff2');
+  unicode-range: U+0307-0308, U+0590-05FF, U+200C-2010, U+20AA, U+25CC, U+FB1D-FB4F;
+}
+@font-face {
+  font-family: 'Heebo';
+  font-style: normal;
+  font-weight: 300 800;
+  font-display: swap;
+  src: url('fonts/Heebo-Latin-Variable.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+20AC, U+2122;
 }
 
 :root {
@@ -58,9 +79,12 @@
   --brij-do:    #5a8a5e;
   --brij-dont:  #b35c5c;
 
-  /* ── Type families ── */
-  --brij-sans:  'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  --brij-serif: 'Arbutus Slab', Georgia, serif;
+  /* ── Type families ──
+     'Heebo' sits right after the Latin face in every stack. Latin renders
+     in Jakarta / Arbutus; Hebrew glyphs (absent there) fall through to Heebo. */
+  --brij-sans:  'Plus Jakarta Sans', 'Heebo', system-ui, -apple-system, sans-serif;
+  --brij-serif: 'Arbutus Slab', 'Heebo', Georgia, serif;
+  --brij-hebrew: 'Heebo', sans-serif;   /* explicit Hebrew face when you need it */
 
   /* ── Spacing scale — 5-step doubling rhythm on base 8 ──
      Use semantic tokens; rare half-steps via calc() if absolutely needed. */

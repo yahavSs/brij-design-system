@@ -12,6 +12,25 @@ This skill has been getting frustrated feedback for jumping straight to building
 
 ---
 
+## Stage 0 — Which brand?
+
+Brij has one product with its own identity: **Brij Signal** (signal intelligence for reputation, "The Operating System for Reputation"). Before anything else, confirm which brand the artifact belongs to:
+
+> *Which brand are we designing for?*
+> 1. **Brij** — the parent Intelligence Lab. The default. Cream surface, Plus Jakarta Sans + Arbutus Slab, the manifesto voice.
+> 2. **Brij Signal** — Brij's product. Sage-greige surface with floating white panels, navy ink `#1A2540`, same type family as Brij, product-token set in `signal/signal.css`.
+
+Decide using the routing table in `signal/brand.md` (or restate it here in short):
+
+- **Signal-native work** (product UI mocks, Signal-owned marketing, a page or deck about the product): switch to the Brij Signal identity. Read `signal/brand.md`, link `signal/signal.css`, use the logos in `signal/assets/`.
+- **Brij-led work that features Signal** (Brij selling the product, Brij investor deck mentioning it, the Brij website's product section): stay in Brij brand. The product is named in type; surface and voice are Brij's.
+
+*(Brij Signal is the rebrand of the product formerly called Zentx. The old Zentx identity — Poppins, Z-mark, "Above The Noise" — is retired. Never use it.)*
+
+If unclear, ask. Then proceed to Stage 1.
+
+---
+
 ## The six stages (run in order, every time)
 
 Default: run all six stages. The user can override only with an explicit phrase like "skip to build" or "no questions, just sketch it", and even then, still run Stage 6 (pre-flight) before delivery.
@@ -84,17 +103,24 @@ Now produce the final artifact. Pick the output format that matches the artifact
 
 - Load fonts and tokens:
   ```html
-  <link href="https://fonts.googleapis.com/css2?family=Arbutus+Slab&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Arbutus+Slab&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Heebo:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="colors_and_type.css" />
   ```
+  *(Heebo is only required when the artifact contains Hebrew content.)*
 - Use only `--brij-*` CSS variables. Never hardcode colors, fonts, or spacing.
 - Copy `colors_and_type.css` and any logo/mark/arrow SVG you reference into the working directory. Never link into `~/.claude/skills/`.
+
+**For multi-slide pitch decks** (10–20 slide HTML decks, often bilingual, often product co-brand):
+
+- **Read `decks-pattern.md` first.** It captures rules earned through real user feedback that don't appear elsewhere.
+- Clone `templates/deck-template.html` as the starting point. It includes the HUD, animation system, soft-transition logic, print mode, and all slide-type layouts.
+- Founders portraits available at `assets/team/` for team slides.
 
 **For editable documents** (one-pagers, briefs, proposals, anything the team will keep editing in Word or Google Docs): use `scripts/brij_doc.py`. See `scripts/README.md` for the full API. Quick form:
 
 ```python
 from brij_doc import BrijDocument
-doc = BrijDocument(title="Zentx One-Pager")
+doc = BrijDocument(title="Brij Signal One-Pager")
 doc.eyebrow("[ 01 — Introduction ]")
 doc.display("Time to brij.")
 doc.lead("Brij is an Intelligence Lab.")
@@ -114,8 +140,10 @@ In all cases: read `README.md` once if you haven't already this session, and nev
 
 Re-read your own output and verify each box. If any fails, fix and re-run the full list. Do not deliver until all pass.
 
+> **Multi-slide pitch decks and bilingual Hebrew/English decks have a separate, additive checklist** in `decks-pattern.md` (white surface allowed, Heebo permitted, co-brand rules). Run **both** lists if you're building a deck.
+
 **Restraint**
-- [ ] Page background is `--brij-cream`. Not white, not dark, not gradient.
+- [ ] Page background is `--brij-cream`. Not white, not dark, not gradient. *(Exception: product co-brand pitch decks use white — see `decks-pattern.md`.)*
 - [ ] Orange (`--brij-orange`) appears at most once per section (gradient buttons exempt).
 - [ ] No drop shadows.
 - [ ] No grey tones as fills (only `--brij-t1` / `--brij-t2` / `--brij-t3` for text).
@@ -124,9 +152,10 @@ Re-read your own output and verify each box. If any fails, fix and re-run the fu
 - [ ] No grid patterns or noise textures on backgrounds (noise is marks-only).
 
 **Type**
-- [ ] Only Plus Jakarta Sans + Arbutus Slab loaded.
+- [ ] Plus Jakarta Sans + Arbutus Slab loaded for English. *(Add Heebo if Hebrew content is present — see `decks-pattern.md`.)*
 - [ ] Sentence case on headlines, titles, buttons. ALL CAPS only on tracked eyebrow labels.
 - [ ] Sizes come from the five-step scale only (Display / Headline / Title / Body / Label). No arbitrary values.
+- [ ] **Arbutus Slab is brand-tagline-only.** Never on numbers, never on labels, never on body. Decorative numbers (slide counters, step numbers, divider numbers) go in Plus Jakarta Sans.
 
 **Logo**
 - [ ] Correct variant for the surface (see Logo Decision Tree).
@@ -163,26 +192,50 @@ The brandbook defines exactly **3 logo variants**. Every use must map to one of 
 
 If a request seems to need something outside these three (e.g. wordmark only, mark on a colored background, custom color fill), STOP and ask the user before improvising. The brand is deliberately tight here.
 
+**Brij Signal has its own product mark** (ink and gradient variants) — for Signal-native artifacts use the marks in `signal/assets/` per `signal/brand.md`, not the parent pentagon mark.
+
+---
+
+## Canonical brandbook and sync chain
+
+There is exactly **one** brandbook: the **"Brij Design System" Claude Design project** (claude.ai/design). Everything else is a synced copy of it:
+
+1. **This skill folder** is the working mirror. `Brij Design System.html` here is the same bundled file as in the cloud project; `ui_kits/component_library/` is its editable source.
+2. **Published read-only view**: https://yahavss.github.io/brij-design-system/ (the `brij-design-system` repo publishes `project/`, which mirrors this folder).
+3. **Team distribution**: the `brij-design` plugin in `brij-plugin-marketplace` (org `brijlabs-ai`) ships this skill to every team member's machine.
+
+When brand values change: edit here → push to the Claude Design project with DesignSync (`/design-sync`) → commit + push `brij-design-system` (publishes the live page) → sync + version-bump the plugin in `brij-plugin-marketplace`. Never fork brand values into a project-local brandbook; point to this chain instead.
+
 ---
 
 ## Reference file map (read on demand, not all at once)
 
-- `README.md` — brand context, voice, visual foundations, full rule list. Read once at the start of any non-trivial task.
-- `colors_and_type.css` — every CSS variable and primitive. Always link; never copy values into your output.
+**Brij (parent brand):**
+- `README.md` — brand context, voice, visual foundations, full rule list. Read once at the start of any non-trivial Brij task.
+- `decks-pattern.md` — **multi-slide HTML pitch decks**: bilingual rules, co-brand layout, slide types catalog, animation system, print/PDF workflow. **Read before any pitch deck.** Pairs with `templates/deck-template.html`.
+- `colors_and_type.css` — every Brij CSS variable and primitive. Always link; never copy values into your output.
 - `preview/*.html` — 25 component exemplars. Read the relevant one **before** building (e.g. before designing a button, open `preview/component-buttons.html`).
-- `screenshots/*.png` — visual references for full sections of the brandbook. Open these to see what "good" looks like for a given section type.
-- `assets/` — all logos, marks, arrows, lines. Copy required SVG into the working directory.
+- `templates/deck-template.html` — canonical 16-slide pitch deck (built pre-rebrand as "Zentx · Enlight"). Clone for any product co-brand deck; don't reinvent. When cloning, the product is named **Brij Signal** and uses `signal/` tokens and logos.
+- `screenshots/*.png` — visual references for full sections of the brandbook.
+- `assets/` — all Brij logos, marks, arrows, lines. Copy required SVG into the working directory.
+- `assets/team/` — founders portraits (Roey, Yoel, Gidon, Ziv, Motti), ready for circular crop in team grids.
 - `scripts/brij_doc.py` — Python helper for `.docx` generation. Read `scripts/README.md` for the API.
 - `Brij Design System.html` — the full canonical brandbook (1.9 MB). Treat as law if a rule conflict comes up. Only open when a question can't be answered from `README.md`.
 
+**Brij Signal (product brand under Brij):**
+- `signal/brand.md` — product identity: surfaces, navy ink, logo usage, color rules, voice. Read this **instead of** `README.md` when building Signal-native artifacts.
+- `signal/signal.css` — the product token set (light + dark), extracted from the product's live design system. Always link; never copy values into your output.
+- `signal/assets/` — Brij logo variants as used by the product (full logo, mark, arrow, favicon in black / white / gradient).
+
 ---
 
-## Mode: production vs. throwaway
+## Mode: production vs. throwaway vs. pitch deck
 
 Decide based on the artifact type from Stage 2 Q1:
 
 - **Production** (real shipped surface — website code in the brij.ai repo, a section being merged into the site, a product UI): work in the project's actual file structure, not a loose `lowfi.html` at the project root. Copy `colors_and_type.css` into the project's styles folder and align with the project's existing token names.
-- **Throwaway** (decks, slides, mocks, social posts, banners, sketches): output static HTML files in the working directory that the user can open immediately.
+- **Pitch deck** (multi-slide HTML deck for a product co-brand, investor / client pitch, often bilingual): **read `decks-pattern.md` first.** Clone `templates/deck-template.html` and edit content slide-by-slide. White surface, Heebo for Hebrew, English for short labels, product logo top-left + Brij bottom signoff. The deck template (built pre-rebrand as Zentx · Enlight) is the canonical reference; today's product name is Brij Signal.
+- **Throwaway** (single slides, mocks, social posts, banners, sketches): output static HTML files in the working directory that the user can open immediately.
 - **Document** (one-pager, brief, proposal, internal doc — anything the team will edit in Google Docs / Word): use `scripts/brij_doc.py` to write a `.docx`. Pair it with an HTML preview when the visual matters too.
 
 If unclear from Stage 2 alone, ask explicitly before Stage 4.

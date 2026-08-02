@@ -1,0 +1,1701 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Zentx · Intelligence in Every Direction</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Arbutus+Slab&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Heebo:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="colors_and_type.css" />
+
+<style>
+  /* ───────────────── reset + base ───────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; overflow: hidden; background: #ffffff; }
+  body {
+    font-family: 'Heebo', 'Plus Jakarta Sans', system-ui, sans-serif;
+    color: var(--brij-t1);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Latin text inside Hebrew flow */
+  .ltr { direction: ltr; unicode-bidi: isolate; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+  .serif { font-family: 'Arbutus Slab', Georgia, serif; }
+
+  /* ───────────────── deck shell ───────────────── */
+  .deck {
+    position: fixed; inset: 0;
+    background: #ffffff;
+  }
+
+  .slide {
+    position: absolute; inset: 0;
+    display: none;
+    padding: clamp(48px, 6vw, 96px) clamp(48px, 8vw, 120px);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 700ms cubic-bezier(.22,.61,.36,1), transform 700ms cubic-bezier(.22,.61,.36,1);
+    pointer-events: none;
+  }
+  .slide.is-active {
+    display: flex;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  /* directional slide entrance — dramatic cinematic push */
+  .deck.dir-forward  .slide.is-active { animation: deckForward  1100ms cubic-bezier(.16,1,.3,1) both; }
+  .deck.dir-backward .slide.is-active { animation: deckBackward 1100ms cubic-bezier(.16,1,.3,1) both; }
+  /* soft transition between similar slides — just fade */
+  .deck.dir-soft     .slide.is-active { animation: deckSoft     500ms ease-out both; }
+  @keyframes deckForward {
+    0%   { opacity: 0; transform: translateX(140px) scale(0.96); filter: blur(14px); }
+    60%  { opacity: 1; filter: blur(2px); }
+    100% { opacity: 1; transform: translateX(0) scale(1); filter: blur(0); }
+  }
+  @keyframes deckBackward {
+    0%   { opacity: 0; transform: translateX(-140px) scale(0.96); filter: blur(14px); }
+    60%  { opacity: 1; filter: blur(2px); }
+    100% { opacity: 1; transform: translateX(0) scale(1); filter: blur(0); }
+  }
+  @keyframes deckSoft {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  /* in soft-mode, suppress per-element entrance theatrics; just gentle fade */
+  .slide.is-soft.is-active .anim,
+  .slide.is-soft.is-active .anim-fade,
+  .slide.is-soft.is-active .anim-scale,
+  .slide.is-soft.is-active .anim-rtl,
+  .slide.is-soft.is-active .anim-ltr,
+  .slide.is-soft.is-active .anim-mask,
+  .slide.is-soft.is-active .anim-drop,
+  .slide.is-soft.is-active .anim-rule,
+  .slide.is-soft.is-active .anim-rule-v,
+  .slide.is-soft.is-active .anim-ring,
+  .slide.is-soft.is-active .anim-shock,
+  .slide.is-soft.is-active .anim-swoop,
+  .slide.is-soft.is-active .anim-burst {
+    animation: softReveal 400ms ease-out both !important;
+    animation-delay: 0ms !important;
+  }
+  @keyframes softReveal {
+    from { opacity: 0; filter: none; transform: none; }
+    to   { opacity: 1; filter: none; transform: none; }
+  }
+
+  /* ───────────────── HUD: top + bottom bars ───────────────── */
+  .hud {
+    position: fixed;
+    left: 0; right: 0;
+    pointer-events: none;
+    z-index: 50;
+  }
+  .hud-top    { top: 0;    padding: 28px 48px; display: flex; justify-content: space-between; align-items: center; }
+  .hud-bottom { bottom: 0; padding: 28px 48px; display: flex; justify-content: space-between; align-items: center; }
+
+  .hud-logo {
+    display: flex; align-items: center; gap: 10px;
+    transition: opacity 240ms ease;
+  }
+  /* primary product logo (top-left): dominant */
+  .hud-logo.is-primary { opacity: 0.92; }
+  .hud-logo.is-primary img { height: 36px; width: auto; display: block; }
+  /* secondary co-brand (bottom): Brij first, then label */
+  .hud-logo.is-secondary { opacity: 1; direction: ltr; }
+  .hud-logo.is-secondary img { height: 24px; width: auto; display: block; }
+  .hud-logo .lbl {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--brij-t3);
+  }
+
+  .hud-counter {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    color: var(--brij-t3);
+    display: flex; align-items: center; gap: 12px;
+    direction: ltr;
+  }
+  .hud-counter .current { color: var(--brij-t1); font-weight: 600; }
+
+  .hud-progress {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: transparent;
+    z-index: 49;
+    pointer-events: none;
+  }
+  .hud-progress::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform-origin: right center;
+    transform: scaleX(var(--p, 0));
+    background: linear-gradient(90deg, #f3c06a 0%, #d8e094 50%, #98c6e7 100%);
+    transition: transform 700ms cubic-bezier(.22,.61,.36,1);
+  }
+
+  /* ───────────────── primitives ───────────────── */
+  .eyebrow {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--brij-t3);
+    display: inline-flex; align-items: center; gap: 12px;
+  }
+  .eyebrow::before {
+    content: '';
+    width: 32px; height: 1px;
+    background: linear-gradient(90deg, #f3c06a 0%, #d8e094 50%, #98c6e7 100%);
+  }
+
+  .display {
+    font-family: 'Plus Jakarta Sans', 'Heebo', sans-serif;
+    font-weight: 300;
+    font-size: clamp(40px, 5.8vw, 88px);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    color: var(--brij-t1);
+  }
+  .display .accent { font-weight: 700; }
+
+  .headline {
+    font-family: 'Heebo', sans-serif;
+    font-weight: 400;
+    font-size: clamp(28px, 3.4vw, 48px);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--brij-t1);
+  }
+
+  .lead {
+    font-family: 'Heebo', sans-serif;
+    font-weight: 300;
+    font-size: clamp(20px, 1.8vw, 28px);
+    line-height: 1.5;
+    letter-spacing: -0.005em;
+    color: var(--brij-t1);
+  }
+
+  .body {
+    font-family: 'Heebo', sans-serif;
+    font-weight: 400;
+    font-size: clamp(15px, 1.05vw, 17px);
+    line-height: 1.75;
+    color: var(--brij-t2);
+  }
+
+  .label {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--brij-t3);
+  }
+
+  .tagline-en {
+    font-family: 'Arbutus Slab', Georgia, serif;
+    font-size: clamp(13px, 1vw, 16px);
+    letter-spacing: 0.04em;
+    color: var(--brij-t2);
+    direction: ltr;
+  }
+  .tagline-he {
+    font-family: 'Heebo', sans-serif;
+    font-weight: 300;
+    font-size: clamp(13px, 1vw, 16px);
+    letter-spacing: 0.02em;
+    color: var(--brij-t2);
+    direction: rtl;
+  }
+
+  /* gradient hairlines */
+  .rule {
+    display: block; height: 1px; border: 0;
+    background: linear-gradient(90deg, #f3c06a 0%, #d8e094 50%, #98c6e7 100%);
+  }
+  .rule-v {
+    display: block; width: 1px; border: 0;
+    background: linear-gradient(180deg, #f3c06a 0%, #d8e094 50%, #98c6e7 100%);
+  }
+  .rule-soft {
+    display: block; height: 1px; border: 0;
+    background: #ececec;
+  }
+
+  .num {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 300;
+    font-size: clamp(64px, 9vw, 128px);
+    line-height: 1;
+    color: var(--brij-t1);
+    direction: ltr;
+    letter-spacing: -0.02em;
+  }
+  .num-sm {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    color: var(--brij-t3);
+    direction: ltr;
+  }
+
+  /* ───────────────── entrance micro-animations — GO BIG ───────────────── */
+  .slide.is-active .anim       { animation: rise       1200ms cubic-bezier(.16,1,.3,1) both; }
+  .slide.is-active .anim-fade  { animation: fade       1200ms cubic-bezier(.16,1,.3,1) both; }
+  .slide.is-active .anim-scale { animation: scaleIn    1400ms cubic-bezier(.16,1,.3,1) both; }
+  .slide.is-active .anim-rtl   { animation: slideRTL   1200ms cubic-bezier(.16,1,.3,1) both; }
+  .slide.is-active .anim-ltr   { animation: slideLTR   1200ms cubic-bezier(.16,1,.3,1) both; }
+  .slide.is-active .anim-mask  { animation: maskReveal 1400ms cubic-bezier(.76,0,.24,1) both; }
+  .slide.is-active .anim-drop  { animation: dropIn     1200ms cubic-bezier(.16,1,.3,1) both; }
+  .slide.is-active .anim-rule    { animation: ruleGrow   1400ms cubic-bezier(.65,0,.35,1) both; transform-origin: right center; }
+  .slide.is-active .anim-rule-v  { animation: ruleGrowV  1400ms cubic-bezier(.65,0,.35,1) both; transform-origin: center top; }
+  .slide.is-active .anim-ring    { animation: ringIn    1600ms cubic-bezier(.16,1,.3,1) both; }
+  .slide.is-active .anim-shock   { animation: shockwave 1400ms cubic-bezier(.16,1,.3,1) both; }
+  .slide.is-active .anim-swoop   { animation: swoopIn   1400ms cubic-bezier(.16,1,.3,1) both; }
+  .slide.is-active .anim-burst   { animation: burstIn   1500ms cubic-bezier(.16,1,.3,1) both; }
+
+  @keyframes rise {
+    0%   { opacity: 0; transform: translateY(50px); filter: blur(6px); }
+    60%  { opacity: 1; filter: blur(0); }
+    100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+  }
+  @keyframes fade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes scaleIn {
+    0%   { opacity: 0; transform: scale(0.78); filter: blur(8px); }
+    70%  { opacity: 1; transform: scale(1.015); filter: blur(0); }
+    100% { opacity: 1; transform: scale(1); filter: blur(0); }
+  }
+  @keyframes slideRTL {
+    /* enters from right of page (natural RTL direction) */
+    0%   { opacity: 0; transform: translateX(120px); filter: blur(6px); }
+    60%  { opacity: 1; filter: blur(0); }
+    100% { opacity: 1; transform: translateX(0); filter: blur(0); }
+  }
+  @keyframes slideLTR {
+    0%   { opacity: 0; transform: translateX(-120px); filter: blur(6px); }
+    60%  { opacity: 1; filter: blur(0); }
+    100% { opacity: 1; transform: translateX(0); filter: blur(0); }
+  }
+  @keyframes maskReveal {
+    0%   { opacity: 0; clip-path: inset(0 0 100% 0); transform: translateY(20px); }
+    100% { opacity: 1; clip-path: inset(0 0 0 0); transform: translateY(0); }
+  }
+  @keyframes dropIn {
+    0%   { opacity: 0; transform: translateY(-60px); filter: blur(6px); }
+    60%  { opacity: 1; filter: blur(0); }
+    100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+  }
+  @keyframes ruleGrow {
+    from { transform: scaleX(0); opacity: 0; }
+    to   { transform: scaleX(1); opacity: 1; }
+  }
+  @keyframes ruleGrowV {
+    from { transform: scaleY(0); opacity: 0; }
+    to   { transform: scaleY(1); opacity: 1; }
+  }
+  @keyframes ringIn {
+    0%   { opacity: 0; transform: scale(0.2) rotate(-12deg); filter: blur(18px); }
+    65%  { opacity: 1; transform: scale(1.08) rotate(0); filter: blur(0); }
+    100% { opacity: 1; transform: scale(1) rotate(0); filter: blur(0); }
+  }
+  @keyframes shockwave {
+    0%   { opacity: 0; transform: scale(0.4); filter: blur(14px); }
+    50%  { opacity: 1; transform: scale(1.06); filter: blur(0); }
+    100% { opacity: 1; transform: scale(1); filter: blur(0); }
+  }
+  @keyframes swoopIn {
+    0%   { opacity: 0; transform: translateX(80px) translateY(-40px) rotate(-6deg); filter: blur(8px); }
+    100% { opacity: 1; transform: translateX(0) translateY(0) rotate(0); filter: blur(0); }
+  }
+  @keyframes burstIn {
+    0%   { opacity: 0; transform: scale(0.5); filter: blur(10px); letter-spacing: 0.6em; }
+    100% { opacity: 1; transform: scale(1); filter: blur(0); letter-spacing: inherit; }
+  }
+
+  /* stagger delays */
+  .d-0  { animation-delay:   0ms !important; }
+  .d-1  { animation-delay: 120ms !important; }
+  .d-2  { animation-delay: 240ms !important; }
+  .d-3  { animation-delay: 360ms !important; }
+  .d-4  { animation-delay: 480ms !important; }
+  .d-5  { animation-delay: 600ms !important; }
+  .d-6  { animation-delay: 720ms !important; }
+  .d-7  { animation-delay: 840ms !important; }
+  .d-8  { animation-delay: 960ms !important; }
+  .d-9  { animation-delay: 1080ms !important; }
+
+  /* ───────────────── slide-specific layouts ───────────────── */
+
+  /* common centered column */
+  .stack {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  .stack > * + * { margin-top: 24px; }
+
+  /* slide 1 – cover */
+  .s-cover {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 48px;
+  }
+  .s-cover .zentx-mark {
+    width: clamp(56px, 6vw, 88px);
+    opacity: 0.9;
+  }
+  .s-cover .zentx-word {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 300;
+    font-size: clamp(56px, 8vw, 128px);
+    letter-spacing: 0.32em;
+    color: var(--brij-t1);
+    direction: ltr;
+    margin-inline-start: 0.32em; /* visually balance tracking */
+  }
+  .s-cover .hero-line {
+    max-width: 920px;
+    font-weight: 300;
+    font-size: clamp(22px, 2.2vw, 34px);
+    line-height: 1.45;
+    color: var(--brij-t1);
+    letter-spacing: -0.005em;
+  }
+  .s-cover .cover-rule { width: 80px; margin: 0 auto; }
+
+  /* slide 5 – mission (two-column: title right, triangle left) */
+  .s-mission {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: clamp(48px, 6vw, 120px);
+  }
+  .s-mission .mission-text {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    text-align: right;
+    max-width: 720px;
+  }
+  .s-mission .lead-xl {
+    font-family: 'Heebo', sans-serif;
+    font-weight: 300;
+    font-size: clamp(24px, 2.8vw, 44px);
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    color: var(--brij-t1);
+    text-align: right;
+  }
+  .s-mission .lead-xl b { font-weight: 700; }
+
+  .triangle-stage {
+    position: relative;
+    flex: 0 0 auto;
+    width: clamp(360px, 30vw, 480px);
+    aspect-ratio: 1.155 / 1;
+    margin: 0;
+  }
+  .triangle-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  .triangle-svg path {
+    fill: none;
+    stroke: url(#tri-grad);
+    stroke-width: 1.4;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+  }
+  .triangle-center {
+    position: absolute;
+    top: 66.7%;          /* centroid of equilateral triangle = 2/3 down */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .triangle-center img { width: clamp(96px, 9vw, 140px); height: auto; }
+  .triangle-label {
+    position: absolute;
+    font-family: 'Heebo', sans-serif;
+    font-weight: 400;
+    font-size: clamp(14px, 1.1vw, 19px);
+    color: var(--brij-t1);
+    letter-spacing: -0.005em;
+    white-space: nowrap;
+    direction: rtl;
+  }
+  .triangle-label .tl-num {
+    display: block;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    color: var(--brij-t3);
+    margin-bottom: 4px;
+    direction: ltr;
+  }
+  /* corner labels — anchor to each vertex with breathing room */
+  .t-top {
+    bottom: 100%;
+    margin-bottom: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+  }
+  .t-br {
+    top: 100%;
+    margin-top: 14px;
+    right: 0;
+    transform: translateX(50%);  /* center label on the right vertex */
+    text-align: center;
+  }
+  .t-bl {
+    top: 100%;
+    margin-top: 14px;
+    left: 0;
+    transform: translateX(-50%); /* center label on the left vertex */
+    text-align: center;
+  }
+
+  /* slide 3 – why we're here */
+  .s-why {
+    flex-direction: column;
+    justify-content: center;
+    gap: 48px;
+  }
+  .s-why .body-xl {
+    max-width: 1100px;
+    font-family: 'Heebo', sans-serif;
+    font-weight: 300;
+    font-size: clamp(24px, 2.6vw, 40px);
+    line-height: 1.45;
+    color: var(--brij-t1);
+    letter-spacing: -0.01em;
+  }
+
+  /* slide 4 – founders */
+  .s-team {
+    flex-direction: column;
+    justify-content: center;
+    gap: 56px;
+  }
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0;
+    border-top: 1px solid #ececec;
+  }
+  .team-cell {
+    padding: 40px 18px 0 18px;
+    border-inline-start: 1px solid #ececec;
+    min-height: 320px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+  }
+  .team-cell:first-child { border-inline-start: 0; padding-inline-start: 0; }
+  .team-cell:last-child  { padding-inline-end: 0; }
+  .team-photo {
+    width: clamp(140px, 12.5vw, 192px);
+    height: clamp(140px, 12.5vw, 192px);
+    border-radius: 50%;
+    overflow: hidden;
+    background: #f4f4f2;
+    flex-shrink: 0;
+  }
+  .team-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 16%;
+    filter: grayscale(1);
+    display: block;
+    transform: scale(1.18);
+    transform-origin: center 20%;
+  }
+  /* per-person crop tweaks — bump the framing up so foreheads stay inside */
+  .team-photo[data-p="roey"]  img { object-position: 50% 18%; transform: scale(1.34); transform-origin: center 22%; }
+  .team-photo[data-p="joel"]  img { object-position: 38% 4%;  transform: scale(1.22); transform-origin: 38% 8%; }
+  .team-photo[data-p="gidon"] img { object-position: center 5%; transform: scale(1.22); transform-origin: center 8%; }
+  .team-photo[data-p="ziv"]   img { object-position: center 12%; transform: scale(1.18); transform-origin: center 16%; }
+  .team-photo.is-circle img {
+    object-position: center center;
+    transform: scale(1);
+  }
+  .team-cell .name {
+    font-family: 'Heebo', sans-serif;
+    font-weight: 500;
+    font-size: clamp(18px, 1.4vw, 22px);
+    color: var(--brij-t1);
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+  .team-cell .role {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--brij-t3);
+    direction: ltr;
+  }
+  .team-foot {
+    max-width: 720px;
+    font-family: 'Heebo', sans-serif;
+    font-weight: 300;
+    font-size: clamp(17px, 1.3vw, 21px);
+    line-height: 1.6;
+    color: var(--brij-t2);
+  }
+
+  /* slide 5 – pain */
+  .s-pain {
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 48px;
+  }
+  .s-pain .pain-display {
+    font-family: 'Heebo', sans-serif;
+    font-weight: 200;
+    font-size: clamp(40px, 5.2vw, 80px);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--brij-t1);
+    max-width: 1100px;
+  }
+  .s-pain .pain-display b { font-weight: 700; }
+
+  /* slide 6, 12, 16 – section dividers */
+  .s-divider {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 40px;
+  }
+  .s-divider .divider-num {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    letter-spacing: 0.32em;
+    color: var(--brij-t3);
+    direction: ltr;
+  }
+  .s-divider .divider-title {
+    font-family: 'Plus Jakarta Sans', 'Heebo', sans-serif;
+    font-weight: 200;
+    font-size: clamp(56px, 8vw, 128px);
+    letter-spacing: -0.04em;
+    line-height: 0.95;
+    color: var(--brij-t1);
+  }
+  .s-divider .divider-rule { width: 120px; }
+
+  /* slides 7-9 – numbered steps */
+  .s-step {
+    flex-direction: row;
+    align-items: center;
+    gap: 96px;
+  }
+  .s-step .step-left {
+    flex: 0 0 38%;
+    display: flex; flex-direction: column;
+    gap: 32px;
+  }
+  .s-step .step-right {
+    flex: 1;
+    display: flex; flex-direction: column;
+    gap: 32px;
+  }
+  .s-step .step-num {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 200;
+    font-size: clamp(80px, 11vw, 180px);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    color: var(--brij-t1);
+    direction: ltr;
+  }
+  .s-step .step-title {
+    font-family: 'Plus Jakarta Sans', 'Heebo', sans-serif;
+    font-weight: 500;
+    font-size: clamp(28px, 3vw, 44px);
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    color: var(--brij-t1);
+    max-width: 600px;
+  }
+  .s-step .step-title-he {
+    font-family: 'Heebo', sans-serif;
+    font-weight: 300;
+    font-size: clamp(16px, 1.2vw, 19px);
+    line-height: 1.5;
+    color: var(--brij-t3);
+    margin-top: 8px;
+    max-width: 600px;
+  }
+  .s-step .step-body {
+    font-family: 'Heebo', sans-serif;
+    font-weight: 300;
+    font-size: clamp(17px, 1.3vw, 22px);
+    line-height: 1.65;
+    color: var(--brij-t2);
+    max-width: 640px;
+  }
+  .s-step .step-rule { width: 80px; }
+
+  /* slide 10 – every */
+  .s-every {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 56px;
+  }
+  .s-every .every-display {
+    font-family: 'Heebo', sans-serif;
+    font-weight: 200;
+    font-size: clamp(40px, 5.4vw, 84px);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: var(--brij-t1);
+    max-width: 1200px;
+  }
+  .s-every .every-display b { font-weight: 700; }
+  .s-every .every-words {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 16px 32px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--brij-t3);
+    direction: ltr;
+  }
+  .s-every .every-words span { white-space: nowrap; }
+
+  /* slide 11 – one platform */
+  .s-platform {
+    flex-direction: column;
+    justify-content: center;
+    gap: 72px;
+  }
+  .s-platform .platform-head {
+    display: flex; flex-direction: column; gap: 24px;
+  }
+  .s-platform .platform-display {
+    font-family: 'Heebo', sans-serif;
+    font-weight: 200;
+    font-size: clamp(40px, 5vw, 76px);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--brij-t1);
+    max-width: 1100px;
+  }
+  .s-platform .platform-display b { font-weight: 700; }
+  .pillars {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border-top: 1px solid #ececec;
+  }
+  .pillar {
+    padding: 32px 0 0 0;
+    padding-inline-start: 32px;
+    border-inline-start: 1px solid #ececec;
+    min-height: 140px;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .pillar:first-child { padding-inline-start: 0; border-inline-start: 0; }
+  .pillar .p-num {
+    font-family: 'Arbutus Slab', Georgia, serif;
+    font-size: 13px;
+    color: var(--brij-t3);
+    letter-spacing: 0.2em;
+    direction: ltr;
+  }
+  .pillar .p-name {
+    font-family: 'Plus Jakarta Sans', 'Heebo', sans-serif;
+    font-weight: 500;
+    font-size: clamp(18px, 1.4vw, 22px);
+    color: var(--brij-t1);
+    line-height: 1.35;
+    letter-spacing: -0.005em;
+  }
+  .pillar .p-sub {
+    font-family: 'Heebo', sans-serif;
+    font-weight: 300;
+    font-size: clamp(13px, 0.95vw, 15px);
+    color: var(--brij-t3);
+    line-height: 1.4;
+    margin-top: -8px;
+  }
+
+  /* slides 13-14 – two-up use cases */
+  .s-cases {
+    flex-direction: column;
+    justify-content: center;
+    gap: 56px;
+  }
+  .case-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border-top: 1px solid #ececec;
+  }
+  .case {
+    padding: 40px 0 0 0;
+    padding-inline-start: 56px;
+    border-inline-start: 1px solid #ececec;
+    display: flex; flex-direction: column; gap: 24px;
+  }
+  .case:first-child {
+    padding-inline-start: 0;
+    border-inline-start: 0;
+    padding-inline-end: 56px;
+  }
+  .case .case-eyebrow {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--brij-t3);
+  }
+  .case .case-title {
+    font-family: 'Heebo', sans-serif;
+    font-weight: 500;
+    font-size: clamp(22px, 1.8vw, 28px);
+    line-height: 1.25;
+    color: var(--brij-t1);
+  }
+  .case .case-body {
+    font-family: 'Heebo', sans-serif;
+    font-weight: 300;
+    font-size: clamp(15px, 1.05vw, 17px);
+    line-height: 1.7;
+    color: var(--brij-t2);
+  }
+  .case .case-enables {
+    font-family: 'Heebo', sans-serif;
+    font-weight: 400;
+    font-size: clamp(15px, 1.05vw, 17px);
+    line-height: 1.7;
+    color: var(--brij-t1);
+    padding-top: 20px;
+    border-top: 1px solid #ececec;
+  }
+  .case .case-enables b { font-weight: 600; }
+
+  /* slide 15 – implementation */
+  .s-impl {
+    flex-direction: column;
+    justify-content: center;
+    gap: 64px;
+  }
+  .impl-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
+    border-top: 1px solid #ececec;
+  }
+  .impl-row {
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    align-items: center;
+    gap: 24px;
+    padding: 28px 0;
+    border-bottom: 1px solid #ececec;
+  }
+  .impl-row .ir-num {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    letter-spacing: 0.18em;
+    color: var(--brij-t3);
+    direction: ltr;
+  }
+  .impl-row .ir-text {
+    font-family: 'Heebo', sans-serif;
+    font-weight: 400;
+    font-size: clamp(17px, 1.3vw, 22px);
+    line-height: 1.4;
+    color: var(--brij-t1);
+  }
+  .impl-grid > .impl-col {
+    padding: 0;
+  }
+  .impl-grid > .impl-col + .impl-col {
+    border-inline-start: 1px solid #ececec;
+    padding-inline-start: 48px;
+  }
+  .impl-col {
+    padding-inline-end: 48px;
+  }
+  .impl-col:last-child { padding-inline-end: 0; padding-inline-start: 48px;}
+
+  /* slide 17 – pricing */
+  .s-pricing {
+    flex-direction: column;
+    justify-content: center;
+    gap: 56px;
+  }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border-top: 1px solid #ececec;
+  }
+  .pricing-col {
+    padding: 40px 0;
+    padding-inline-start: 56px;
+    border-inline-start: 1px solid #ececec;
+    display: flex; flex-direction: column; gap: 28px;
+  }
+  .pricing-col:first-child {
+    padding-inline-start: 0;
+    border-inline-start: 0;
+    padding-inline-end: 56px;
+  }
+  .pricing-col .p-eyebrow {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--brij-t3);
+  }
+  .pricing-col .p-headline {
+    font-family: 'Plus Jakarta Sans', 'Heebo', sans-serif;
+    font-weight: 500;
+    font-size: clamp(24px, 2vw, 32px);
+    color: var(--brij-t1);
+    letter-spacing: -0.01em;
+  }
+  .pricing-col .p-sub-he {
+    font-family: 'Heebo', sans-serif;
+    font-weight: 300;
+    font-size: clamp(14px, 1vw, 16px);
+    color: var(--brij-t3);
+    margin-top: -16px;
+  }
+  .pricing-col .p-price {
+    font-family: 'Arbutus Slab', Georgia, serif;
+    font-size: clamp(36px, 4.4vw, 64px);
+    line-height: 1;
+    color: var(--brij-t1);
+    direction: ltr;
+  }
+  .pricing-col .p-price .small {
+    font-family: 'Heebo', sans-serif;
+    font-size: clamp(14px, 1vw, 18px);
+    color: var(--brij-t3);
+    margin-inline-start: 8px;
+    direction: rtl;
+    display: inline-block;
+  }
+  .pricing-col .p-list {
+    list-style: none;
+    display: flex; flex-direction: column; gap: 10px;
+    font-family: 'Heebo', sans-serif;
+    font-weight: 300;
+    font-size: clamp(14px, 1.02vw, 16.5px);
+    line-height: 1.6;
+    color: var(--brij-t2);
+  }
+  .pricing-col .p-list li {
+    padding-inline-start: 18px;
+    position: relative;
+  }
+  .pricing-col .p-list li::before {
+    content: '';
+    width: 6px; height: 1px;
+    background: var(--brij-t3);
+    position: absolute;
+    inset-inline-start: 0;
+    top: 0.85em;
+  }
+  .pricing-col .p-foot {
+    margin-top: auto;
+    padding-top: 24px;
+    border-top: 1px solid #ececec;
+    font-family: 'Heebo', sans-serif;
+    font-weight: 300;
+    font-size: clamp(13px, 0.95vw, 15px);
+    color: var(--brij-t3);
+  }
+  .pricing-col .p-foot b { color: var(--brij-t1); font-weight: 500; }
+
+  /* slide 18 – closing */
+  .s-end {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 28px;
+  }
+  .s-end .end-mark {
+    width: clamp(72px, 9vw, 140px);
+    height: auto;
+  }
+  .s-end .end-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    font-size: clamp(72px, 12vw, 192px);
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: var(--brij-t1);
+    direction: ltr;
+  }
+  .s-end .end-rule { width: 160px; }
+  .s-end .end-tagline {
+    font-family: 'Arbutus Slab', Georgia, serif;
+    font-size: clamp(15px, 1.2vw, 20px);
+    letter-spacing: 0.04em;
+    color: var(--brij-t2);
+    direction: ltr;
+  }
+  .s-end .end-signoff {
+    margin-top: 56px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 28px;
+    border: 1px solid #ececec;
+    border-radius: 999px;
+    direction: ltr;
+  }
+  .s-end .end-signoff .lbl {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--brij-t3);
+  }
+  .s-end .end-signoff img { height: 18px; width: auto; display: block; }
+  .s-end .end-divider { width: 1px; height: 14px; background: #ececec; }
+
+  /* slide 16 – Go Live */
+  .s-golive {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 32px;
+  }
+  .s-golive .gl-mark {
+    width: clamp(96px, 12vw, 180px);
+    height: auto;
+    margin-bottom: 8px;
+  }
+  .s-golive .gl-title {
+    font-family: 'Plus Jakarta Sans', 'Heebo', sans-serif;
+    font-weight: 200;
+    font-size: clamp(64px, 9vw, 144px);
+    letter-spacing: -0.04em;
+    line-height: 0.95;
+    color: var(--brij-t1);
+    direction: ltr;
+  }
+  .s-golive .gl-rule { width: 160px; }
+
+  /* big Zentx mark – used on strong slides */
+  .zentx-bigmark {
+    width: clamp(56px, 7vw, 112px);
+    height: auto;
+    opacity: 0.92;
+  }
+  .zentx-cornermark {
+    position: absolute;
+    top: 56px;
+    inset-inline-end: 56px;
+    width: 44px;
+    height: auto;
+    opacity: 0.12;
+    pointer-events: none;
+  }
+
+  /* Enlight reference badge — used on slides that specifically address Enlight */
+  .enlight-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px 8px 14px;
+    border: 1px solid #ececec;
+    border-radius: 999px;
+    background: #fafafa;
+    direction: ltr;
+  }
+  .enlight-badge .lbl {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--brij-t3);
+  }
+  .enlight-badge .name {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #ed5b2f;
+  }
+  .enlight-badge img {
+    height: 16px;
+    width: auto;
+    display: block;
+  }
+
+  /* ───────────────── responsive guard ───────────────── */
+  @media (max-width: 880px) {
+    .team-grid, .pillars { grid-template-columns: repeat(2, 1fr); }
+    .case-grid, .pricing-grid, .impl-grid { grid-template-columns: 1fr; }
+    .s-step { flex-direction: column; gap: 32px; }
+    .s-step .step-left, .s-step .step-right { flex: none; width: 100%; }
+    .case:first-child, .pricing-col:first-child { padding: 0 0 40px 0; border-bottom: 1px solid #ececec; }
+    .case, .pricing-col { padding: 40px 0 0 0; border-inline-start: 0; }
+    .impl-col, .impl-col:last-child { padding: 0; border: 0; }
+  }
+
+  /* ───────────────── print / PDF export ───────────────── */
+  @page {
+    size: 1920px 1080px;
+    margin: 0;
+  }
+  @media print {
+    html, body {
+      overflow: visible !important;
+      height: auto !important;
+      background: #ffffff !important;
+    }
+    .deck { position: static !important; height: auto !important; }
+    .slide {
+      display: flex !important;
+      position: relative !important;
+      inset: auto !important;
+      width: 1920px !important;
+      height: 1080px !important;
+      opacity: 1 !important;
+      transform: none !important;
+      page-break-after: always;
+      break-after: page;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+    .slide:last-child {
+      page-break-after: auto;
+      break-after: auto;
+    }
+    /* disable all animations + transitions in print */
+    .slide, .slide *, .anim, .anim-fade, .anim-scale, .anim-rtl, .anim-ltr,
+    .anim-mask, .anim-drop, .anim-ring, .anim-rule, .anim-rule-v {
+      animation: none !important;
+      transition: none !important;
+      opacity: 1 !important;
+      transform: none !important;
+      filter: none !important;
+      clip-path: none !important;
+    }
+    /* HUD: keep visible but lock to each slide */
+    .hud, .hud-top, .hud-bottom {
+      position: absolute !important;
+    }
+    /* hide nav arrows + top progress bar */
+    .nav-arrow, .hud-progress { display: none !important; }
+    /* progress bar dot already hidden via nav-arrow rule */
+  }
+  /* an "all-slides" mode toggled by ?print=1 — used for the PDF capture */
+  body.print-all .slide {
+    display: flex !important;
+    position: relative !important;
+    inset: auto !important;
+    opacity: 1 !important;
+    transform: none !important;
+    width: 1920px !important;
+    height: 1080px !important;
+    page-break-after: always;
+    break-after: page;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+  body.print-all .deck { position: static !important; height: auto !important; }
+  body.print-all .nav-arrow, body.print-all .hud-progress { display: none !important; }
+  body.print-all .slide, body.print-all .slide * {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    clip-path: none !important;
+  }
+  body.print-all .hud, body.print-all .hud-top, body.print-all .hud-bottom {
+    position: absolute !important;
+  }
+  /* override responsive grids in print mode (viewport may be < 880px in headless Chrome) */
+  body.print-all .team-grid    { grid-template-columns: repeat(5, 1fr) !important; }
+  body.print-all .pillars      { grid-template-columns: repeat(4, 1fr) !important; }
+  body.print-all .mission-grid { grid-template-columns: repeat(3, 1fr) !important; }
+  body.print-all .case-grid    { grid-template-columns: 1fr 1fr !important; }
+  body.print-all .pricing-grid { grid-template-columns: 1fr 1fr !important; }
+  body.print-all .impl-grid    { grid-template-columns: 1fr 1fr !important; }
+  body.print-all .s-step       { flex-direction: row !important; }
+  body.print-all .s-step .step-left  { flex: 0 0 38% !important; width: auto !important; }
+  body.print-all .s-step .step-right { flex: 1 !important; width: auto !important; }
+  body.print-all .case:first-child,
+  body.print-all .pricing-col:first-child {
+    padding: 0 56px 0 0 !important;
+    border-bottom: 0 !important;
+  }
+  body.print-all .case,
+  body.print-all .pricing-col {
+    padding: 0 0 0 56px !important;
+    border-inline-start: 1px solid #ececec !important;
+  }
+  body.print-all .impl-col           { padding-inline-end: 48px !important; }
+  body.print-all .impl-col:last-child{ padding-inline-end: 0 !important; padding-inline-start: 48px !important; }
+
+  /* ───────────────── nav arrows (subtle) ───────────────── */
+  .nav-arrow {
+    position: fixed;
+    top: 50%; transform: translateY(-50%);
+    width: 56px; height: 56px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 240ms ease;
+    z-index: 60;
+    background: transparent;
+    border: 0;
+  }
+  body:hover .nav-arrow { opacity: 0.25; }
+  .nav-arrow:hover { opacity: 0.85 !important; }
+  .nav-arrow svg { width: 18px; height: 18px; stroke: var(--brij-t1); }
+  .nav-prev { right: 16px; }  /* RTL: prev goes right */
+  .nav-next { left: 16px; }
+  .nav-arrow:disabled { opacity: 0 !important; pointer-events: none; }
+</style>
+</head>
+<body class="brij-scope">
+
+<!-- progress bar -->
+<div class="hud-progress" id="progress"></div>
+
+<!-- HUD: top -->
+<div class="hud hud-top">
+  <div class="hud-logo is-primary">
+    <img src="assets/zentx-wordmark.svg" alt="zentx" />
+  </div>
+  <div class="hud-counter">
+    <span class="current" id="counter-current">01</span>
+    <span>/</span>
+    <span id="counter-total">17</span>
+  </div>
+</div>
+
+<!-- HUD: bottom -->
+<div class="hud hud-bottom">
+  <div class="tagline-en">Intelligence in Every Direction.</div>
+  <div class="hud-logo is-secondary">
+    <img src="assets/brij-wordmark.svg" alt="Brij" />
+    <span class="lbl">Powered by</span>
+  </div>
+</div>
+
+<!-- nav arrows -->
+<button class="nav-arrow nav-prev" id="navPrev" aria-label="הקודם">
+  <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+</button>
+<button class="nav-arrow nav-next" id="navNext" aria-label="הבא">
+  <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+</button>
+
+<main class="deck" id="deck">
+
+  <!-- ═════════ SLIDE 01 — COVER ═════════ -->
+  <section class="slide s-cover" data-slide="1">
+    <div class="anim-ring d-1"><img class="zentx-mark" src="assets/zentx-mark.png" alt="" /></div>
+    <div class="anim-burst d-3"><div class="zentx-word">zentx</div></div>
+    <hr class="rule cover-rule anim-rule d-5" />
+    <div class="anim-fade d-7">
+      <div class="tagline-en">Intelligence in Every Direction.</div>
+    </div>
+  </section>
+
+  <!-- ═════════ SLIDE 02 — FOUNDERS ═════════ -->
+  <section class="slide s-team" data-slide="2">
+    <div class="anim d-1"><div class="eyebrow">[ 01 · Founders ]</div></div>
+
+    <div class="team-grid anim-rule d-2">
+      <div class="team-cell">
+        <div class="team-photo anim-scale d-3" data-p="roey"><img src="assets/team/Roey.jpg" alt="" /></div>
+        <div class="anim d-4"><div class="name">רועי אלירם</div><div class="role">CEO</div></div>
+      </div>
+      <div class="team-cell">
+        <div class="team-photo anim-scale d-4" data-p="joel"><img src="assets/team/Joel.jpg" alt="" /></div>
+        <div class="anim d-5"><div class="name">יואל שרייבר</div><div class="role">CTO</div></div>
+      </div>
+      <div class="team-cell">
+        <div class="team-photo anim-scale d-5" data-p="gidon"><img src="assets/team/Gidon.jpg" alt="" /></div>
+        <div class="anim d-6"><div class="name">גדעון שרייבר</div><div class="role">CPO</div></div>
+      </div>
+      <div class="team-cell">
+        <div class="team-photo anim-scale d-6" data-p="ziv"><img src="assets/team/Ziv.jpg" alt="" /></div>
+        <div class="anim d-7"><div class="name">זיו סובול</div><div class="role">VP Growth</div></div>
+      </div>
+      <div class="team-cell">
+        <div class="team-photo is-circle anim-scale d-7"><img src="assets/team/Motti.png" alt="" /></div>
+        <div class="anim d-8"><div class="name">מוטי שרף</div><div class="role">Chief Strategist</div></div>
+      </div>
+    </div>
+
+    <div class="anim d-8">
+      <p class="team-foot">
+        צוות המרכיב בוגרי אמ״ן, 8200, מחקר אקדמי בתחומי בינה מלאכותית ומומחי מוניטין.
+      </p>
+    </div>
+  </section>
+
+  <!-- ═════════ SLIDE 03 — PAIN ═════════ -->
+  <section class="slide s-pain" data-slide="3">
+    <div class="anim-drop d-1"><div class="eyebrow">[ 02 · The pain ]</div></div>
+    <div class="anim-mask d-3">
+      <p class="pain-display">
+        סביבה עסקית <b>אלגוריתמית</b><br/>
+        בקצבים <b>לא אנושיים</b>.
+      </p>
+    </div>
+    <hr class="rule anim-rule d-5" style="width: 240px;" />
+  </section>
+
+  <!-- ═════════ SLIDE 04 — WHY ═════════ -->
+  <section class="slide s-why" data-slide="4">
+    <div class="anim d-1" style="display:flex; align-items:center; gap:24px; flex-wrap:wrap;">
+      <div class="eyebrow">[ 03 · Why we're here ]</div>
+      <div class="enlight-badge">
+        <span class="lbl">For</span>
+        <span class="name">enlight</span>
+      </div>
+    </div>
+    <div class="anim d-2">
+      <p class="body-xl">
+        אנלייט פועלת בעולם שבו כל פרויקט מושפע לא רק מטכנולוגיה ומימון,
+        אלא גם מקהילות, רגולטורים, משקיעים, פוליטיקה, סנטימנט ציבורי
+        וזהות ישראלית.
+      </p>
+    </div>
+    <hr class="rule anim-rule d-4" style="width: 200px;" />
+  </section>
+
+  <!-- ═════════ SLIDE 05 — MISSION (triangle) ═════════ -->
+  <section class="slide s-mission" data-slide="5">
+    <!-- right column: eyebrow + title -->
+    <div class="mission-text">
+      <div class="anim-drop d-1"><div class="eyebrow">[ 04 · Mission ]</div></div>
+      <div class="anim-mask d-2">
+        <p class="lead-xl">
+          פלטפורמת <b>AI אסטרטגית</b> לניהול מוניטין, סיכונים והזדמנויות
+          <span class="ltr">&nbsp;-&nbsp;</span>ב<b>זמן אמת</b>.
+        </p>
+      </div>
+    </div>
+
+    <!-- left column: triangle -->
+    <div class="triangle-stage anim-fade d-3">
+      <svg class="triangle-svg" viewBox="0 0 100 86.6" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="tri-grad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%"   stop-color="#f3c06a"/>
+            <stop offset="50%"  stop-color="#d8e094"/>
+            <stop offset="100%" stop-color="#98c6e7"/>
+          </linearGradient>
+        </defs>
+        <path d="M 53,5.2 L 97,81.4 Q 100,86.6 94,86.6 L 6,86.6 Q 0,86.6 3,81.4 L 47,5.2 Q 50,0 53,5.2 Z" />
+      </svg>
+
+      <!-- center logo (mark only) -->
+      <div class="triangle-center anim-ring d-7">
+        <img src="assets/zentx-mark.png" alt="" />
+      </div>
+
+      <!-- labels at corners -->
+      <div class="triangle-label t-top anim-drop d-4">
+        <span class="tl-num">01</span>
+        לראות את כל התמונה
+      </div>
+      <div class="triangle-label t-br anim-rtl d-5">
+        <span class="tl-num">02</span>
+        להבין את התמונה
+      </div>
+      <div class="triangle-label t-bl anim-ltr d-6">
+        <span class="tl-num">03</span>
+        לדעת מה לעשות עם זה
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ SLIDE 06 — HOW IT WORKS (DIVIDER) ═════════ -->
+  <section class="slide s-divider" data-slide="6">
+    <div class="anim-fade d-1"><div class="divider-num">05</div></div>
+    <div class="anim-ring d-2"><img class="zentx-bigmark" src="assets/zentx-mark.png" alt="" /></div>
+    <hr class="rule divider-rule anim-rule d-3" />
+    <div class="anim-shock d-4"><div class="divider-title">How it works.</div></div>
+    <div class="anim-fade d-6"><div class="tagline-he">איך זה עובד</div></div>
+  </section>
+
+  <!-- ═════════ SLIDE 07 — STEP 1 ═════════ -->
+  <section class="slide s-step" data-slide="7">
+    <div class="step-left">
+      <div class="anim-drop d-1"><div class="eyebrow">[ Step 01 ]</div></div>
+      <div class="anim-scale d-2"><div class="step-num">01</div></div>
+      <hr class="rule step-rule anim-rule d-3" />
+    </div>
+    <div class="step-right">
+      <div class="anim-rtl d-3">
+        <div class="step-title">External signal detection.</div>
+        <div class="step-title-he">זיהוי וניטור סיגנלים חיצוניים.</div>
+      </div>
+      <div class="anim-rtl d-5">
+        <p class="step-body">
+          חדשות, רשתות, שיח משקיעים, נתוני מניה, נפחי מסחר,
+          מאיה, רגולציה ומאגרי מידע.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ SLIDE 08 — STEP 2 ═════════ -->
+  <section class="slide s-step" data-slide="8">
+    <div class="step-left">
+      <div class="anim-drop d-1"><div class="eyebrow">[ Step 02 ]</div></div>
+      <div class="anim-scale d-2"><div class="step-num">02</div></div>
+      <hr class="rule step-rule anim-rule d-3" />
+    </div>
+    <div class="step-right">
+      <div class="anim-rtl d-3">
+        <div class="step-title">Database &amp; analysis.</div>
+        <div class="step-title-he">בניית דאטא בייס ואנליזה.</div>
+      </div>
+      <div class="anim-rtl d-5">
+        <p class="step-body">
+          טקסונומיה: סנטימנט, טון, מומנטום, נרטיבים, אנומליות,
+          מקורות, מחזיקי עניין ובנצ׳מרקים.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ SLIDE 09 — STEP 3 (ZenAgent) ═════════ -->
+  <section class="slide s-step" data-slide="9">
+    <div class="step-left">
+      <div class="anim-drop d-1"><div class="eyebrow">[ Step 03 · Agent ]</div></div>
+      <div class="anim-scale d-2">
+        <div class="step-num" style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; letter-spacing: -0.02em; font-size: clamp(48px, 6vw, 96px);">ZenAgent</div>
+      </div>
+      <hr class="rule step-rule anim-rule d-3" />
+    </div>
+    <div class="step-right">
+      <div class="anim-rtl d-3">
+        <div class="step-title">Strategic AI agent.</div>
+        <div class="step-title-he">סוכן AI מאומן לייעוץ אסטרטגי וניהול סיכונים.</div>
+      </div>
+      <div class="anim-rtl d-5">
+        <p class="step-body">
+          מזהה שינויים, מדרג חשיבות, מציף סיכונים והזדמנויות,
+          מציע כיווני פעולה, מפיק דוחות והתראות.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ SLIDE 10 — EVERY ═════════ -->
+  <section class="slide s-every" data-slide="10">
+    <div class="anim-drop d-1"><div class="eyebrow">[ 06 · Coverage ]</div></div>
+    <hr class="rule anim-rule d-2" style="width: 120px;" />
+    <p class="every-display">
+      <span class="anim-mask d-3" style="display:block;">ב<b>כל</b> גאוגרפיה,</span>
+      <span class="anim-mask d-4" style="display:block;">ב<b>כל</b> שפה,</span>
+      <span class="anim-mask d-5" style="display:block;">ב<b>כל</b> פלטפורמה.</span>
+    </p>
+    <div class="anim-fade d-7">
+      <div class="every-words">
+        <span>Every Geography</span><span>·</span>
+        <span>Every Language</span><span>·</span>
+        <span>Every Platform</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ SLIDE 11 — ADVANTAGE (DIVIDER) ═════════ -->
+  <section class="slide s-divider" data-slide="11">
+    <div class="anim-fade d-1"><div class="divider-num">07</div></div>
+    <div class="anim-ring d-2"><img class="zentx-bigmark" src="assets/zentx-mark.png" alt="" /></div>
+    <hr class="rule divider-rule anim-rule d-3" />
+    <div class="anim-shock d-4"><div class="divider-title">Competitive<br/>Advantage.</div></div>
+    <div class="anim-fade d-6"><div class="tagline-he">יתרון תחרותי לאנלייט</div></div>
+  </section>
+
+  <!-- ═════════ SLIDE 12 — USE CASES A ═════════ -->
+  <section class="slide s-cases" data-slide="12">
+    <div class="anim d-1"><div class="eyebrow">[ 08 · Use Cases ]</div></div>
+
+    <div class="case-grid anim-rule d-2">
+      <div class="case">
+        <div class="anim-rtl d-3"><div class="case-eyebrow">A · Capital Markets</div></div>
+        <div class="anim-rtl d-3"><div class="case-title">מודיעין שוק הון<br/>וקשרי משקיעים.</div></div>
+        <div class="anim-rtl d-4">
+          <p class="case-body">
+            אנלייט נסחרת דואלית ופועלת מול משקיעים בישראל ובארה״ב.
+            לכן סנטימנט, סיקור תקשורתי, לחץ אקטיביסטי, אירועי פרויקטים
+            ותנודתיות מניה יכולים להתחבר במהירות לאותו אירוע ניהולי.
+          </p>
+        </div>
+        <div class="anim-rtl d-5">
+          <p class="case-enables">
+            <b>מה Zentx מאפשרת:</b> חיבור בין מדיה, רשתות,
+            שיח משקיעים, מחיר מניה, נפחי מסחר, הודעות חברה,
+            אירועי פרויקטים ולחצים חיצוניים.
+          </p>
+        </div>
+      </div>
+
+      <div class="case">
+        <div class="anim-ltr d-4"><div class="case-eyebrow">B · Identity Risk</div></div>
+        <div class="anim-ltr d-4"><div class="case-title">הזיהוי הישראלי<br/>כסיכון עסקי.</div></div>
+        <div class="anim-ltr d-5">
+          <p class="case-body">
+            הזהות הישראלית של אנלייט עלולה להפוך במדינות מסוימות
+            מגורם רקע לסיכון עסקי: לחץ על משקיעים, התנגדות לפרויקטים,
+            סיקור שלילי, פעילות פוליטית או קריאות לחרם.
+          </p>
+        </div>
+        <div class="anim-ltr d-6">
+          <p class="case-enables">
+            <b>מה Zentx מאפשרת:</b> מדידה חיה של החשיפה לסנטימנט
+            אנטי־ישראלי לפי מדינה, פרויקט, משקיע, שחקן ונרטיב.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ SLIDE 13 — USE CASES B ═════════ -->
+  <section class="slide s-cases" data-slide="13">
+    <div class="anim d-1"><div class="eyebrow">[ 09 · Use Cases ]</div></div>
+
+    <div class="case-grid anim-rule d-2">
+      <div class="case">
+        <div class="anim-rtl d-3"><div class="case-eyebrow">C · Communities</div></div>
+        <div class="anim-rtl d-3"><div class="case-title">קהילות, התנגדויות<br/>והזדמנויות.</div></div>
+        <div class="anim-rtl d-4">
+          <p class="case-body">
+            באנרגיה מתחדשת, פרויקט יכול להיתקע לא בגלל טכנולוגיה
+            או מימון, אלא בגלל קהילה, רשות מקומית, ארגון סביבה,
+            פוליטיקאי, הליך משפטי או נרטיב שלילי שמתחיל להתפשט.
+          </p>
+        </div>
+        <div class="anim-rtl d-5">
+          <p class="case-enables">
+            <b>מה Zentx מאפשרת:</b> מפת סיכון חיה לכל פרויקט:
+            שיח מקומי, צרכים וחששות של קהילות, מדיה אזורית,
+            פוליטיקאים, NGOs, התנגדויות, הליכים משפטיים וקצב החרפה.
+          </p>
+        </div>
+      </div>
+
+      <div class="case">
+        <div class="anim-ltr d-4"><div class="case-eyebrow">D · Competitive Intel</div></div>
+        <div class="anim-ltr d-4"><div class="case-title">ניתוח תחרותי<br/>בארץ ובעולם.</div></div>
+        <div class="anim-ltr d-5">
+          <p class="case-body">
+            אנלייט מתחרה לא רק על ייצור חשמל. היא מתחרה על הון,
+            קרקעות, רישיונות, חוזי חשמל, שותפים, קהילות, רגולטורים
+            ונרטיב ESG. לכן נדרש מעקב חי אחר המתחרים בישראל,
+            באירופה ובארה״ב.
+          </p>
+        </div>
+        <div class="anim-ltr d-6">
+          <p class="case-enables">
+            <b>מה Zentx מאפשרת:</b> מעקב אחר פרויקטים חדשים, זכייה במכרזים,
+            גיוסי הון, שותפויות, כניסה לשווקים, סיקור תקשורתי,
+            התנגדויות ציבוריות, סנטימנט משקיעים וביצועי מניה של מתחרים.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ SLIDE 14 — IMPLEMENTATION ═════════ -->
+  <section class="slide s-impl" data-slide="14">
+    <div class="anim d-1"><div class="eyebrow">[ 10 · Implementation ]</div></div>
+    <div class="anim d-2">
+      <h2 class="display" style="font-weight:200; letter-spacing:-0.04em;">Fast, simple deployment.</h2>
+    </div>
+    <div class="anim-fade d-2" style="margin-top:-32px"><div class="tagline-he">הטמעה מהירה ופשוטה</div></div>
+
+    <div class="impl-grid anim-rule d-3">
+      <div class="impl-col">
+        <div class="impl-row">
+          <div class="anim-rtl d-4"><div class="ir-num">01</div></div>
+          <div class="anim-rtl d-4"><div class="ir-text">לא נדרשת כל אינטגרציה למערכות הארגון.</div></div>
+        </div>
+        <div class="impl-row">
+          <div class="anim-rtl d-5"><div class="ir-num">02</div></div>
+          <div class="anim-rtl d-5"><div class="ir-text">אונבורדינג מהיר.</div></div>
+        </div>
+      </div>
+      <div class="impl-col">
+        <div class="impl-row">
+          <div class="anim-ltr d-6"><div class="ir-num">03</div></div>
+          <div class="anim-ltr d-6"><div class="ir-text">ניהול הרשאות.</div></div>
+        </div>
+        <div class="impl-row">
+          <div class="anim-ltr d-7"><div class="ir-num">04</div></div>
+          <div class="anim-ltr d-7"><div class="ir-text">מבצעית באופן מיידי עם טעינה של 12 חודשים אחרונים.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ SLIDE 15 — GO LIVE ═════════ -->
+  <section class="slide s-golive" data-slide="15">
+    <div class="anim-fade d-1"><div class="eyebrow">[ 11 · Launch ]</div></div>
+    <div class="anim-ring d-2"><img class="gl-mark" src="assets/zentx-mark.png" alt="" /></div>
+    <hr class="rule gl-rule anim-rule d-3" />
+    <div class="anim-shock d-4"><div class="gl-title">Go Live.</div></div>
+    <hr class="rule gl-rule anim-rule d-6" />
+  </section>
+
+
+</main>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const total = slides.length;
+  const counterEl = document.getElementById('counter-current');
+  const totalEl = document.getElementById('counter-total');
+  const progressEl = document.getElementById('progress');
+  const prevBtn = document.getElementById('navPrev');
+  const nextBtn = document.getElementById('navNext');
+  let idx = 0;
+
+  totalEl.textContent = String(total).padStart(2, '0');
+
+  const deck = document.getElementById('deck');
+
+  // slide groups where consecutive transitions should be soft (just fade)
+  // numbers are 1-based, matching the data-slide attribute
+  const softGroups = [
+    [7, 8, 9],       // steps
+    [12, 13, 14],    // use cases + implementation
+  ];
+  function sameSoftGroup(fromIdx, toIdx) {
+    const a = fromIdx + 1, b = toIdx + 1;
+    return softGroups.some(g => g.includes(a) && g.includes(b));
+  }
+
+  function go(n, dir) {
+    const target = Math.max(0, Math.min(total - 1, n));
+    const soft = (dir === 'forward' || dir === 'backward') && sameSoftGroup(idx, target);
+
+    if (dir === 'forward' || dir === 'backward') {
+      deck.classList.remove('dir-forward', 'dir-backward', 'dir-soft');
+      void deck.offsetWidth;
+      deck.classList.add(soft ? 'dir-soft' : 'dir-' + dir);
+    }
+    idx = target;
+    slides.forEach((s, i) => {
+      if (i === idx) {
+        s.classList.remove('is-active', 'is-soft');
+        void s.offsetWidth;
+        if (soft) s.classList.add('is-soft');
+        s.classList.add('is-active');
+      } else {
+        s.classList.remove('is-active', 'is-soft');
+      }
+    });
+    counterEl.textContent = String(idx + 1).padStart(2, '0');
+    progressEl.style.setProperty('--p', (idx + 1) / total);
+    prevBtn.disabled = idx === 0;
+    nextBtn.disabled = idx === total - 1;
+  }
+
+  function next() { go(idx + 1, 'forward'); }
+  function prev() { go(idx - 1, 'backward'); }
+
+  document.addEventListener('keydown', e => {
+    // RTL: right arrow = prev, left arrow = next  (matches reading direction)
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); next(); }
+    if (e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); prev(); }
+    if (e.key === 'Home') { e.preventDefault(); go(0); }
+    if (e.key === 'End')  { e.preventDefault(); go(total - 1); }
+  });
+
+  prevBtn.addEventListener('click', prev);
+  nextBtn.addEventListener('click', next);
+
+  // click on slide advances (but not on nav buttons)
+  document.getElementById('deck').addEventListener('click', e => {
+    if (e.target.closest('.nav-arrow')) return;
+    next();
+  });
+
+  // print mode: ?print=1 → render all slides stacked for PDF capture
+  if (new URLSearchParams(location.search).has('print')) {
+    document.body.classList.add('print-all');
+
+    const hudTopOrig    = document.querySelector('.hud-top');
+    const hudBottomOrig = document.querySelector('.hud-bottom');
+
+    slides.forEach((s, i) => {
+      s.classList.add('is-active');
+
+      // inject per-slide HUD clones (so they appear on every PDF page)
+      const top = hudTopOrig.cloneNode(true);
+      const bot = hudBottomOrig.cloneNode(true);
+      // fix counter per slide
+      const cur = top.querySelector('.current');
+      if (cur) cur.textContent = String(i + 1).padStart(2, '0');
+      s.appendChild(top);
+      s.appendChild(bot);
+    });
+
+    // hide the originals (only the cloned ones, scoped to slides, should show)
+    hudTopOrig.style.display = 'none';
+    hudBottomOrig.style.display = 'none';
+  } else {
+    // boot interactive mode
+    go(0, null);
+  }
+</script>
+
+</body>
+</html>

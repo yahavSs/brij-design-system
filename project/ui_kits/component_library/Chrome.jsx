@@ -9,11 +9,20 @@ const { useState, useEffect, useRef, useMemo } = React;
 //     (the building blocks the templates are made of - reference only)
 const NAV = [
   { tier: 'primary', route: 'foundations', title: 'Foundations', items: [
-    { id: 'logo',     label: 'Logo & Mark' },
+    { id: 'logo',        label: 'Logo & Mark' },
+    { id: 'logo-motion',  label: 'Logo · Motion' },
     { id: 'colors',   label: 'Colors' },
     { id: 'gradient', label: 'Signature Gradient' },
     { id: 'type',     label: 'Type Scale' },
     { id: 'spacing',  label: 'Spacing' },
+  ]},
+  { tier: 'primary', route: 'products', title: 'Products', items: [
+    { id: 'products-overview', label: 'Family Overview' },
+    { id: 'product-gradients', label: 'Gradient Usage' },
+    { id: 'product-signal',    label: 'Brij Signal' },
+    { id: 'product-signal-interface', label: 'Signal · Interface' },
+    { id: 'product-signal-charts',    label: 'Signal · Chart Palette' },
+    { id: 'product-agents',    label: 'Brij Agents · CorpBrain' },
   ]},
   { tier: 'primary', route: 'templates', title: 'Templates', items: [
     { id: 'templates',     label: 'Starter Templates', tab: 'starter' },
@@ -30,6 +39,13 @@ const NAV = [
     { id: 'doc-callout',   label: 'Callout Box',  tab: 'documents' },
     { kind: 'subhead', label: 'Email' },
     { id: 'signature',     label: 'Email Signature', tab: 'email' },
+    { kind: 'subhead', label: 'LinkedIn' },
+    { id: 'li-punchline',   label: 'Punchline Post',        tab: 'linkedin' },
+    { id: 'li-stat',        label: 'Big Number Post',       tab: 'linkedin' },
+    { id: 'li-announce',    label: 'Announcement Post',     tab: 'linkedin' },
+    { id: 'li-motion-logo', label: 'Motion · Logo Reveal',  tab: 'linkedin' },
+    { id: 'li-motion-stat', label: 'Motion · Number',       tab: 'linkedin' },
+    { id: 'li-bank',        label: 'Content Bank',          tab: 'linkedin' },
   ]},
   { tier: 'secondary', route: 'building-blocks', title: 'Building Blocks', items: [
     { kind: 'subhead', label: 'Text Blocks' },
@@ -46,7 +62,7 @@ const NAV = [
     { id: 'process-grid',   label: 'Process 2×2 Grid' },
     { id: 'case-study',     label: 'Case Study Card' },
     { id: 'cta-block',      label: 'CTA Block' },
-    { id: 'dodont',         label: 'Do / Don\u2019t pair' },
+    { id: 'dodont',         label: 'Do / Don’t pair' },
     { kind: 'subhead', label: 'Usage Rules' },
     { id: 'rules', label: 'Things We Never Do' },
   ]},
@@ -141,7 +157,7 @@ function Sidebar({ route, anchor }) {
   return (
     <aside className="lib-side">
       <a href="#/foundations" className="lib-side-logo" style={{ textDecoration: 'none' }}>
-        <img src="../../assets/brij-wordmark.svg" alt="Brij" />
+        <img src="../../assets/logos/brij-light.svg" alt="Brij" /><span style={{ fontFamily: 'var(--brij-serif)', fontSize: 18, letterSpacing: '0.05em' }}>Brij</span>
         <span className="lib-side-logo-kit">Design System</span>
       </a>
       <div className="lib-nav-tier primary">
@@ -190,7 +206,7 @@ function Component({ id, name, tag, desc, stageTone = 'light', children, spec, d
       {dodont && (
         <div className="lib-dodont">
           <div className="do"><h4>Do</h4>{dodont.do}</div>
-          <div className="dont"><h4>Don{'\u2019'}t</h4>{dodont.dont}</div>
+          <div className="dont"><h4>Don{'’'}t</h4>{dodont.dont}</div>
         </div>
       )}
       {code && (

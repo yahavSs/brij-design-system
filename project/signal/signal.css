@@ -1,0 +1,163 @@
+/* ============================================================
+   Brij Signal — product design tokens
+   Extracted from zentix-interface-1 @ design/rebrand
+   (shared/frontend/src/styles/design-system.css, semantic layer)
+
+   Source of truth for any Brij Signal artifact built OUTSIDE the
+   product repo: pages, decks, one-pagers, mocks. Inside the product
+   repo, the app's own design-system.css rules.
+
+   All color tokens hold raw HSL channels: use hsl(var(--token))
+   and compose alpha as hsl(var(--token) / 0.1).
+   ============================================================ */
+
+:root {
+  /* ── Typography ──
+     Plus Jakarta Sans carries the whole UI (numerals + code included).
+     Arbutus Slab (400 only) carries display: main headings, hero
+     moments, large metric numbers. Heebo is the Hebrew fallthrough. */
+  --font-sans: 'Plus Jakarta Sans', 'Heebo', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  --font-display: 'Arbutus Slab', 'Heebo', Georgia, serif;
+
+  /* ── Base surfaces & content ── */
+  --background: 75 9% 93%;             /* page — sage greige; white panels float on it */
+  --foreground: 223 42% 18%;           /* primary text — brij navy ink #1A2540 */
+  --card: 0 0% 100%;                   /* panel / card surface */
+  --card-foreground: 223 42% 18%;
+  --muted: 80 14% 95%;                 /* sage-tinted quiet surface */
+  --muted-foreground: 60 4% 40%;       /* brij t2 #6B6B63 */
+  --accent-surface: 80 14% 93%;        /* sage hover surface */
+
+  /* ── Primary & secondary ── */
+  --primary: 223 42% 18%;              /* navy ink #1A2540 — buttons, active states */
+  --primary-foreground: 0 0% 100%;
+  --secondary: 223 22% 32%;
+  --secondary-foreground: 0 0% 100%;
+
+  /* ── Status ── */
+  --destructive: 6 67% 44%;            /* #BB3325 */
+  --success: 108 48% 33%;              /* #3D7E2C */
+  --warning: 39 72% 56%;               /* #E0A83E */
+  --info: 217 91% 60%;                 /* #2563EB */
+
+  /* ── UI elements ── */
+  --border: 43 13% 90%;                /* brij hairline #E8E6E1 */
+  --input: 43 13% 90%;
+  --ring: 38 80% 52%;                  /* focus ring — brij orange, the earned accent */
+
+  /* ── Text hierarchy ── */
+  --text-primary: 223 42% 18%;
+  --text-secondary: 60 4% 40%;
+  --text-tertiary: 60 3% 46%;          /* darkened t3 — holds 4.5:1 AA */
+  --text-disabled: 60 4% 62%;          /* #A3A39B — disabled only */
+
+  /* ── Radius ── */
+  --radius-xs: 0.125rem;   /* 2px  — chips, dots */
+  --radius-sm: 0.25rem;    /* 4px  — badges, tags */
+  --radius-md: 0.5rem;     /* 8px  — buttons, inputs */
+  --radius-lg: 0.75rem;    /* 12px — cards, panels */
+  --radius-xl: 1rem;       /* 16px — headline cards, dialogs */
+  --radius-2xl: 1.5rem;    /* 24px — hero panels */
+  --radius-full: 9999px;
+
+  /* ── Shadows — two-layer composites tinted with navy ink, never black.
+     Surfaces read as floating, not outlined. ── */
+  --shadow-xs: 0 1px 2px rgb(26 37 64 / 0.03), 0 4px 12px -2px rgb(26 37 64 / 0.05);
+  --shadow-sm: 0 2px 4px rgb(26 37 64 / 0.03), 0 12px 32px -10px rgb(26 37 64 / 0.10);
+  --shadow-md: 0 2px 6px rgb(26 37 64 / 0.03), 0 24px 56px -16px rgb(26 37 64 / 0.14);
+  --shadow-lg: 0 4px 10px rgb(26 37 64 / 0.04), 0 36px 80px -20px rgb(26 37 64 / 0.18);
+  --shadow-xl: 0 8px 16px rgb(26 37 64 / 0.05), 0 48px 96px -24px rgb(26 37 64 / 0.22);
+  --shadow-2xl: 0 12px 24px rgb(26 37 64 / 0.07), 0 64px 128px -28px rgb(26 37 64 / 0.26);
+
+  /* ── Motion ── */
+  --transition-fast: 150ms;
+  --transition-normal: 200ms;
+  --transition-slow: 300ms;
+  --ease-default: cubic-bezier(0.16, 1, 0.3, 1);    /* expo-out */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); /* playful accents only */
+  --ease-emphasized: cubic-bezier(0.22, 1, 0.36, 1);/* entrance reveals */
+
+  /* ── Chart palette — "Brij Bloom". Sun/Sage/Sky families, honey-gold
+     sun (never dark amber). Same hues in both themes: they encode data
+     identity, not UI state. ── */
+  --chart-1: 220 48% 17%;  /* navy #172542 */
+  --chart-2: 237 35% 81%;  /* lavender #BCBEDF */
+  --chart-3: 22 69% 56%;   /* orange #DD7B43 */
+  --chart-4: 156 47% 62%;  /* mint #70CBA7 */
+  --chart-5: 41 84% 67%;   /* gold #F1C363 */
+  --chart-6: 59 63% 66%;   /* citron #DFDD73 */
+  --chart-7: 238 64% 69%;  /* periwinkle #7C80E2 */
+  --chart-8: 175 49% 71%;  /* aqua #90D9D3 */
+  --chart-9: 268 64% 74%;  /* lilac #B991E7 */
+  --chart-10: 88 42% 64%;  /* sage #A5C97C */
+
+  /* ── Sentiment ── */
+  --sentiment-positive: 108 48% 33%;
+  --sentiment-neutral: 210 12% 87%;    /* grey, never black */
+  --sentiment-negative: 6 67% 44%;
+
+  /* ── Brand accents — shared with parent Brij.
+     The gradient is the ONLY place green + blue exist, never solid.
+     Orange is the single standalone accent: at most one per view. ── */
+  --brand-ink: 223 42% 18%;            /* #1A2540 */
+  --brand-orange: 38 85% 68%;          /* #F3C06A */
+  --brand-sage: 80 14% 92%;            /* #EBEDE7 — soft brand surface tint */
+  --brand-grad-sun: #F3C06A;
+  --brand-grad-leaf: #D8E094;
+  --brand-grad-sky: #98C6E7;
+  --brand-gradient: linear-gradient(135deg, #F3C06A 0%, #D8E094 46%, #98C6E7 100%);
+  --brand-gradient-reverse: linear-gradient(28deg, #98C6E7 14%, #D8E094 49%, #F3C06A 91%);
+}
+
+/* ── Dark mode — soft cool charcoal, never pure black. Cards lift to 14%.
+   Gradient + orange are identical in both themes. ── */
+.dark,
+[data-theme='dark'] {
+  --background: 222 28% 10%;
+  --foreground: 220 15% 93%;
+  --card: 222 24% 14%;
+  --card-foreground: 220 15% 93%;
+  --muted: 222 20% 16%;
+  --muted-foreground: 220 10% 77%;
+  --accent-surface: 222 20% 19%;
+
+  --primary: 220 15% 93%;
+  --primary-foreground: 223 42% 18%;
+  --secondary: 223 22% 32%;
+  --secondary-foreground: 220 15% 93%;
+
+  --destructive: 8 81% 69%;
+  --success: 94 60% 60%;
+  --warning: 41 82% 71%;
+  --info: 217 91% 70%;
+
+  --border: 222 18% 26%;
+  --input: 222 18% 26%;
+  --ring: 38 85% 68%;
+
+  --text-primary: 220 15% 93%;
+  --text-secondary: 220 10% 78%;
+  --text-tertiary: 220 8% 62%;
+  --text-disabled: 220 8% 48%;
+
+  --shadow-xs: 0 1px 2px rgb(0 0 0 / 0.20), 0 2px 8px rgb(0 0 0 / 0.16);
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.24), 0 6px 16px -2px rgb(0 0 0 / 0.22);
+  --shadow-md: 0 2px 4px rgb(0 0 0 / 0.26), 0 14px 28px -6px rgb(0 0 0 / 0.30);
+  --shadow-lg: 0 4px 8px rgb(0 0 0 / 0.28), 0 28px 56px -12px rgb(0 0 0 / 0.36);
+  --shadow-xl: 0 8px 16px rgb(0 0 0 / 0.30), 0 40px 80px -16px rgb(0 0 0 / 0.42);
+  --shadow-2xl: 0 12px 24px rgb(0 0 0 / 0.34), 0 56px 112px -20px rgb(0 0 0 / 0.50);
+
+  --sentiment-positive: 94 60% 60%;    /* lime #8FD65A */
+  --sentiment-neutral: 219 12% 55%;
+  --sentiment-negative: 8 81% 69%;     /* coral #F0806F */
+
+  --brand-sage: 100 3% 20%;
+}
+
+/* ── Base ── */
+body {
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}

@@ -160,39 +160,56 @@ function FoundationSpacing() {
 }
 
 function FoundationLogo() {
+  // Literal src paths (not template strings) so the standalone bundle can
+  // rewrite them to packed assets.
+  const LOGOS = [
+    { src: '../../assets/logos/brij-light.svg', label: 'Brij · light' },
+    { src: '../../assets/logos/brij-dark.svg',  label: 'Brij · dark' },
+  ];
   return (
     <Component id="logo" name="Logo & Mark" tag="Foundation"
-      desc="Logo = mark + wordmark, always together in header and footer. The motion ident below is the canonical brand-open animation - used at the top of decks, video bumpers, and the home page."
-      stageTone="cream">
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: 12 }}>
-        <div style={{ background: 'var(--brij-white)', border: '1px solid var(--border)', borderRadius: 8, padding: '56px 40px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', minHeight: 200 }}>
-          <img src="../../assets/brij-wordmark.svg" alt="Brij logo" style={{ height: 64 }} />
-          <div style={{ position: 'absolute', top: 8, left: 12, fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--fg-3)' }}>Full logo · on cream / white</div>
-        </div>
-        <div style={{ background: 'var(--brij-ink)', borderRadius: 8, padding: '40px 24px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--brij-cream)', position: 'relative', minHeight: 200 }}>
-          <img src="../../assets/logo-b-mark-gradient.svg" alt="Brij mark" style={{ height: 88 }} />
-          <div style={{ position: 'absolute', top: 8, left: 12, fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)' }}>Mark · gradient</div>
-        </div>
-        <div style={{ background: 'var(--brij-cream)', border: '1px solid var(--border)', borderRadius: 8, padding: '40px 24px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', minHeight: 200 }}>
-          <img src="../../assets/logo-b-mark.svg" alt="Brij mark dark" style={{ height: 88 }} />
-          <div style={{ position: 'absolute', top: 8, left: 12, fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--fg-3)' }}>Mark · ink</div>
-        </div>
+      desc='The pentagon mark is the only logo. The parent brand has two official files: light (gradient fill) and dark (ink fill). Product lockups (Brij Signal, Brij Agents) live in the Products chapter - never mix them here. The name is always typeset live in Arbutus Slab next to the mark - never baked into the asset.'
+      stageTone="cream"
+      spec={[
+        ['Mark',    'Pentagon · 170×165 viewBox · never redrawn'],
+        ['Light',   'Gradient fill · #7DC0F0 → #DDE782 → #F3C06A'],
+        ['Dark',    'Ink fill · #272727'],
+        ['Lockup',  'Mark + "Brij" in Arbutus Slab · 0.05em tracking'],
+        ['Files',   'assets/logos/brij-light.svg · brij-dark.svg'],
+        ['Products','See Products → Brij Signal / Brij Agents for their lockups'],
+      ]}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
+        {LOGOS.map((l) => (
+          <div key={l.src} style={{ background: 'var(--brij-white)', border: '1px solid var(--border)', borderRadius: 8, padding: '40px 24px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', minHeight: 160 }}>
+            <img src={l.src} alt={l.label} style={{ height: 72 }} />
+            <div style={{ position: 'absolute', top: 8, left: 12, fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--fg-3)' }}>{l.label}</div>
+          </div>
+        ))}
       </div>
-
-      {/* Logo motion ident */}
-      <div style={{ marginTop: 16, background: 'var(--brij-white)', border: '1px solid var(--border)', borderRadius: 8, padding: 0, position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', top: 8, left: 12, fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--fg-3)', zIndex: 2 }}>Motion · brand ident</div>
-        <video
-          src="./assets/logo-motion.mp4"
-          autoPlay
-          muted
-          loop
-          playsInline
-          style={{ width: '100%', display: 'block', maxHeight: 360, objectFit: 'contain', background: '#ffffff' }}
-        />
+      <div style={{ marginTop: 16, background: 'var(--brij-white)', border: '1px solid var(--border)', borderRadius: 8, padding: '40px 24px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 14, position: 'relative', minHeight: 140 }}>
+        <img src="../../assets/logos/brij-light.svg" alt="Brij" style={{ height: 44 }} />
+        <span style={{ fontFamily: 'var(--brij-serif)', fontSize: 34, letterSpacing: '0.05em' }}>Brij</span>
+        <div style={{ position: 'absolute', top: 8, left: 12, fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--fg-3)' }}>Lockup · mark + live type</div>
       </div>
     </Component>
   );
 }
 
-Object.assign(window, { FoundationColors, FoundationGradient, FoundationType, FoundationSpacing, FoundationLogo });
+function FoundationLogoMotion() {
+  return (
+    <Component id="logo-motion" name="Logo · Motion" tag="Foundation"
+      desc="The animated mark. The canonical opener for videos, deck intros, and social motion posts. Use it once, at the start - never looping as page decoration."
+      stageTone="cream"
+      spec={[
+        ['File',    'ui_kits/component_library/assets/logo-motion.mp4'],
+        ['Use',     'Video openers, deck intros, LinkedIn motion posts'],
+        ['Rule',    'Plays once at the start of a piece - not ambient decoration'],
+      ]}>
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <video src="./assets/logo-motion.mp4" autoPlay loop muted playsInline style={{ width: '100%', maxWidth: 560, borderRadius: 8, border: '1px solid var(--border)', background: 'var(--brij-white)' }} />
+      </div>
+    </Component>
+  );
+}
+
+Object.assign(window, { FoundationColors, FoundationGradient, FoundationType, FoundationSpacing, FoundationLogo, FoundationLogoMotion });

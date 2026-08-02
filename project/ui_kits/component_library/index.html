@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- @dsCard group="UI Kit — Component Library" name="Brij Component Library" subtitle="Foundations, text blocks, patterns, deck & doc layouts, starter templates" -->
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -20,6 +21,8 @@
   <script type="text/babel" src="./Actions.jsx"></script>
   <script type="text/babel" src="./Patterns.jsx"></script>
   <script type="text/babel" src="./Layouts.jsx"></script>
+  <script type="text/babel" src="./Products.jsx"></script>
+  <script type="text/babel" src="./LinkedIn.jsx"></script>
 
   <script type="text/babel">
     // ─── Page renderers (one per route) ──────────────
@@ -28,10 +31,25 @@
         <Section num="01 - Category" title="Foundations"
           desc="The atomic system. Logo, colors, type, spacing - every other component is built from these.">
           <FoundationLogo />
+          <FoundationLogoMotion />
           <FoundationColors />
           <FoundationGradient />
           <FoundationType />
           <FoundationSpacing />
+        </Section>
+      );
+    }
+
+    function ProductsPage() {
+      return (
+        <Section num="04 - Category" title="Products"
+          desc="Sub-brand architecture. One wordmark, one palette, one letter each - every product claims a climate of the brand gradient. Signal runs sky, Agents runs sun, sage is the shared middle.">
+          <ProductsOverview />
+          <ProductGradients />
+          <ProductSignal />
+          <ProductSignalInterface />
+          <ProductSignalCharts />
+          <ProductAgents />
         </Section>
       );
     }
@@ -49,7 +67,7 @@
           <TextCoordinate />
 
           <h3 className="lib-subhead">Buttons & Chrome</h3>
-          <p className="lib-subhead-desc">Buttons, header, and footer. One primary action per screen. The pentagon arrow is the brand{'\u2019'}s motion signature - use it on every actionable element.</p>
+          <p className="lib-subhead-desc">Buttons, header, and footer. One primary action per screen. The pentagon arrow is the brand{'’'}s motion signature - use it on every actionable element.</p>
           <ActionButtons />
           <ActionHeader />
           <ActionFooter />
@@ -71,9 +89,10 @@
 
     function TemplatesPage() {
       const TABS = [
-        { id: 'slides',    label: 'Slides',    desc: 'Six core slide layouts. All built on 16:9 \u00b7 1920\u00d71080.' },
+        { id: 'slides',    label: 'Slides',    desc: 'Six core slide layouts. All built on 16:9 · 1920×1080.' },
         { id: 'documents', label: 'Documents', desc: 'Patterns for briefs, proposals, and PDFs.' },
         { id: 'email',     label: 'Email',     desc: 'One canonical email signature for the team.' },
+        { id: 'linkedin',  label: 'LinkedIn',  desc: 'Square 1:1 · 1080×1080. Visual companions for text posts - punchlines, numbers, announcements, and motion openers.' },
       ];
       // Map anchor (sub-item id) → which tab should be open.
       const anchor = (location.hash.split('/')[2] || '');
@@ -126,12 +145,23 @@
             </React.Fragment>
           )}
           {tab === 'email' && <ActionEmailSig />}
+          {tab === 'linkedin' && (
+            <React.Fragment>
+              <LiPunchline />
+              <LiStat />
+              <LiAnnounce />
+              <LiMotionLogo />
+              <LiMotionStat />
+              <LiBank />
+            </React.Fragment>
+          )}
         </Section>
       );
     }
 
     const PAGES = {
       foundations:   FoundationsPage,
+      products:      ProductsPage,
       'building-blocks': TextBlocksPage,
       templates:     TemplatesPage,
     };

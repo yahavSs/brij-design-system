@@ -107,7 +107,7 @@ function PatternCTABlock() {
     <Component id="cta-block" name="CTA Block" tag="Content"
       desc="Centered headline, subcopy, one button. Faint pentagon mark at 3–4% opacity centered behind the content - this is the only place you may use the mark decoratively.">
       <div style={{ position: 'relative', padding: '80px 40px', textAlign: 'center', background: 'var(--brij-cream)', borderRadius: 12, border: '1px solid var(--border)', overflow: 'hidden' }}>
-        <img src="../../assets/logo-b-mark.svg" alt="" style={{ position: 'absolute', inset: 0, margin: 'auto', width: 320, opacity: 0.05, pointerEvents: 'none' }} />
+        <img src="../../assets/logos/brij-dark.svg" alt="" style={{ position: 'absolute', inset: 0, margin: 'auto', width: 320, opacity: 0.05, pointerEvents: 'none' }} />
         <div style={{ position: 'relative' }}>
           <h2 style={{ fontFamily: 'var(--brij-serif)', fontSize: 40, color: 'var(--fg-1)', marginBottom: 18, lineHeight: 1.1 }}>Ready to lead the new era?</h2>
           <p style={{ fontSize: 17, color: 'var(--fg-2)', marginBottom: 32, maxWidth: 540, margin: '0 auto 32px' }}>Those who learn to move with the current will define what comes next.</p>
@@ -122,13 +122,12 @@ function PatternDoDont() {
   return (
     <Component id="dodont" name="Do / Don't Pair" tag="Content"
       desc="Two columns - green for do, muted red for don't. Use for brand rules in docs or onboarding decks. Keep copy short and concrete; one rule per line."
-      stageTone="cream"
       spec={[
         ['Layout',  '2 columns · equal width · 12px gap'],
         ['Padding', '16px 20px · border-radius 8px'],
         ['Label',   '10px · Jakarta 600 · tracking .14 · uppercase'],
         ['Do',      'bg #eef4ee · border #cfe0d0 · text #2d5f34'],
-        ['Don\u2019t', 'bg #f7ecec · border #e5c9c9 · text #7a3a3a'],
+        ['Don’t', 'bg #f7ecec · border #e5c9c9 · text #7a3a3a'],
       ]}
       dodont={{
         do: (

@@ -18,7 +18,7 @@ function SlideTitle() {
     <Component id="slide-title" name="Title Slide" tag="Deck" desc="Opens a deck. Wordmark small top-left, big display headline center, coordinate divider bottom.">
       <Slide>
         <div style={{ position: 'absolute', top: '4%', left: '5%' }}>
-          <img src="../../assets/brij-wordmark.svg" alt="Brij" style={{ height: '3cqi' }} />
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.8cqi' }}><img src="../../assets/logos/brij-light.svg" alt="Brij" style={{ height: '3cqi' }} /><span style={{ fontFamily: 'var(--brij-serif)', fontSize: '2.4cqi', letterSpacing: '0.05em' }}>Brij</span></span>
         </div>
         <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '0 5%', containerType: 'inline-size' }}>
           <div style={{ fontSize: '1.3cqi', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--fg-3)', marginBottom: '2cqi' }}>[ Intelligence Lab · Q1 2025 ]</div>
@@ -56,7 +56,7 @@ function SlideQuote() {
           <blockquote style={{ position: 'relative', paddingLeft: '3cqi' }}>
             <span aria-hidden style={{ position: 'absolute', left: 0, top: 4, bottom: 4, width: 1, background: 'linear-gradient(180deg, #f3c06a 0%, #d8e094 50%, #98c6e7 100%)' }} />
             <p style={{ fontFamily: 'var(--brij-serif)', fontSize: '4.2cqi', lineHeight: 1.2, color: 'var(--fg-1)', marginBottom: '2.4cqi' }}>
-              We don{'\u2019'}t wait for things to settle. We move with the current.
+              We don{'’'}t wait for things to settle. We move with the current.
             </p>
             <cite style={{ fontSize: '1.1cqi', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--fg-3)', fontStyle: 'normal' }}>Brand manifesto</cite>
           </blockquote>
@@ -89,7 +89,7 @@ function SlideCase() {
           <div style={{ padding: '0 5%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             <div style={{ fontSize: '1.3cqi', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--fg-3)', marginBottom: '1.6cqi' }}>[ Case · FinTech 2025 ]</div>
             <div style={{ fontFamily: 'var(--brij-serif)', fontSize: '3.2cqi', lineHeight: 1.15, color: 'var(--fg-1)', marginBottom: '2.2cqi' }}>Retention AI for a neobank</div>
-            <div style={{ fontSize: '1.6cqi', lineHeight: 1.55, color: 'var(--fg-2)' }}>Shipped a churn-prediction system into production in 6 weeks. Tripled the retention team{'\u2019'}s reach without new headcount.</div>
+            <div style={{ fontSize: '1.6cqi', lineHeight: 1.55, color: 'var(--fg-2)' }}>Shipped a churn-prediction system into production in 6 weeks. Tripled the retention team{'’'}s reach without new headcount.</div>
           </div>
         </div>
       </Slide>
@@ -102,7 +102,7 @@ function SlideClose() {
     <Component id="slide-close" name="Closing Slide" tag="Deck" desc='Final slide. "Time to brij." as the last word.'>
       <Slide tone="ink">
         <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <img src="../../assets/logo-b-mark-gradient.svg" alt="" style={{ position: 'absolute', width: '32%', opacity: 0.12 }} />
+          <img src="../../assets/logos/brij-light.svg" alt="" style={{ position: 'absolute', width: '32%', opacity: 0.12 }} />
           <div style={{ textAlign: 'center', position: 'relative' }}>
             <div style={{ fontFamily: 'var(--brij-serif)', fontSize: '7.5cqi', color: 'var(--brij-cream)' }}>Time to brij.</div>
             <div style={{ marginTop: '2.2cqi', fontSize: '1.4cqi', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--brij-t3)' }}>hello@brijlabs.ai</div>
@@ -129,7 +129,7 @@ function DocHeader() {
         <DocPage>
           <div style={{ padding: '28px 36px 0' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', paddingBottom: 14, borderBottom: '1px solid transparent', borderImage: 'linear-gradient(90deg, #f3c06a 0%, #d8e094 50%, #98c6e7 100%) 1', borderImageSlice: '0 0 1 0', borderImageWidth: '0 0 1px 0' }}>
-              <img src="../../assets/brij-wordmark.svg" alt="Brij" style={{ height: 16 }} />
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 10 }}><img src="../../assets/logos/brij-light.svg" alt="Brij" style={{ height: 16 }} /><span style={{ fontFamily: 'var(--brij-serif)', fontSize: 13, letterSpacing: '0.05em' }}>Brij</span></span>
               <div style={{ fontFamily: 'var(--brij-serif)', fontSize: 14, color: 'var(--fg-1)' }}>Engagement Brief</div>
               <div style={{ fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--fg-3)' }}>Jan 2025</div>
             </div>
