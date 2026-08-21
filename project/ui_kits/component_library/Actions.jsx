@@ -90,9 +90,24 @@ const SigField = React.memo(({ label, value, onChange, placeholder, hint }) => {
 });
 
 function ActionEmailSig() {
-  // Logo replaced with a typographic 'B' set in the brand serif - works in 100%
-  // of email clients (Gmail/Outlook strip <img>; SVG and data: URIs are blocked).
-  // Pure HTML, no images = no broken-image icons, no proxy fetches, no surprises.
+  // ⚠️ DO NOT PUT IMAGES IN THIS SIGNATURE. Read this before "improving" it.
+  //
+  // Commit 0e1c181 replaced this typographic lockup with five base64 PNGs
+  // ("baked PNG assets"). That broke every signature the team generated from it:
+  //   - A base64/inline image travels INSIDE the message. On send, mail clients
+  //     convert it into a real MIME attachment referenced by cid:.
+  //   - On FORWARD the forwarding client rebuilds the MIME tree and those cid:
+  //     references go stale. The recipient sees alt text (<Brij>, ATT00001.png)
+  //     where the logo should be, with the images loose in the attachments row.
+  //   - Outlook for Windows blocks data: URIs outright.
+  //   - The base64 pushed the signature past Gmail's 10,000-character signature
+  //     limit, which truncates it silently.
+  //
+  // So the wordmark is typographic and the divider is a table cell with a
+  // gradient background. No images means nothing can detach on forward.
+  // If a future version genuinely needs a logo image it must be a hosted
+  // https:// URL - never base64, never a file pasted from disk - because a URL
+  // is a reference rather than message payload, and survives forwarding.
 
   // ── Editable fields ────────────────────────────────────
   // Only personal fields are user-editable. Company, web, and tagline are
@@ -101,9 +116,17 @@ function ActionEmailSig() {
   const SIG_WEB     = 'brijlabs.ai';
   const SIG_TAGLINE = 'Intelligence Lab.';
 
+  // Signature artwork is HOSTED, never embedded. These PNGs live in the website
+  // repo at public/signature/ and deploy to the bucket behind brijlabs.ai.
+  // A hosted URL is a reference, so it survives forwarding; a base64/inline image
+  // becomes message payload and detaches. See the warning at the top of this file.
+  // To change an icon: replace the PNG in the website repo and redeploy. Never inline.
+  const SIG_IMG = 'https://brijlabs.ai/signature/';
+
   const [fields, setFields] = React.useState({
     name:     '',
     title:    '',
+    phone:    '',
     email:    '',
     linkedin: '',
   });
@@ -120,6 +143,15 @@ function ActionEmailSig() {
     try { localStorage.setItem('brij-signature-fields', JSON.stringify(fields)); } catch (e) {}
   }, [fields]);
 
+  // Escape anything the user typed before it goes into the clipboard HTML.
+  // Without this an ampersand or angle bracket in a name or title produces
+  // invalid markup that mail clients silently mangle.
+  const esc = (v) => String(v || '')
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  // tel: links must not contain spaces or punctuation.
+  const telHref = (v) => String(v || '').replace(/[^\d+]/g, '');
+
   // Helpers - normalize URL/email so the user can paste raw "brijlabs.ai" or "https://brijlabs.ai"
   const linkifyWeb = (v) => /^https?:\/\//i.test(v) ? v : `https://${v}`;
   const linkifyLinkedIn = (v) => {
@@ -133,24 +165,47 @@ function ActionEmailSig() {
   // then name/title/contacts in a tight column on the right.
   // The divider is a 1px-wide table cell with a vertical gradient background -
   // the only way to render a colored vertical rule that survives every email client.
-  const sep = ' &nbsp;·&nbsp; ';
-  const compactContacts = [
-    fields.email    ? `<a href="mailto:${fields.email}" style="color:#181b18; text-decoration:none;">${fields.email}</a>` : '',
-    `<a href="https://${SIG_WEB}" style="color:#181b18; text-decoration:none;">${SIG_WEB}</a>`,
-    fields.linkedin ? `<a href="${linkifyLinkedIn(fields.linkedin)}" style="color:#181b18; text-decoration:none;">LinkedIn</a>` : '',
-  ].filter(Boolean).join(sep);
+  // One icon cell. The <a> wraps the <img>, so when a client blocks images the
+  // alt text renders as a normal clickable link instead of an empty box.
+  const iconCell = (href, file, label) =>
+    `<td valign="middle" style="padding:0 6px 0 0; line-height:0;">`
+    + `<a href="${esc(href)}" style="text-decoration:none; display:inline-block; line-height:0;">`
+    + `<img src="${SIG_IMG}${file}" alt="${esc(label)}" width="22" height="22" `
+    + `style="display:block; width:22px; height:22px; border:0; outline:none;" /></a></td>`;
 
-  const SIG_HTML = `<table cellpadding="0" cellspacing="0" border="0" role="presentation" style="font-family: Helvetica, Arial, sans-serif; color:#181b18; line-height:1.4;">
+  const iconCells = [
+    fields.linkedin ? iconCell(linkifyLinkedIn(fields.linkedin), 'linkedin.png', 'LinkedIn') : '',
+    fields.email    ? iconCell(`mailto:${fields.email}`,          'email.png',    'Email')    : '',
+    iconCell(`https://${SIG_WEB}`, 'site.png', SIG_COMPANY),
+  ].filter(Boolean).join('');
+
+  const phoneRow = fields.phone
+    ? `<tr><td style="font-family: Helvetica, Arial, sans-serif; font-size:11px; font-weight:500; color:#6b6b63; letter-spacing:0.02em; line-height:14px; padding:0 0 8px 0; mso-line-height-rule:exactly;"><a href="tel:${esc(telHref(fields.phone))}" style="color:#6b6b63; text-decoration:none;">${esc(fields.phone)}</a></td></tr>`
+    : '';
+
+  // Structure notes, all deliberate:
+  //  - Tables + inline styles only. No <div> layout, no classes, no <style> block:
+  //    Gmail strips <style>, Outlook ignores most modern CSS.
+  //  - Every <img> carries width/height as ATTRIBUTES as well as inline style,
+  //    so Outlook reserves the right box before the image loads.
+  //  - The divider cell has bgcolor AND background-color set to the mid-gradient
+  //    tone, so a solid brand line still shows if its image is blocked.
+  //  - mso-line-height-rule:exactly stops Outlook inflating the line spacing.
+  const SIG_HTML = `<table cellpadding="0" cellspacing="0" border="0" role="presentation" width="330" style="border-collapse:collapse; font-family: Helvetica, Arial, sans-serif; color:#181b18; width:330px;">
   <tr>
-    <td valign="middle" align="center" style="padding:0 22px 0 4px;">
-      <div style="font-family: Georgia, 'Arbutus Slab', serif; font-size:48px; font-weight:400; line-height:1; color:#181b18; letter-spacing:2.9px;">Brij</div>
+    <td width="130" valign="middle" align="left" style="width:130px; padding:0 8px 0 0;">
+      <a href="https://${SIG_WEB}" style="text-decoration:none; display:inline-block; line-height:0;"><img src="${SIG_IMG}brij-logo.png" alt="Brij" width="120" height="47" style="display:block; width:120px; height:47px; border:0; outline:none;" /></a>
     </td>
-    <td valign="middle" width="1" style="width:1px; padding:0; line-height:1px; font-size:1px; background:linear-gradient(180deg,#f3c06a 0%,#d8e094 50%,#98c6e7 100%); background-color:#d8e094;">&nbsp;</td>
-    <td valign="middle" style="padding:0 0 0 18px;">
-      <div style="font-family: Georgia, 'Arbutus Slab', serif; font-size:17px; color:#181b18; line-height:1.2; margin:0 0 1px 0;">${fields.name}</div>
-      <div style="font-family: Helvetica, Arial, sans-serif; font-size:12px; color:#6b6b63; letter-spacing:0.02em; margin:0 0 6px 0;">${fields.title} · ${SIG_COMPANY}</div>
-      ${compactContacts ? `<div style="font-family: Helvetica, Arial, sans-serif; font-size:12px; color:#181b18;">${compactContacts}</div>` : ''}
-      <div style="margin-top:6px; font-family: Georgia, 'Arbutus Slab', serif; font-size:12px; color:#6b6b63; font-style:italic;">${SIG_TAGLINE}</div>
+    <td width="2" valign="top" align="center" bgcolor="#d8e094" style="width:2px; padding:0; background-color:#d8e094;">
+      <img src="${SIG_IMG}divider.png" alt="" width="2" height="83" style="display:block; width:2px; height:83px; border:0; outline:none;" />
+    </td>
+    <td valign="middle" style="padding:0 0 0 10px;">
+      <table cellpadding="0" cellspacing="0" border="0" role="presentation" style="border-collapse:collapse;">
+        <tr><td style="font-family: Helvetica, Arial, sans-serif; font-size:9px; color:#6b6b63; letter-spacing:1.8px; text-transform:uppercase; line-height:12px; padding:0 0 5px 0; mso-line-height-rule:exactly;">[ ${esc(fields.title)} ]</td></tr>
+        <tr><td style="font-family: Georgia, 'Times New Roman', serif; font-size:17px; color:#181b18; line-height:20px; padding:0 0 2px 0; mso-line-height-rule:exactly;">${esc(fields.name)}</td></tr>
+        ${phoneRow}
+        <tr><td style="padding:0;"><table cellpadding="0" cellspacing="0" border="0" role="presentation" style="border-collapse:collapse;"><tr>${iconCells}</tr></table></td></tr>
+      </table>
     </td>
   </tr>
 </table>`;
@@ -173,13 +228,15 @@ function ActionEmailSig() {
 
   return (
     <Component id="signature" name="Email Signature - Editor" tag="Chrome"
-      desc='Edit the fields on the left, watch the preview update on the right, then click "Copy signature" and paste into your mail client. Your edits are saved to this browser - they will still be here next time.'
+      desc='Edit the fields on the left, watch the preview update on the right, then click "Copy signature" and paste into your mail client. Your edits are saved to this browser - they will still be here next time. If you generated a signature here before May 2026 it contained embedded images that fall apart when a mail is forwarded: generate it again and replace the one in your mail client.'
       spec={[
-        ['Mark',     '"Brij" · 48px Georgia/Arbutus Slab serif'],
-        ['Divider',  '1px vertical gradient hairline'],
-        ['Name',     '17px · Georgia (Arbutus Slab fallback)'],
-        ['Title',    '12px · Helvetica · muted (#6b6b63)'],
-        ['Contacts', '12px · inline · bullet-separated'],
+        ['Mark',     'brij-logo.png · 120x47 · hosted, retina source'],
+        ['Divider',  '2px gradient rule · bgcolor fallback #d8e094'],
+        ['Title',    '9px · Helvetica · uppercase · bracketed'],
+        ['Name',     '17px · Georgia (Times New Roman fallback)'],
+        ['Phone',    '11px · Helvetica · muted · optional'],
+        ['Icons',    '22x22 · LinkedIn / Email / Site · hosted'],
+        ['Images',   'hosted https only · never base64 · survives forward'],
         ['Tagline',  '12px italic serif · muted'],
       ]}>
 
@@ -191,6 +248,7 @@ function ActionEmailSig() {
           <div style={{ fontFamily: 'var(--brij-sans)', fontSize: 11, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--fg-3)', marginBottom: 16 }}>Your details</div>
           <SigField label="Full name"  value={fields.name}     onChange={update('name')}     placeholder="Adi Cohen" />
           <SigField label="Title"      value={fields.title}    onChange={update('title')}    placeholder="Head of Strategy" />
+          <SigField label="Phone"      value={fields.phone}    onChange={update('phone')}    placeholder="+972 50 000 0000" hint="Optional. Leave empty to hide it." />
           <SigField label="Email"      value={fields.email}    onChange={update('email')}    placeholder="you@brijlabs.ai" />
           <SigField label="LinkedIn"   value={fields.linkedin} onChange={update('linkedin')} placeholder="/in/your-handle" hint='You can paste "/in/handle", "@handle", or a full URL.' />
           <div style={{ marginTop: 18, paddingTop: 14, borderTop: '1px solid var(--border)', fontSize: 11, lineHeight: 1.55, color: 'var(--fg-3)' }}>
@@ -204,33 +262,33 @@ function ActionEmailSig() {
         {/* ── Preview ─────────────────────────────── */}
         <div>
           <div style={{ fontFamily: 'var(--brij-sans)', fontSize: 11, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--fg-3)', marginBottom: 12 }}>Live preview</div>
-          <div style={{ background: '#faf9f4', padding: 28, borderRadius: 8, border: '1px solid var(--border)' }}>
-            {/* Compact layout: logo left (vertically centered) | gradient hairline | name/title/contacts.
-                Vertical centering is the key fix - logo aligns to the optical center of the text block. */}
-            <table cellPadding="0" cellSpacing="0" border="0" role="presentation" style={{ fontFamily: 'Helvetica, Arial, sans-serif', color: '#181b18', lineHeight: 1.4 }}>
-              <tbody>
-                <tr>
-                  <td valign="middle" align="center" style={{ padding: '0 22px 0 4px' }}>
-                    <div style={{ fontFamily: "Georgia, 'Arbutus Slab', serif", fontSize: 48, fontWeight: 400, lineHeight: 1, color: '#181b18', letterSpacing: '2.9px' }}>Brij</div>
-                  </td>
-                  <td valign="middle" width="1" style={{ width: 1, padding: 0, lineHeight: '1px', fontSize: 1, background: 'linear-gradient(180deg,#f3c06a 0%,#d8e094 50%,#98c6e7 100%)' }}>&nbsp;</td>
-                  <td valign="middle" style={{ padding: '0 0 0 18px' }}>
-                    <div style={{ fontFamily: "Georgia, 'Arbutus Slab', serif", fontSize: 17, color: '#181b18', lineHeight: 1.2, margin: '0 0 1px 0' }}>{fields.name || ' '}</div>
-                    <div style={{ fontFamily: 'Helvetica, Arial, sans-serif', fontSize: 12, color: '#6b6b63', letterSpacing: '0.02em', margin: '0 0 6px 0' }}>
-                      {fields.title} · {SIG_COMPANY}
-                    </div>
-                    <div style={{ fontFamily: 'Helvetica, Arial, sans-serif', fontSize: 12, color: '#181b18' }}>
-                      {[
-                        fields.email    && <a key="e" href={`mailto:${fields.email}`} style={{ color: '#181b18', textDecoration: 'none' }}>{fields.email}</a>,
-                        <a key="w" href={`https://${SIG_WEB}`} style={{ color: '#181b18', textDecoration: 'none' }}>{SIG_WEB}</a>,
-                        fields.linkedin && <a key="l" href={linkifyLinkedIn(fields.linkedin)} style={{ color: '#181b18', textDecoration: 'none' }}>LinkedIn</a>,
-                      ].filter(Boolean).reduce((acc, el, i) => i === 0 ? [el] : [...acc, <span key={`s${i}`} style={{ color: '#c8c8be' }}> &nbsp;·&nbsp; </span>, el], [])}
-                    </div>
-                    <div style={{ marginTop: 6, fontFamily: "Georgia, 'Arbutus Slab', serif", fontSize: 12, color: '#6b6b63', fontStyle: 'italic' }}>{SIG_TAGLINE}</div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          {/* The preview is rendered from SIG_HTML itself, the exact string the
+              Copy button puts on the clipboard. Hand-maintaining a second JSX
+              copy of the layout meant the two could silently drift; this cannot. */}
+          <div style={{ background: '#faf9f4', padding: 28, borderRadius: 8, border: '1px solid var(--border)' }}
+               dangerouslySetInnerHTML={{ __html: SIG_HTML }} />
+
+          {/* Live self-check on the exact string being copied. These are the
+              three failures that broke the previous signature. */}
+          <div style={{ marginTop: 12, fontSize: 11.5, lineHeight: 1.9 }}>
+            {(() => {
+              const embedded = /data:image|src="file:|src='file:/i.test(SIG_HTML);
+              const remote   = (SIG_HTML.match(/src="https:\/\//g) || []).length;
+              const rows = [
+                [!embedded, embedded
+                  ? 'Embedded image found - this WILL detach when forwarded'
+                  : 'No embedded images - nothing can detach when forwarded'],
+                [SIG_HTML.length < 10000, SIG_HTML.length.toLocaleString() + ' characters - Gmail truncates above 10,000'],
+                [remote > 0, remote + ' images, all loaded from ' + SIG_WEB],
+              ];
+              return rows.map(function (r, i) {
+                return (
+                  <div key={i} style={{ color: r[0] ? '#5a8a5e' : '#b35c5c', fontWeight: r[0] ? 400 : 600 }}>
+                    {r[0] ? '\u2713' : '\u2717'} {r[1]}
+                  </div>
+                );
+              });
+            })()}
           </div>
 
           <div style={{ display: 'flex', gap: 8, marginTop: 12, flexWrap: 'wrap' }}>
@@ -238,7 +296,7 @@ function ActionEmailSig() {
               {copied ? 'Copied ✓' : 'Copy signature'}
             </button>
             <button
-              onClick={() => { if (confirm('Clear all fields?')) setFields({ name: '', title: '', email: '', linkedin: '' }); }}
+              onClick={() => { if (confirm('Clear all fields?')) setFields({ name: '', title: '', phone: '', email: '', linkedin: '' }); }}
               style={{ fontFamily: 'var(--brij-serif)', fontSize: 13, padding: '10px 20px', border: '1px solid var(--border)', borderRadius: 40, background: 'transparent', color: 'var(--fg-2)', cursor: 'pointer' }}>
               Reset
             </button>
