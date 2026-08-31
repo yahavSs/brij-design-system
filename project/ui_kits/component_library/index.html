@@ -15,14 +15,18 @@
 <body>
   <div id="root"></div>
 
-  <script type="text/babel" src="./Chrome.jsx"></script>
-  <script type="text/babel" src="./Foundations.jsx"></script>
-  <script type="text/babel" src="./TextBlocks.jsx"></script>
-  <script type="text/babel" src="./Actions.jsx"></script>
-  <script type="text/babel" src="./Patterns.jsx"></script>
-  <script type="text/babel" src="./Layouts.jsx"></script>
-  <script type="text/babel" src="./Products.jsx"></script>
-  <script type="text/babel" src="./LinkedIn.jsx"></script>
+  <!-- The ?v= stamp busts the browser cache. Browsers hold on to these
+       .jsx files hard, so an edit can look like it never happened.
+       BUMP THE DATE ON EVERY ?v= BELOW whenever you change a .jsx file,
+       otherwise the team keeps seeing the old brandbook. -->
+  <script type="text/babel" src="./Chrome.jsx?v=20260830"></script>
+  <script type="text/babel" src="./Foundations.jsx?v=20260830"></script>
+  <script type="text/babel" src="./TextBlocks.jsx?v=20260830"></script>
+  <script type="text/babel" src="./Actions.jsx?v=20260830"></script>
+  <script type="text/babel" src="./Patterns.jsx?v=20260830"></script>
+  <script type="text/babel" src="./Layouts.jsx?v=20260830"></script>
+  <script type="text/babel" src="./Products.jsx?v=20260830"></script>
+  <script type="text/babel" src="./LinkedIn.jsx?v=20260830"></script>
 
   <script type="text/babel">
     // ─── Page renderers (one per route) ──────────────
