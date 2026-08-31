@@ -1,24 +1,25 @@
 <!DOCTYPE html>
 <!-- ═══════════════════════════════════════════════════════════════════
-  BRIJ INTERNAL BRIEF, canonical template (Signal light language)
+  BRIJ INTERNAL BRIEF, canonical template (light language, all products)
   ═══════════════════════════════════════════════════════════════════
   HOW TO USE (10 minutes, no more):
   1. Copy this file. Save it as: briefs/<topic>-YYYY-MM-DD.html
-  2. Type chip: in the "chips" row, keep ONE chip with class "chip active"
+  2. SET THE PRODUCT FIRST, before any other edit: at the top of the
+     <style> block, uncomment your product's token block (Brij Labs,
+     which is also Brij Agents, or Brij Signal), comment out the one
+     that was active, then swap the header logo to that same product
+     using the LOGO section right below it. Tokens and logo must
+     match. Mixing products in one artifact is forbidden.
+     The brief stays LIGHT for every product: light means internal,
+     dark means client, and that rule is absolute.
+  3. Type chip: in the "chips" row, keep ONE chip with class "chip active"
      (Idea / Plan / QA / Deliverable / Update) and delete the other four.
-  3. Status chip: in the meta row, edit the text of .status to one of:
+  4. Status chip: in the meta row, edit the text of .status to one of:
      Draft / In review / Approved / Shipped.
-  4. Replace every [bracketed] placeholder and every sentence of
+  5. Replace every [bracketed] placeholder and every sentence of
      placeholder copy. Delete any section card you do not need.
      Keep it short: TL;DR is 3 bullets max, no section over 5 lines.
-  4b. LOGO BY PRODUCT (mandatory, ask which product before building):
-     Brij Labs / Brij Agents briefs keep the mark already inlined in
-     the header, the pentagon with the diagonal cut
-     (assets/logo-b-mark-gradient.svg). Brij Signal briefs replace it
-     with the inlined Signal mark
-     (signal/assets/brij-signal-mark-gradient.svg). Never use a solid
-     pentagon and never invent a shape.
-  4c. MEDIA (optional card, after Approach): the file must stay
+  5b. MEDIA (optional card, after Approach): the file must stay
      self-contained so it travels over WhatsApp as one file.
      Screenshot: replace the placeholder src with a data URI
      (base64: data:image/png;base64,...). Never reference a local
@@ -27,17 +28,17 @@
      may be embedded as a base64 data URI in the <source> src if
      the file stays sendable. Delete the figure, the video block,
      or the whole card if unused. Never ship the placeholder.
-  4d. Bullet markers: the navy check, everywhere. Never colored dots,
+  5c. Bullet markers: the ink check, everywhere. Never colored dots,
      never the logo as a bullet. The marker is the inlined symbol
      #bulletCheck; copy an existing <li> when adding lines so the
      marker comes with it.
-  4e. Panels rise on scroll (IntersectionObserver script at the end of
+  5d. Panels rise on scroll (IntersectionObserver script at the end of
      the body). Reduced-motion safe, and everything is visible by
      default if JS is off. Delete that script for a static file.
-  5. Hebrew / RTL: change <html lang="en" dir="ltr"> to
+  6. Hebrew / RTL: change <html lang="en" dir="ltr"> to
      <html lang="he" dir="rtl">. That is the whole flip: the layout
      uses logical properties and Hebrew text renders in Heebo.
-  6. Send the file as-is (self-contained, mobile-ready, no local assets).
+  7. Send the file as-is (self-contained, mobile-ready, no local assets).
   Rule of the house: LIGHT = INTERNAL. Client decks are dark.
   Never use the em-dash character in copy: comma, period, colon, hyphen.
 ═══════════════════════════════════════════════════════════════════ -->
@@ -50,16 +51,116 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Arbutus+Slab&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  /* Brij Signal light tokens (signal/signal.css). Raw HSL channels:
-     compose with hsl(var(--token)) and alpha as hsl(var(--token) / .1). */
+  /* ##################################################################
+     ###                                                            ###
+     ###   PRODUCT TOKENS  ::  SET THE PRODUCT FIRST, BEFORE ANY    ###
+     ###   OTHER EDIT. NOTHING ELSE IN THIS FILE IS PRODUCT AWARE.  ###
+     ###                                                            ###
+     ##################################################################
+     ONE product per artifact. Mixing products in one artifact is
+     forbidden. Switching product is three moves:
+
+       1. Uncomment your product's :root block below: delete the lone
+          comment-open line above it and the lone comment-close line
+          under it (the bare slash-star and star-slash lines).
+       2. Comment the block that is active now: put a bare slash-star
+          line above it and a bare star-slash line under it.
+       3. Swap the LOGO to match, using the LOGO section directly
+          below this one. Tokens and logo must name the SAME product.
+
+     Exactly ONE :root product block is ever uncommented, and no
+     product block ever contains a comment of its own: it has to
+     survive being wrapped in a comment when you switch away from it.
+
+     THIS BRIEF IS LIGHT FOR EVERY PRODUCT.
+     Light means internal, dark means client, and that rule is
+     absolute. Never darken this brief, and never lighten a client
+     deck. What changes per product here is the light surface family:
+       Brij Labs and Brij Agents: white surface, sage panels, brand
+       ink #181B18, shadows tinted with that ink.
+       Brij Signal: sage greige ground, white panels floating on it,
+       navy ink #1A2540, shadows tinted navy.
+     The signature gradient and the orange accent #F3C06A are
+     company-level: identical in all three products, so they live in
+     the SHARED block further down and never change.
+
+     Brij Agents is an aliases-only product: every value traces back
+     to Brij Labs, so the Labs block serves Agents unchanged. Only the
+     name you type in the badge and the copy differ.
+
+     All color tokens are raw HSL channels: compose with
+     hsl(var(--token)) and alpha as hsl(var(--token) / .1).
+     ################################################################## */
+
+  /* ----------------------------------------------------------------
+     ACTIVE  ::  BRIJ LABS  (the company, the default)  +  BRIJ AGENTS
+     Source: colors_and_type.css and design-system/dist/agent.css.
+     Sage #EBEDE7 ground with WHITE floating panels and ink #181B18.
+     The ground-and-panel structure is the approved brief design and
+     stays the same in every product: only the ink hue and the logo
+     change. Never invert it to a white ground with sage panels: the
+     panels stop reading as floating and the glass has nothing to
+     glow through.
+     ---------------------------------------------------------------- */
   :root {
-    --background: 75 9% 93%;          /* sage greige page; white panels float on it */
-    --foreground: 223 42% 18%;        /* navy ink #1A2540 */
+    --background: 80 14% 92%;
+    --foreground: 120 6% 10%;
     --card: 0 0% 100%;
-    --muted: 80 14% 95%;              /* sage-tinted quiet surface */
-    --border: 43 13% 90%;             /* hairline #E8E6E1 */
-    --text-secondary: 60 4% 40%;      /* #6B6B63 */
+    --muted: 80 14% 95%;
+    --border: 43 13% 90%;
+    --text-secondary: 60 4% 40%;
     --text-tertiary: 60 3% 46%;
+    --shadow-xs: 0 1px 2px rgb(24 27 24 / 0.04), 0 4px 12px -2px rgb(24 27 24 / 0.06);
+    --shadow-sm: 0 2px 4px rgb(24 27 24 / 0.04), 0 12px 32px -10px rgb(24 27 24 / 0.12);
+    --shadow-md: 0 2px 6px rgb(24 27 24 / 0.04), 0 24px 56px -16px rgb(24 27 24 / 0.16);
+  }
+
+  /* ----------------------------------------------------------------
+     BRIJ SIGNAL  ::  to activate, delete the two bare comment lines
+     that wrap the block below, wrap the Labs block above in a pair of
+     its own, then swap the logo to the Signal mark.
+     Source: signal/signal.css, light theme. Sage greige page with
+     white panels floating on it, navy ink #1A2540, shadows tinted
+     with that navy, never black.
+     ---------------------------------------------------------------- */
+  /*
+  :root {
+    --background: 75 9% 93%;
+    --foreground: 223 42% 18%;
+    --card: 0 0% 100%;
+    --muted: 80 14% 95%;
+    --border: 43 13% 90%;
+    --text-secondary: 60 4% 40%;
+    --text-tertiary: 60 3% 46%;
+    --shadow-xs: 0 1px 2px rgb(26 37 64 / 0.03), 0 4px 12px -2px rgb(26 37 64 / 0.05);
+    --shadow-sm: 0 2px 4px rgb(26 37 64 / 0.03), 0 12px 32px -10px rgb(26 37 64 / 0.10);
+    --shadow-md: 0 2px 6px rgb(26 37 64 / 0.03), 0 24px 56px -16px rgb(26 37 64 / 0.14);
+  }
+  */
+
+  /* ##################################################################
+     ###   LOGO  ::  MUST MATCH THE PRODUCT TOKENS ABOVE            ###
+     ##################################################################
+     The mark is inlined ONCE, in the header .badge-row, marked
+     [LOGO]. To switch product, replace the viewBox AND the path d
+     with the option below that matches your active token block. Keep
+     fill="url(#brijGrad)" and the <defs> gradient: it serves either
+     mark. Never use a solid pentagon and never invent a shape.
+
+     OPTION A  ::  BRIJ LABS + BRIJ AGENTS  (currently in the header)
+     The cut pentagon, from assets/logo-b-mark-gradient.svg
+     viewBox="0 0 133 128"
+     d="M132.147 54.3483C132.036 54.9583 131.886 55.5668 131.691 56.1686L111.711 117.661C109.854 123.378 104.525 127.249 98.514 127.249H33.8568C29.5303 127.249 25.5581 125.243 22.9788 121.988C59.3679 99.4412 95.7577 76.895 132.147 54.3483ZM58.0296 2.65002C62.8929 -0.88334 69.4789 -0.883342 74.3421 2.65002L126.651 40.6549C127.535 41.2974 128.324 42.0314 129.015 42.8346C88.8973 55.4675 48.7791 68.1001 8.66146 80.733L0.68001 56.1686C-1.17759 50.4515 0.857793 44.1883 5.72103 40.6549L58.0296 2.65002Z"
+
+     OPTION B  ::  BRIJ SIGNAL
+     The Signal mark, from signal/assets/brij-signal-mark-gradient.svg
+     viewBox="0 0 170 165"
+     d="M168.484 71.4164C169.278 70.9246 170.245 71.6013 169.957 72.4894L144.171 151.85C141.773 159.228 134.898 164.224 127.139 164.224H43.6941C42.0254 164.224 40.3974 163.993 38.8461 163.556C33.0905 161.938 34.1149 154.671 39.1972 151.522C82.2929 124.82 125.389 98.1184 168.484 71.4164ZM74.8914 3.42002C81.1678 -1.13998 89.6668 -1.14003 95.9432 3.42002L163.451 52.4679C165.043 53.6246 164.413 55.9372 162.536 56.5283L20.6296 101.214C15.3956 102.862 9.81107 99.9847 8.11544 94.7659L0.877739 72.4894C-1.51962 65.111 1.10629 57.028 7.38262 52.4679L74.8914 3.42002Z"
+     ################################################################## */
+
+  /* ── Shared across all three products: the signature gradient, the
+     radius scale, the type families. These never change per product. ── */
+  :root {
     --brand-grad-sun:  #F3C06A;
     --brand-grad-leaf: #D8E094;
     --brand-grad-sky:  #98C6E7;
@@ -69,11 +170,6 @@
     --radius-xl: 16px;
     --radius-2xl: 24px;
     --radius-full: 9999px;
-    /* Two-layer shadows tinted with navy ink, never black.
-       Surfaces read as floating, not outlined. */
-    --shadow-xs: 0 1px 2px rgb(26 37 64 / 0.03), 0 4px 12px -2px rgb(26 37 64 / 0.05);
-    --shadow-sm: 0 2px 4px rgb(26 37 64 / 0.03), 0 12px 32px -10px rgb(26 37 64 / 0.10);
-    --shadow-md: 0 2px 6px rgb(26 37 64 / 0.03), 0 24px 56px -16px rgb(26 37 64 / 0.14);
     --sans:  'Plus Jakarta Sans', 'Heebo', system-ui, -apple-system, sans-serif;
     --serif: 'Arbutus Slab', 'Heebo', Georgia, serif;
   }
@@ -242,9 +338,12 @@
     background: hsl(var(--foreground) / 0.75);
   }
 
-  /* ── Section cards: glass panels floating on the sage ground.
-     Solid white is the fallback; browsers with backdrop-filter get the
-     translucent Signal glass so the gradient wash glows through. ── */
+  /* ── Section cards: glass panels floating on the page ground.
+     The solid --card surface is the fallback; browsers with
+     backdrop-filter get the translucent glass so the gradient wash
+     glows through. Which surface is which comes from the active
+     product block: Labs and Agents float sage panels on white,
+     Signal floats white panels on sage. ── */
   .card {
     background: hsl(var(--card));
     border-radius: var(--radius-xl);
@@ -320,7 +419,8 @@
   .card p + p { margin-block-start: 8px; }
   .card strong { color: hsl(var(--foreground)); font-weight: 600; }
   .card ul { list-style: none; }
-  /* Bullet marker: the navy check, on every bulleted list. Never a
+  /* Bullet marker: the ink check (navy under Signal), on every
+     bulleted list. It always uses --foreground. Never a
      colored dot, never the logo. Baseline flex keeps the marker on the
      first line when a bullet wraps. */
   .card ul li {
@@ -508,7 +608,7 @@
   <!-- Header -->
   <header>
     <div class="badge-row">
-      <!-- The official Brij mark (pentagon with the diagonal cut), from assets/logo-b-mark-gradient.svg. Never swap for a solid pentagon. -->
+      <!-- [LOGO] Currently the Brij Labs / Brij Agents mark (the cut pentagon). To switch product, paste the matching viewBox and path d from the LOGO section at the top of the <style> block, and switch the product tokens with it. Never swap for a solid pentagon. -->
       <svg class="badge-mark" width="28" height="28" viewBox="0 0 133 128" aria-hidden="true">
         <defs>
           <linearGradient id="brijGrad" x1="0" y1="128" x2="132.147" y2="0" gradientUnits="userSpaceOnUse">

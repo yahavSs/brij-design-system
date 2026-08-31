@@ -130,6 +130,7 @@ Now produce the final artifact. Pick the output format that matches the artifact
 **For multi-slide pitch decks** (10–20 slide HTML decks, often bilingual, often product co-brand):
 
 - **Read `decks-pattern.md` first.** It captures rules earned through real user feedback that don't appear elsewhere.
+- Set the product FIRST: both templates open with a banner-wrapped `PRODUCT TOKENS` block at the top of their `<style>`. Uncomment the block for the Stage 0 Q1 product, comment the one that was active, and swap the logo using the `LOGO` section right below it. Tokens and logo must name the same product, and exactly one product block is ever uncommented.
 - Clone the template that matches the Stage 0 Q2 answer: `templates/client-deck-template.html` is the canonical clone source for client-facing decks (dark identity, Ifat-deck visual language, mobile-responsive); `templates/internal-brief-template.html` for internal briefs (Signal light language: sage ground, white floating panels, gradient wash, scrolling document). `templates/deck-template.html` remains as a legacy reference for the HUD, animation system, soft-transition logic, print mode, and slide-type layouts.
 - Founders portraits available at `assets/team/` for team slides.
 

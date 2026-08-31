@@ -9,30 +9,32 @@ HOW TO USE
 1. Clone, do not edit in place. Naming convention:
      presentations/<brand>/<client>/<name>-YYYY-MM-DD.html
    e.g. presentations/brij-signal/acme/kickoff-2026-09-14.html
-2. Replace every [BRACKETED] placeholder. Search the file for "["
+2. SET THE PRODUCT FIRST, before any other edit: at the top of the
+   <style> block, uncomment your product's token block (Brij Labs,
+   which is also Brij Agents, or Brij Signal) and comment out the
+   one that was active, then swap the logo to that same product
+   using the LOGO section right below it. Tokens and logo must
+   match. Mixing products in one artifact is forbidden.
+   The deck stays DARK for every product: light means internal,
+   dark means client, and that rule is absolute.
+3. Replace every [BRACKETED] placeholder. Search the file for "["
    to find them all: client name, promise, stats, names, dates.
-3. Slides are <section class="slide" data-ch="N">. Duplicate one to
+4. Slides are <section class="slide" data-ch="N">. Duplicate one to
    add a slide, keep data-ch pointing at the right chapter. If you
    change the story arc, update the CHAPTERS array in the script.
-4. Self-contained by design: fonts come from Google Fonts and the
+5. Self-contained by design: fonts come from Google Fonts and the
    logo is an inline SVG. Never reference local files (no ./assets,
-   no ./fonts).
-   LOGO BY PRODUCT (mandatory, ask which product before building):
-   - Brij Labs / Brij Agents: keep the mark already inlined here,
-     the pentagon with the diagonal cut (assets/logo-b-mark-gradient.svg).
-   - Brij Signal: replace both inline marks with the Signal mark
-     (signal/assets/brij-signal-mark-gradient.svg), inlined.
-   Never use a solid pentagon and never invent a shape.
-5. Hebrew decks: set <html lang="he" dir="rtl">. The layout uses
+   no ./fonts). Never use a solid pentagon and never invent a shape.
+6. Hebrew decks: set <html lang="he" dir="rtl">. The layout uses
    logical properties and mirrors automatically; Hebrew glyphs fall
    through to Heebo (Arbutus Slab and Plus Jakarta Sans are Latin).
-6. Desktop (over 700px): fixed slides. Arrow keys, space, enter or
+7. Desktop (over 700px): fixed slides. Arrow keys, space, enter or
    click to advance, F for fullscreen, #4 in the URL deep-links.
    At 700px and below the deck becomes one vertical scroll of all
    slides, WhatsApp-ready, chapter axis hidden.
-7. Before sending, it must PASS:
+8. Before sending, it must PASS:
      python3 scripts/check_mobile_html.py <file>
-8. Brand voice: never use the em-dash character in copy. Use a
+9. Brand voice: never use the em-dash character in copy. Use a
    comma, period, colon, or hyphen instead.
 ==============================================================
 -->
@@ -43,12 +45,73 @@ HOW TO USE
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Arbutus+Slab&family=Heebo:wght@300..800&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
 <style>
-/* ============ tokens - the Brij Signal dark identity ============ */
-:root{
-  --font-sans:'Plus Jakarta Sans','Heebo',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-  --font-display:'Arbutus Slab','Heebo',Georgia,serif;
+/* ##################################################################
+   ###                                                            ###
+   ###   PRODUCT TOKENS  ::  SET THE PRODUCT FIRST, BEFORE ANY    ###
+   ###   OTHER EDIT. NOTHING ELSE IN THIS FILE IS PRODUCT AWARE.  ###
+   ###                                                            ###
+   ##################################################################
+   ONE product per artifact. Mixing products in one artifact is
+   forbidden. Switching product is three moves:
 
-  /* soft cool charcoal, never pure black */
+     1. Uncomment your product's :root block below: delete the lone
+        comment-open line above it and the lone comment-close line
+        under it (the bare slash-star and star-slash lines).
+     2. Comment the block that is active now: put a bare slash-star
+        line above it and a bare star-slash line under it.
+     3. Swap the LOGO to match, using the LOGO section directly
+        below this one. Tokens and logo must name the SAME product.
+
+   Exactly ONE :root product block is ever uncommented.
+
+   THIS DECK IS DARK FOR EVERY PRODUCT.
+   Light means internal, dark means client, and that rule is absolute.
+   Never turn this deck light, for any product, for any reason.
+   What actually changes per product here is:
+     a. the dark surface tuning (Labs and Agents sit on the brand ink
+        black-green, Signal on its cool navy charcoal), and
+     b. above all, the LOGO.
+   The signature gradient and the orange accent #F3C06A are
+   company-level: identical in all three products, so they live in the
+   SHARED block further down and never change.
+
+   Brij Agents is an aliases-only product: every value traces back to
+   Brij Labs, so the Labs block serves Agents unchanged. Only the name
+   you type in the brandbar and the copy differ.
+   ################################################################## */
+
+/* ------------------------------------------------------------------
+   ACTIVE  ::  BRIJ LABS  (the company, the default)  +  BRIJ AGENTS
+   Source: colors_and_type.css and design-system/dist/agent.css.
+   Dark surfaces derive from the brand ink #181B18, a neutral
+   black-green; text is a warm sage white.
+   Never put a comment inside a product block: it has to survive
+   being wrapped in a comment when you switch away from it.
+   ------------------------------------------------------------------ */
+:root{
+  --background:120 6% 10%;
+  --foreground:80 10% 93%;
+  --card:120 5% 14%;
+  --card-foreground:80 10% 93%;
+  --muted:120 5% 17%;
+  --muted-foreground:80 7% 78%;
+  --border:120 5% 26%;
+
+  --text-primary:80 10% 93%;
+  --text-secondary:80 7% 78%;
+  --text-tertiary:80 6% 62%;
+}
+
+/* ------------------------------------------------------------------
+   BRIJ SIGNAL  ::  to activate, delete the two bare comment lines
+   that wrap the block below (the slash-star line and the star-slash
+   line), and wrap the Labs block above in a pair of its own.
+   Then swap the logo to the Signal mark.
+   Source: signal/signal.css, dark theme. Soft cool navy charcoal,
+   never pure black; cards lift to 14 percent.
+   ------------------------------------------------------------------ */
+/*
+:root{
   --background:222 28% 10%;
   --foreground:220 15% 93%;
   --card:222 24% 14%;
@@ -60,6 +123,36 @@ HOW TO USE
   --text-primary:220 15% 93%;
   --text-secondary:220 10% 78%;
   --text-tertiary:220 8% 62%;
+}
+*/
+
+/* ##################################################################
+   ###   LOGO  ::  MUST MATCH THE PRODUCT TOKENS ABOVE            ###
+   ##################################################################
+   The mark is inlined TWICE in the body: once in the .brandbar and
+   once in the .cover-mark on slide 1. Both are marked [LOGO]. To
+   switch product, replace the viewBox AND the path d in BOTH places
+   with the option below that matches your active token block. Keep
+   fill="url(#bgrad)": that shared gradient serves either mark.
+   Never use a solid pentagon and never invent a shape.
+
+   OPTION A  ::  BRIJ LABS + BRIJ AGENTS  (currently in the body)
+   The cut pentagon, from assets/logo-b-mark-gradient.svg
+   <svg viewBox="0 0 133 128" aria-hidden="true">
+     <path d="M132.147 54.3483C132.036 54.9583 131.886 55.5668 131.691 56.1686L111.711 117.661C109.854 123.378 104.525 127.249 98.514 127.249H33.8568C29.5303 127.249 25.5581 125.243 22.9788 121.988C59.3679 99.4412 95.7577 76.895 132.147 54.3483ZM58.0296 2.65002C62.8929 -0.88334 69.4789 -0.883342 74.3421 2.65002L126.651 40.6549C127.535 41.2974 128.324 42.0314 129.015 42.8346C88.8973 55.4675 48.7791 68.1001 8.66146 80.733L0.68001 56.1686C-1.17759 50.4515 0.857793 44.1883 5.72103 40.6549L58.0296 2.65002Z" fill="url(#bgrad)"/>
+   </svg>
+
+   OPTION B  ::  BRIJ SIGNAL
+   The Signal mark, from signal/assets/brij-signal-mark-gradient.svg
+   <svg viewBox="0 0 170 165" aria-hidden="true">
+     <path d="M168.484 71.4164C169.278 70.9246 170.245 71.6013 169.957 72.4894L144.171 151.85C141.773 159.228 134.898 164.224 127.139 164.224H43.6941C42.0254 164.224 40.3974 163.993 38.8461 163.556C33.0905 161.938 34.1149 154.671 39.1972 151.522C82.2929 124.82 125.389 98.1184 168.484 71.4164ZM74.8914 3.42002C81.1678 -1.13998 89.6668 -1.14003 95.9432 3.42002L163.451 52.4679C165.043 53.6246 164.413 55.9372 162.536 56.5283L20.6296 101.214C15.3956 102.862 9.81107 99.9847 8.11544 94.7659L0.877739 72.4894C-1.51962 65.111 1.10629 57.028 7.38262 52.4679L74.8914 3.42002Z" fill="url(#bgrad)"/>
+   </svg>
+   ################################################################## */
+
+/* ============ shared across all three products ============ */
+:root{
+  --font-sans:'Plus Jakarta Sans','Heebo',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --font-display:'Arbutus Slab','Heebo',Georgia,serif;
 
   --radius-sm:.25rem;--radius-md:.5rem;--radius-lg:.75rem;
   --radius-xl:1rem;--radius-2xl:1.5rem;--radius-full:9999px;
@@ -309,7 +402,7 @@ body{
 </linearGradient>
 </defs></svg>
 
-<!-- [LOGO] brandbar: the official Brij mark (pentagon with the diagonal cut), from assets/logo-b-mark-gradient.svg. Never swap for a solid pentagon or an invented shape. For client co-branding, add the client mark beside it. -->
+<!-- [LOGO] 1 of 2, brandbar. Currently the Brij Labs / Brij Agents mark (the cut pentagon). To switch product, paste the matching option from the LOGO section at the top of the <style> block, and switch the product tokens with it. For client co-branding, add the client mark beside it. -->
 <div class="brandbar">
   <svg viewBox="0 0 133 128" aria-hidden="true">
     <path d="M132.147 54.3483C132.036 54.9583 131.886 55.5668 131.691 56.1686L111.711 117.661C109.854 123.378 104.525 127.249 98.514 127.249H33.8568C29.5303 127.249 25.5581 125.243 22.9788 121.988C59.3679 99.4412 95.7577 76.895 132.147 54.3483ZM58.0296 2.65002C62.8929 -0.88334 69.4789 -0.883342 74.3421 2.65002L126.651 40.6549C127.535 41.2974 128.324 42.0314 129.015 42.8346C88.8973 55.4675 48.7791 68.1001 8.66146 80.733L0.68001 56.1686C-1.17759 50.4515 0.857793 44.1883 5.72103 40.6549L58.0296 2.65002Z" fill="url(#bgrad)"/>
@@ -323,6 +416,7 @@ body{
 
 <!-- ============ 1 · COVER ============ -->
 <section class="slide centered" data-ch="0">
+  <!-- [LOGO] 2 of 2, cover. Same rule: it must match the brandbar mark and the active product tokens. -->
   <div class="cover-mark rise">
     <svg viewBox="0 0 133 128" aria-hidden="true">
       <path d="M132.147 54.3483C132.036 54.9583 131.886 55.5668 131.691 56.1686L111.711 117.661C109.854 123.378 104.525 127.249 98.514 127.249H33.8568C29.5303 127.249 25.5581 125.243 22.9788 121.988C59.3679 99.4412 95.7577 76.895 132.147 54.3483ZM58.0296 2.65002C62.8929 -0.88334 69.4789 -0.883342 74.3421 2.65002L126.651 40.6549C127.535 41.2974 128.324 42.0314 129.015 42.8346C88.8973 55.4675 48.7791 68.1001 8.66146 80.733L0.68001 56.1686C-1.17759 50.4515 0.857793 44.1883 5.72103 40.6549L58.0296 2.65002Z" fill="url(#bgrad)"/>
