@@ -22,11 +22,13 @@ Ask these two questions first, in this order, and **stop and wait** for the answ
 
 The chosen product dictates the palette **and** the logo. Never mix products in one artifact.
 
-| Product | Tokens | Logos |
-|---|---|---|
-| **Brij Labs** (the company, the parent Intelligence Lab; the default) | `colors_and_type.css` | `assets/` logos: logotype-black / logotype-white, mark variants (pick per the Logo Decision Tree below) |
-| **Brij Signal** (signal intelligence for reputation, "The Operating System for Reputation") | `signal/signal.css` | `signal/assets/` logos |
-| **Brij Agents** | Company-level tokens: an aliases-only identity with the same palette, gradient, and fonts as Brij Labs (white surface, panel `#EBEDE7`, ink `#181B18`, accent `#F3C06A`, the signature gradient, Plus Jakarta Sans + Arbutus Slab + Heebo). The compiled reference is `dist/agent.css` in the unified token pipeline (`brij-command-center/design-system/`). | Same as Brij Labs |
+| Product | Tokens | Gradient | Logos |
+|---|---|---|---|
+| **Brij Labs** (the company, the parent Intelligence Lab; the default) | `colors_and_type.css` | The full 3-stop spectrum `#F3C06A` to `#D8E094` to `#98C6E7`. Parent brand only. | `assets/` logos: logotype-black / logotype-white, mark variants (pick per the Logo Decision Tree below) |
+| **Brij Signal** (signal intelligence for reputation, "The Operating System for Reputation") | `signal/signal.css` | Two stops only, sage to sky: `#D8E094` to `#98C6E7`. Never three. Signal stays cool: its accent is sky. | `signal/assets/` logos |
+| **Brij Agents** | Company-level tokens: an aliases-only identity with the same surface palette and fonts as Brij Labs (white surface, panel `#EBEDE7`, ink `#181B18`, Plus Jakarta Sans + Arbutus Slab + Heebo). The compiled reference is `dist/agent.css` in the unified token pipeline (`brij-command-center/design-system/`). | Two stops only, sage to sun: `#D8E094` to `#F3C06A`. Never three. | Same as Brij Labs |
+
+**The gradient is per product, never shared.** Only the parent brand uses the 3-stop spectrum; the products use two stops, and sage is always one of them. A two-tone gradient names the product on sight, so putting the full spectrum on Signal or Agents material breaks the system. What genuinely is company-level: the type system (Plus Jakarta Sans + Arbutus Slab + Heebo) and sage as the one stop every gradient keeps. Radii and spacing are **not** shared: Brij Labs uses 28px panels and 52px pills, while Signal defines its own smaller scale in `signal/signal.css`. Take those from the product's own token file. See the brandbook's Gradient Usage section.
 
 Routing notes for Signal (from `signal/brand.md`):
 

@@ -162,34 +162,65 @@ function FoundationSpacing() {
 function FoundationLogo() {
   // Literal src paths (not template strings) so the standalone bundle can
   // rewrite them to packed assets.
-  const LOGOS = [
-    { src: '../../assets/logos/brij-light.svg', label: 'Brij · light' },
-    { src: '../../assets/logos/brij-dark.svg',  label: 'Brij · dark' },
+  const MARKS = [
+    { src: '../../assets/logo-b-mark-gradient.svg', label: 'Mark · gradient', file: 'assets/logo-b-mark-gradient.svg',
+      use: 'Standalone cut pentagon. Works on dark or ink surfaces and on light ones. Deck intros, video bumpers, badges.' },
+    { src: '../../assets/logo-b-mark.svg',          label: 'Mark · ink',      file: 'assets/logo-b-mark.svg',
+      use: 'Standalone cut pentagon in ink, on cream or white. Decorative anchor, section badge, contact block at low opacity.' },
   ];
   return (
     <Component id="logo" name="Logo & Mark" tag="Foundation"
-      desc='The pentagon mark is the only logo. The parent brand has two official files: light (gradient fill) and dark (ink fill). Product lockups (Brij Signal, Brij Agents) live in the Products chapter - never mix them here. The name is always typeset live in Arbutus Slab next to the mark - never baked into the asset.'
+      desc='The Brij mark is the pentagon WITH the diagonal cut through the middle. A solid, uncut pentagon is not the Brij logo. There are exactly three variants: the full logo (mark + wordmark), the gradient mark, and the ink mark. Never invent a fourth. Product marks (Brij Signal, Brij Agents) live in the Products chapter - never mix them here.'
       stageTone="cream"
       spec={[
-        ['Mark',    'Pentagon · 170×165 viewBox · never redrawn'],
-        ['Light',   'Gradient fill · #7DC0F0 → #DDE782 → #F3C06A'],
-        ['Dark',    'Ink fill · #272727'],
-        ['Lockup',  'Mark + "Brij" in Arbutus Slab · 0.05em tracking'],
-        ['Files',   'assets/logos/brij-light.svg · brij-dark.svg'],
-        ['Products','See Products → Brij Signal / Brij Agents for their lockups'],
-      ]}>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
-        {LOGOS.map((l) => (
+        ['Mark',      'Cut pentagon · 133×128 viewBox · never redrawn'],
+        ['Full logo', 'Mark + wordmark · assets/brij-wordmark.svg'],
+        ['Gradient',  'Sky → sage → sun · #98C6E7 → #D8E094 → #F3C06A'],
+        ['Ink',       'Ink fill · #181B18'],
+        ['Wordmark',  'Arbutus Slab Regular · 7.37px letter-spacing'],
+        ['Never',     'A solid uncut pentagon. mark-dark-sm/md/lg.svg and mark-gradient-*.svg are retired drafts'],
+        ['Products',  'See Products → Brij Signal / Brij Agents for their marks'],
+      ]}
+      dodont={{
+        do: (
+          <>
+            <div>Use one of the three variants exactly as drawn</div>
+            <div>Mark sits left of the wordmark when both are shown</div>
+            <div>Size the SVG with width or height only</div>
+          </>
+        ),
+        dont: (
+          <>
+            <div>Never use a solid, uncut pentagon as the logo</div>
+            <div>Never use mark-dark-*.svg or mark-gradient-*.svg, they are retired drafts</div>
+            <div>Never redraw, recolor, or invent a stand-in shape</div>
+          </>
+        ),
+      }}>
+      <div style={{ background: 'var(--brij-white)', border: '1px solid var(--border)', borderRadius: 8, padding: '40px 24px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', minHeight: 150 }}>
+        <img src="../../assets/brij-wordmark.svg" alt="Brij" style={{ height: 54 }} />
+        <div style={{ position: 'absolute', top: 8, left: 12, fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--fg-3)' }}>Full logo · mark + wordmark</div>
+        <div style={{ position: 'absolute', bottom: 8, right: 12, fontSize: 10, color: 'var(--fg-3)', fontFamily: 'JetBrains Mono, monospace' }}>assets/brij-wordmark.svg</div>
+      </div>
+      <div style={{ marginTop: 12, display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
+        {MARKS.map((l) => (
           <div key={l.src} style={{ background: 'var(--brij-white)', border: '1px solid var(--border)', borderRadius: 8, padding: '40px 24px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', minHeight: 160 }}>
             <img src={l.src} alt={l.label} style={{ height: 72 }} />
             <div style={{ position: 'absolute', top: 8, left: 12, fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--fg-3)' }}>{l.label}</div>
+            <div style={{ position: 'absolute', bottom: 8, right: 12, fontSize: 10, color: 'var(--fg-3)', fontFamily: 'JetBrains Mono, monospace' }}>{l.file}</div>
           </div>
         ))}
       </div>
-      <div style={{ marginTop: 16, background: 'var(--brij-white)', border: '1px solid var(--border)', borderRadius: 8, padding: '40px 24px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 14, position: 'relative', minHeight: 140 }}>
-        <img src="../../assets/logos/brij-light.svg" alt="Brij" style={{ height: 44 }} />
-        <span style={{ fontFamily: 'var(--brij-serif)', fontSize: 34, letterSpacing: '0.05em' }}>Brij</span>
-        <div style={{ position: 'absolute', top: 8, left: 12, fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--fg-3)' }}>Lockup · mark + live type</div>
+      <div style={{ marginTop: 12, display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
+        {MARKS.map((l) => (
+          <div key={l.file} style={{ fontSize: 13, lineHeight: 1.5, letterSpacing: '0.02em', color: 'var(--fg-2)' }}>{l.use}</div>
+        ))}
+      </div>
+      <div style={{ marginTop: 16, background: 'var(--brij-cream)', border: '1px solid var(--border)', borderRadius: 8, padding: '20px 24px' }}>
+        <div style={{ fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--fg-3)', marginBottom: 8 }}>Not this</div>
+        <div style={{ fontSize: 14, lineHeight: 1.6, color: 'var(--fg-1)' }}>
+          A solid, uncut pentagon is never the Brij logo. The files mark-gradient-md.svg, mark-dark-sm.svg, mark-dark-md.svg and mark-dark-lg.svg are solid-pentagon drafts: never use them, at any size, and never draw a solid pentagon or any invented shape as a stand-in. The cut through the middle is the mark.
+        </div>
       </div>
     </Component>
   );
@@ -198,15 +229,19 @@ function FoundationLogo() {
 function FoundationLogoMotion() {
   return (
     <Component id="logo-motion" name="Logo · Motion" tag="Foundation"
-      desc="The animated mark. The canonical opener for videos, deck intros, and social motion posts. Use it once, at the start - never looping as page decoration."
+      desc="The animated mark. The canonical opener for videos, deck intros, and social motion posts. Use it once, at the start - never looping as page decoration. The ident opens on an uncut shape and cuts it: that opening frame is a transitional state inside the animation, never a static logo."
       stageTone="cream"
       spec={[
         ['File',    'ui_kits/component_library/assets/logo-motion.mp4'],
         ['Use',     'Video openers, deck intros, LinkedIn motion posts'],
         ['Rule',    'Plays once at the start of a piece - not ambient decoration'],
+        ['Rule',    'Resolves on the cut pentagon. Never freeze or export the opening frame'],
       ]}>
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <video src="./assets/logo-motion.mp4" autoPlay loop muted playsInline style={{ width: '100%', maxWidth: 560, borderRadius: 8, border: '1px solid var(--border)', background: 'var(--brij-white)' }} />
+      </div>
+      <div style={{ marginTop: 12, textAlign: 'center', fontSize: 12, lineHeight: 1.5, color: 'var(--fg-3)' }}>
+        The animation resolves on the cut pentagon. Only the resolved mark is the logo.
       </div>
     </Component>
   );

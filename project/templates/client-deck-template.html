@@ -11,10 +11,12 @@ HOW TO USE
    e.g. presentations/brij-signal/acme/kickoff-2026-09-14.html
 2. SET THE PRODUCT FIRST, before any other edit: at the top of the
    <style> block, uncomment your product's token block (Brij Labs,
-   which is also Brij Agents, or Brij Signal) and comment out the
-   one that was active, then swap the logo to that same product
-   using the LOGO section right below it. Tokens and logo must
-   match. Mixing products in one artifact is forbidden.
+   Brij Agents, or Brij Signal) and comment out the one that was
+   active, then swap the logo to that same product using the LOGO
+   section right below it. Tokens and logo must match. Each product
+   carries its own gradient and accent inside that block: Labs runs
+   the 3-stop spectrum, Signal and Agents run two stops only.
+   Mixing products in one artifact is forbidden.
    The deck stays DARK for every product: light means internal,
    dark means client, and that rule is absolute.
 3. Replace every [BRACKETED] placeholder. Search the file for "["
@@ -67,24 +69,40 @@ HOW TO USE
    THIS DECK IS DARK FOR EVERY PRODUCT.
    Light means internal, dark means client, and that rule is absolute.
    Never turn this deck light, for any product, for any reason.
-   What actually changes per product here is:
+   What changes per product here is:
      a. the dark surface tuning (Labs and Agents sit on the brand ink
-        black-green, Signal on its cool navy charcoal), and
-     b. above all, the LOGO.
-   The signature gradient and the orange accent #F3C06A are
-   company-level: identical in all three products, so they live in the
-   SHARED block further down and never change.
+        black-green, Signal on its cool navy charcoal),
+     b. the GRADIENT and the accent, and
+     c. above all, the LOGO.
 
-   Brij Agents is an aliases-only product: every value traces back to
-   Brij Labs, so the Labs block serves Agents unchanged. Only the name
-   you type in the brandbar and the copy differ.
+   THE GRADIENT IS PER PRODUCT, NOT COMPANY-LEVEL.
+     Brij Labs    the full 3-stop spectrum, sun to sage to sky.
+                  Parent brand only, never on product material.
+     Brij Signal  two stops only, sage to sky. Never three. Signal
+                  stays cool: no sun anywhere in Signal material.
+     Brij Agents  two stops only, sage to sun. Never three. Agents
+                  stays warm: no sky anywhere in Agents material.
+   Sage #D8E094 is the one stop every product keeps. The accent
+   follows the product too: sky #98C6E7 for Signal, sun #F3C06A for
+   Labs and Agents. All of it lives inside each :root product block
+   below, so it switches when the block switches. The SVG mark
+   gradient #bgrad reads those same tokens, so the logo re-colours
+   itself and a Signal deck never renders a 3-stop mark.
+
+   Brij Agents is aliases-only for surfaces, ink and type, so its
+   block repeats the Labs surface values. Its gradient differs, which
+   is why Agents gets a block of its own instead of sharing the Labs
+   one. Only the name you type in the brandbar and the copy differ.
    ################################################################## */
 
 /* ------------------------------------------------------------------
-   ACTIVE  ::  BRIJ LABS  (the company, the default)  +  BRIJ AGENTS
-   Source: colors_and_type.css and design-system/dist/agent.css.
+   ACTIVE  ::  BRIJ LABS  (the company, the default)
+   Source: colors_and_type.css.
    Dark surfaces derive from the brand ink #181B18, a neutral
    black-green; text is a warm sage white.
+   Gradient: the full 3-stop spectrum. Parent brand only.
+   --brand-grad-1/2/3 are gradient POSITIONS, not climate names, so
+   the wash radials and the SVG mark stay correct in every product.
    Never put a comment inside a product block: it has to survive
    being wrapped in a comment when you switch away from it.
    ------------------------------------------------------------------ */
@@ -100,15 +118,55 @@ HOW TO USE
   --text-primary:80 10% 93%;
   --text-secondary:80 7% 78%;
   --text-tertiary:80 6% 62%;
+
+  --brand-grad-1:#F3C06A;
+  --brand-grad-2:#D8E094;
+  --brand-grad-3:#98C6E7;
+  --brand-gradient:linear-gradient(135deg,#F3C06A 0%,#D8E094 46%,#98C6E7 100%);
+  --accent:#F3C06A;
 }
+
+/* ------------------------------------------------------------------
+   BRIJ AGENTS  ::  to activate, delete the two bare comment lines
+   that wrap the block below (the slash-star line and the star-slash
+   line), and wrap the block that is active now in a pair of its own.
+   Surfaces, ink and type are the Labs values unchanged: Agents is an
+   aliases-only product. What differs is the gradient and nothing
+   else, so this block exists only to carry it.
+   Gradient: two stops, sage to sun. Never three, and never any sky.
+   The logo is the same cut pentagon as Labs, so leave OPTION A in
+   the body; #bgrad re-colours it from the tokens here.
+   ------------------------------------------------------------------ */
+/*
+:root{
+  --background:120 6% 10%;
+  --foreground:80 10% 93%;
+  --card:120 5% 14%;
+  --card-foreground:80 10% 93%;
+  --muted:120 5% 17%;
+  --muted-foreground:80 7% 78%;
+  --border:120 5% 26%;
+
+  --text-primary:80 10% 93%;
+  --text-secondary:80 7% 78%;
+  --text-tertiary:80 6% 62%;
+
+  --brand-grad-1:#F3C06A;
+  --brand-grad-2:#D8E094;
+  --brand-grad-3:#D8E094;
+  --brand-gradient:linear-gradient(135deg,#D8E094 0%,#F3C06A 100%);
+  --accent:#F3C06A;
+}
+*/
 
 /* ------------------------------------------------------------------
    BRIJ SIGNAL  ::  to activate, delete the two bare comment lines
    that wrap the block below (the slash-star line and the star-slash
-   line), and wrap the Labs block above in a pair of its own.
+   line), and wrap the block that is active now in a pair of its own.
    Then swap the logo to the Signal mark.
    Source: signal/signal.css, dark theme. Soft cool navy charcoal,
    never pure black; cards lift to 14 percent.
+   Gradient: two stops, sage to sky. Never three, and never any sun.
    ------------------------------------------------------------------ */
 /*
 :root{
@@ -123,6 +181,12 @@ HOW TO USE
   --text-primary:220 15% 93%;
   --text-secondary:220 10% 78%;
   --text-tertiary:220 8% 62%;
+
+  --brand-grad-1:#D8E094;
+  --brand-grad-2:#D8E094;
+  --brand-grad-3:#98C6E7;
+  --brand-gradient:linear-gradient(135deg,#D8E094 0%,#98C6E7 100%);
+  --accent:#98C6E7;
 }
 */
 
@@ -133,7 +197,9 @@ HOW TO USE
    once in the .cover-mark on slide 1. Both are marked [LOGO]. To
    switch product, replace the viewBox AND the path d in BOTH places
    with the option below that matches your active token block. Keep
-   fill="url(#bgrad)": that shared gradient serves either mark.
+   fill="url(#bgrad)": #bgrad reads --brand-grad-1/2/3 from the
+   active product block, so the mark takes that product's gradient
+   on its own. Do not hardcode stop colours back into it.
    Never use a solid pentagon and never invent a shape.
 
    OPTION A  ::  BRIJ LABS + BRIJ AGENTS  (currently in the body)
@@ -163,13 +229,10 @@ HOW TO USE
 
   --ease-default:cubic-bezier(.16,1,.3,1);
   --ease-emphasized:cubic-bezier(.22,1,.36,1);
-
-  /* the brand gradient: the only place green + blue exist, never solid fills */
-  --brand-grad-sun:#F3C06A;
-  --brand-grad-leaf:#D8E094;
-  --brand-grad-sky:#98C6E7;
-  --brand-gradient:linear-gradient(135deg,#F3C06A 0%,#D8E094 46%,#98C6E7 100%);
 }
+/* The gradient is NOT here. It is per product: see --brand-grad-1/2/3
+   and --brand-gradient in the PRODUCT TOKENS blocks above. It is the
+   only place green and blue exist, and never a solid fill. */
 
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
@@ -184,9 +247,9 @@ body{
 
 /* ============ background wash: layered fixed radial gradients ============ */
 .wash{position:fixed;inset:0;z-index:0;pointer-events:none;background:
-  radial-gradient(58% 52% at 6% 94%, color-mix(in srgb, var(--brand-grad-sun) 9%, transparent), transparent 62%),
-  radial-gradient(46% 60% at 0% 34%, color-mix(in srgb, var(--brand-grad-leaf) 7%, transparent), transparent 60%),
-  radial-gradient(52% 46% at 98% 4%, color-mix(in srgb, var(--brand-grad-sky) 9%, transparent), transparent 64%)}
+  radial-gradient(58% 52% at 6% 94%, color-mix(in srgb, var(--brand-grad-1) 9%, transparent), transparent 62%),
+  radial-gradient(46% 60% at 0% 34%, color-mix(in srgb, var(--brand-grad-2) 7%, transparent), transparent 60%),
+  radial-gradient(52% 46% at 98% 4%, color-mix(in srgb, var(--brand-grad-3) 9%, transparent), transparent 64%)}
 
 /* ============ chrome ============ */
 .brandbar{position:fixed;top:30px;inset-inline-start:44px;z-index:40;display:flex;align-items:center;gap:11px;
@@ -208,7 +271,7 @@ body{
   background:hsl(var(--background));border:1.5px solid hsl(var(--text-tertiary)/.45);transition:all .5s var(--ease-default)}
 [dir="rtl"] .stop{transform:translate(50%,-50%)}
 .stop.passed{background:var(--brand-gradient);border-color:transparent;
-  box-shadow:0 0 10px color-mix(in srgb, var(--brand-grad-leaf) 55%, transparent)}
+  box-shadow:0 0 10px color-mix(in srgb, var(--brand-grad-2) 55%, transparent)}
 .word{position:absolute;top:12px;transform:translateX(-50%);font:700 10.5px/1 var(--font-sans);
   letter-spacing:.26em;text-transform:uppercase;color:hsl(var(--text-tertiary)/.75);white-space:nowrap;
   transition:color .5s,opacity .5s;opacity:.75}
@@ -271,7 +334,7 @@ body{
 /* ------- 1 · cover ------- */
 .cover-mark{margin-bottom:42px}
 .cover-mark svg{width:clamp(56px,6vw,76px);height:auto;display:block;
-  filter:drop-shadow(0 0 26px color-mix(in srgb, var(--brand-grad-sun) 30%, transparent))}
+  filter:drop-shadow(0 0 26px color-mix(in srgb, var(--accent) 30%, transparent))}
 .cover-meta{display:flex;gap:10px;align-items:center;margin-top:56px;flex-wrap:wrap;justify-content:center}
 
 /* ------- 2 · agenda ------- */
@@ -336,7 +399,7 @@ body{
 .tl::before{content:"";position:absolute;top:0;inset-inline:0;height:2px;border-radius:2px;background:var(--brand-gradient);opacity:.9}
 .ph{position:relative}
 .ph::before{content:"";position:absolute;top:-42px;inset-inline-start:2px;width:9px;height:9px;border-radius:50%;
-  background:var(--brand-gradient);box-shadow:0 0 10px color-mix(in srgb, var(--brand-grad-leaf) 55%, transparent)}
+  background:var(--brand-gradient);box-shadow:0 0 10px color-mix(in srgb, var(--brand-grad-2) 55%, transparent)}
 .ph .pw{font:700 10.5px/1 var(--font-sans);letter-spacing:.2em;text-transform:uppercase;color:hsl(var(--text-tertiary))}
 .ph .pn2{font:400 clamp(17px,1.5vw,22px)/1.3 var(--font-display);color:hsl(var(--foreground));margin-top:10px}
 .ph .pd{font:400 13px/1.65 var(--font-sans);color:hsl(var(--text-secondary));margin-top:9px;max-width:30ch}
@@ -398,7 +461,7 @@ body{
 <!-- shared gradient for SVG strokes/fills -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <linearGradient id="bgrad" x1="0" y1="1" x2="1" y2="0">
-<stop offset="0" stop-color="#98C6E7"/><stop offset=".5" stop-color="#D8E094"/><stop offset="1" stop-color="#F3C06A"/>
+<stop offset="0" style="stop-color:var(--brand-grad-3)"/><stop offset=".5" style="stop-color:var(--brand-grad-2)"/><stop offset="1" style="stop-color:var(--brand-grad-1)"/>
 </linearGradient>
 </defs></svg>
 

@@ -45,6 +45,7 @@
         <Section num="04 - Category" title="Products"
           desc="Sub-brand architecture. One wordmark, one palette, one letter each - every product claims a climate of the brand gradient. Signal runs sky, Agents runs sun, sage is the shared middle.">
           <ProductsOverview />
+          <ProductIdentityMap />
           <ProductGradients />
           <ProductSignal />
           <ProductSignalInterface />
@@ -111,7 +112,8 @@
       }, []);
       return (
         <Section num="02 - Category" title="Templates"
-          desc="Ready-made layouts you can duplicate and edit. Start with a starter file, then drop in any of the layouts below.">
+          desc="Ready-made layouts you can duplicate and edit. Start with a canonical presentation template, or a starter file, then drop in any of the layouts below.">
+          <PresentationTemplates />
           <Templates />
           <div className="lib-subtabs" role="tablist" aria-label="Template categories">
             {TABS.map((t) => (

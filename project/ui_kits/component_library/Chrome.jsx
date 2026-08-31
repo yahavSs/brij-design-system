@@ -18,6 +18,7 @@ const NAV = [
   ]},
   { tier: 'primary', route: 'products', title: 'Products', items: [
     { id: 'products-overview', label: 'Family Overview' },
+    { id: 'product-identity',  label: 'Identity Map' },
     { id: 'product-gradients', label: 'Gradient Usage' },
     { id: 'product-signal',    label: 'Brij Signal' },
     { id: 'product-signal-interface', label: 'Signal · Interface' },
@@ -25,6 +26,7 @@ const NAV = [
     { id: 'product-agents',    label: 'Brij Agents · CorpBrain' },
   ]},
   { tier: 'primary', route: 'templates', title: 'Templates', items: [
+    { id: 'presentation-templates', label: 'Presentation Templates', tab: 'starter' },
     { id: 'templates',     label: 'Starter Templates', tab: 'starter' },
     { kind: 'subhead', label: 'Slides' },
     { id: 'slide-title',   label: 'Title',           tab: 'slides' },

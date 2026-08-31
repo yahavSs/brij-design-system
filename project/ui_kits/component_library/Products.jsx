@@ -85,6 +85,124 @@ function ProductsOverview() {
   );
 }
 
+// ─── Product identity map ────────────────────────────────────
+// Mirrors SKILL.md Stage 0 Q1, with the gradient and accent taken from the
+// Gradient Usage section below: those are per product, not company-level.
+const IDENTITY_ROWS = [
+  {
+    product: 'Brij Labs',
+    note: 'The company, the parent Intelligence Lab. The default.',
+    tokens: 'colors_and_type.css',
+    tokensNote: '',
+    logo: 'The cut pentagon mark plus the wordmark, from assets/.',
+    gradName: 'Full spectrum · 3 stops',
+    gradCss: 'linear-gradient(135deg,#F3C06A 0%,#D8E094 50%,#98C6E7 100%)',
+    gradStops: '#F3C06A → #D8E094 → #98C6E7',
+    gradRule: 'Three stops, always. Parent brand only, never on product material.',
+    accentName: 'Sun',
+    accentHex: '#F3C06A',
+  },
+  {
+    product: 'Brij Signal',
+    note: 'Signal intelligence for reputation. "The Operating System for Reputation".',
+    tokens: 'signal/signal.css',
+    tokensNote: '',
+    logo: 'The Signal mark, from signal/assets/.',
+    gradName: 'Sage → sky · 2 stops',
+    gradCss: 'linear-gradient(135deg,#D8E094 0%,#98C6E7 100%)',
+    gradStops: '#D8E094 → #98C6E7',
+    gradRule: 'Two stops only, never three. Signal stays cool: no sun anywhere.',
+    accentName: 'Sky',
+    accentHex: '#98C6E7',
+  },
+  {
+    product: 'Brij Agents',
+    note: 'Aliases-only. Surfaces, ink and type trace back to Brij Labs.',
+    tokens: 'dist/agent.css',
+    tokensNote: 'White surface, panel #EBEDE7, ink #181B18, Plus Jakarta Sans + Arbutus Slab + Heebo, all identical to Labs. The compiled reference is dist/agent.css in the unified token pipeline at brij-command-center/design-system/.',
+    logo: 'Same as Brij Labs.',
+    gradName: 'Sage → sun · 2 stops',
+    gradCss: 'linear-gradient(135deg,#D8E094 0%,#F3C06A 100%)',
+    gradStops: '#D8E094 → #F3C06A',
+    gradRule: 'Two stops only, never three. Agents stays warm: no sky anywhere.',
+    accentName: 'Sun',
+    accentHex: '#F3C06A',
+  },
+];
+
+function ProductIdentityMap() {
+  return (
+    <Component id="product-identity" name="Product Identity Map" tag="Architecture"
+      desc="Which product am I in. Answer this before anything else: the product dictates the tokens, the gradient, the accent, and the logo. This table mirrors Stage 0 Q1 of the Brij design skill, with the gradient and accent taken from Gradient Usage below."
+      stageTone="cream"
+      spec={[
+        ['Brij Labs',   'colors_and_type.css · 3-stop spectrum · sun accent · mark + wordmark'],
+        ['Brij Signal', 'signal/signal.css · sage → sky · sky accent · Signal mark'],
+        ['Brij Agents', 'dist/agent.css (aliases-only) · sage → sun · sun accent · Labs logos'],
+        ['Gradient',    'Per product. Products run two stops only, never the 3-stop spectrum'],
+        ['Shared',      'The type system and sage #D8E094 as the stop every gradient keeps'],
+        ['Rule',        'Exactly one product per artifact. Mixing products is forbidden.'],
+      ]}>
+      <div style={{ background: 'var(--brij-white)', border: '1px solid var(--border)', borderRadius: 12, overflow: 'hidden' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1.1fr 1fr 1.1fr', gap: 20, padding: '14px 24px', borderBottom: '1px solid var(--border)', background: 'var(--brij-cream)' }}>
+          {['Product', 'Tokens', 'Logo'].map((h) => (
+            <div key={h} style={{ fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--fg-3)', fontWeight: 600 }}>{h}</div>
+          ))}
+        </div>
+        {IDENTITY_ROWS.map((r, i) => (
+          <div key={r.product} style={{ padding: '20px 24px', borderBottom: i === IDENTITY_ROWS.length - 1 ? 'none' : '1px solid var(--border)' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1.1fr 1fr 1.1fr', gap: 20, alignItems: 'start' }}>
+              <div>
+                <div style={{ fontFamily: 'var(--brij-serif)', fontSize: 17, letterSpacing: '0.02em', color: 'var(--fg-1)' }}>{r.product}</div>
+                <div style={{ fontSize: 13, lineHeight: 1.5, letterSpacing: '0.02em', color: 'var(--fg-2)', marginTop: 6 }}>{r.note}</div>
+              </div>
+              <div>
+                <div style={{ fontSize: 12, color: 'var(--fg-1)', fontFamily: 'JetBrains Mono, monospace' }}>{r.tokens}</div>
+                {r.tokensNote && <div style={{ fontSize: 13, lineHeight: 1.5, letterSpacing: '0.02em', color: 'var(--fg-2)', marginTop: 6 }}>{r.tokensNote}</div>}
+              </div>
+              <div style={{ fontSize: 13, lineHeight: 1.5, letterSpacing: '0.02em', color: 'var(--fg-2)' }}>{r.logo}</div>
+            </div>
+            <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid var(--border)', display: 'grid', gap: 8 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 16, flexWrap: 'wrap' }}>
+                <span style={{ fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--fg-3)', fontWeight: 600 }}>Gradient · {r.gradName}</span>
+                <span style={{ fontSize: 11, color: 'var(--fg-3)', fontFamily: 'JetBrains Mono, monospace' }}>{r.gradStops}</span>
+              </div>
+              <div style={{ height: 8, borderRadius: 52, background: r.gradCss }} />
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+                <span style={{ fontSize: 13, lineHeight: 1.5, letterSpacing: '0.02em', color: 'var(--fg-2)' }}>{r.gradRule}</span>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginLeft: 'auto' }}>
+                  <span style={{ width: 12, height: 12, borderRadius: 4, background: r.accentHex }} />
+                  <span style={{ fontSize: 12, letterSpacing: '0.02em', color: 'var(--fg-2)' }}>Accent · {r.accentName} {r.accentHex}</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div style={{ marginTop: 16, display: 'grid', gap: 12 }}>
+        <div style={{ background: 'var(--brij-cream)', border: '1px solid var(--border)', borderRadius: 8, padding: '20px 24px' }}>
+          <div style={{ fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--fg-3)', marginBottom: 8 }}>Switching product</div>
+          <div style={{ fontSize: 14, lineHeight: 1.6, color: 'var(--fg-1)' }}>
+            The two presentation templates carry an in-file PRODUCT TOKENS block at the top of their <b>{'<style>'}</b> plus a LOGO section right below it, so switching product is: uncomment that product{'’'}s token block, comment the other, and swap the logo to match. The gradient and the accent live inside that token block, so they switch with it. Exactly one product block is ever live, and mixing products in one artifact is forbidden.
+          </div>
+        </div>
+        <div style={{ background: 'var(--brij-cream)', border: '1px solid var(--border)', borderRadius: 8, padding: '20px 24px' }}>
+          <div style={{ fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--fg-3)', marginBottom: 8 }}>The gradient is per product</div>
+          <div style={{ fontSize: 14, lineHeight: 1.6, color: 'var(--fg-1)' }}>
+            The 3-stop spectrum belongs to the parent brand alone. Signal and Agents each keep sage and swap the far stop for their own climate: two stops only, never three. The accent follows the product too, so Signal stays cool on sky #98C6E7 while Labs and Agents run sun #F3C06A. Full rule in Gradient Usage below.
+          </div>
+        </div>
+        <div style={{ background: 'var(--brij-cream)', border: '1px solid var(--border)', borderRadius: 8, padding: '20px 24px' }}>
+          <div style={{ fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--fg-3)', marginBottom: 8 }}>Shared across all three</div>
+          <div style={{ fontSize: 14, lineHeight: 1.6, color: 'var(--fg-1)' }}>
+            The type system: Plus Jakarta Sans for text, Arbutus Slab for display, Heebo for Hebrew. And sage #D8E094, the one stop every gradient keeps. Surfaces, ink, radii and the rest are per product, so verify against that product{'’'}s token file before reusing a value.
+          </div>
+        </div>
+      </div>
+    </Component>
+  );
+}
+
 // ─── Gradient usage ──────────────────────────────────────────
 const GRAD_ROWS = [
   { name: 'Brij · full spectrum', css: 'linear-gradient(135deg,#F3C06A 0%,#D8E094 50%,#98C6E7 100%)', stops: '#F3C06A → #D8E094 → #98C6E7', use: 'Parent brand only - the corporate logo, brand-level decks, the website. Three stops, always.' },
@@ -367,4 +485,4 @@ function ProductAgents() {
   );
 }
 
-Object.assign(window, { ProductsOverview, ProductGradients, ProductSignal, ProductSignalInterface, ProductSignalCharts, ProductAgents });
+Object.assign(window, { ProductsOverview, ProductIdentityMap, ProductGradients, ProductSignal, ProductSignalInterface, ProductSignalCharts, ProductAgents });
