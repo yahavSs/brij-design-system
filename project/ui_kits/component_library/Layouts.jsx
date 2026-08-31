@@ -1,117 +1,6 @@
 // ══════════════════════════════════════════════════════════════
-// Deck & Doc Layouts + Templates + Rules
+// Doc Layouts + Templates + Rules
 // ══════════════════════════════════════════════════════════════
-
-// Slide frame - fixed 16:9 scaled to fit
-function Slide({ children, tone = 'cream' }) {
-  const bg = tone === 'ink' ? 'var(--brij-ink)' : 'var(--brij-cream)';
-  const fg = tone === 'ink' ? 'var(--brij-cream)' : 'var(--fg-1)';
-  return (
-    <div style={{ position: 'relative', width: '100%', aspectRatio: '16/9', background: bg, color: fg, border: '1px solid var(--border)', borderRadius: 8, overflow: 'hidden', containerType: 'inline-size' }}>
-      {children}
-    </div>
-  );
-}
-
-function SlideTitle() {
-  return (
-    <Component id="slide-title" name="Title Slide" tag="Deck" desc="Opens a deck. Wordmark small top-left, big display headline center, coordinate divider bottom.">
-      <Slide>
-        <div style={{ position: 'absolute', top: '4%', left: '5%' }}>
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.8cqi' }}><img src="../../assets/logos/brij-light.svg" alt="Brij" style={{ height: '3cqi' }} /><span style={{ fontFamily: 'var(--brij-serif)', fontSize: '2.4cqi', letterSpacing: '0.05em' }}>Brij</span></span>
-        </div>
-        <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '0 5%', containerType: 'inline-size' }}>
-          <div style={{ fontSize: '1.3cqi', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--fg-3)', marginBottom: '2cqi' }}>[ Intelligence Lab · Q1 2025 ]</div>
-          <div style={{ fontFamily: 'var(--brij-sans)', fontWeight: 700, fontSize: '7cqi', lineHeight: 1.02, letterSpacing: '-0.01em' }}>Decisive competitive<br/>advantage.</div>
-        </div>
-        <div style={{ position: 'absolute', bottom: '3%', left: '5%', right: '5%', display: 'flex', justifyContent: 'space-between', fontSize: '1.1cqi', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--fg-3)', borderTop: '1px solid var(--border)', paddingTop: '1.6cqi' }}>
-          <span>Intelligence Lab.</span><span>Tel Aviv</span>
-        </div>
-      </Slide>
-    </Component>
-  );
-}
-
-function SlideSection() {
-  return (
-    <Component id="slide-section" name="Section Divider" tag="Deck" desc="Big number + category label + serif headline. Signals a new chapter.">
-      <Slide tone="ink">
-        <div style={{ position: 'absolute', inset: 0, display: 'grid', gridTemplateColumns: '22% 1fr', alignItems: 'center', padding: '0 5%', gap: '3cqi' }}>
-          <div style={{ fontFamily: 'var(--brij-serif)', fontSize: '14cqi', lineHeight: 1, color: 'var(--brij-cream)' }}>02</div>
-          <div>
-            <div style={{ fontSize: '1.3cqi', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--brij-t3)', marginBottom: '2cqi' }}>Strategy</div>
-            <div style={{ fontFamily: 'var(--brij-serif)', fontSize: '5.5cqi', fontWeight: 400, lineHeight: 1.1 }}>How we move from here.</div>
-          </div>
-        </div>
-      </Slide>
-    </Component>
-  );
-}
-
-function SlideQuote() {
-  return (
-    <Component id="slide-quote" name="Big Quote Slide" tag="Deck" desc="Full-bleed pull quote. Attribution small bottom-right.">
-      <Slide>
-        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', padding: '0 8%' }}>
-          <blockquote style={{ position: 'relative', paddingLeft: '3cqi' }}>
-            <span aria-hidden style={{ position: 'absolute', left: 0, top: 4, bottom: 4, width: 1, background: 'linear-gradient(180deg, #f3c06a 0%, #d8e094 50%, #98c6e7 100%)' }} />
-            <p style={{ fontFamily: 'var(--brij-serif)', fontSize: '4.2cqi', lineHeight: 1.2, color: 'var(--fg-1)', marginBottom: '2.4cqi' }}>
-              We don{'’'}t wait for things to settle. We move with the current.
-            </p>
-            <cite style={{ fontSize: '1.1cqi', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--fg-3)', fontStyle: 'normal' }}>Brand manifesto</cite>
-          </blockquote>
-        </div>
-      </Slide>
-    </Component>
-  );
-}
-
-function SlideStat() {
-  return (
-    <Component id="slide-stat" name="Stat Callout Slide" tag="Deck" desc="One number. One sentence. Nothing else.">
-      <Slide>
-        <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '0 6%' }}>
-          <div style={{ fontSize: '1.3cqi', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--fg-3)', marginBottom: '1.2cqi' }}>Outcome</div>
-          <div style={{ fontFamily: 'var(--brij-sans)', fontWeight: 700, fontSize: '18cqi', lineHeight: 0.95, letterSpacing: '-0.02em', marginBottom: '1.6cqi' }}>+34%</div>
-          <div style={{ fontFamily: 'var(--brij-serif)', fontSize: '2.6cqi', color: 'var(--fg-2)', maxWidth: '70%' }}>90-day retention lift for a European neobank after six weeks of work.</div>
-        </div>
-      </Slide>
-    </Component>
-  );
-}
-
-function SlideCase() {
-  return (
-    <Component id="slide-case" name="Case Study Slide" tag="Deck" desc="Image left, case copy right. Split 5:4.">
-      <Slide>
-        <div style={{ position: 'absolute', inset: 0, display: 'grid', gridTemplateColumns: '5fr 4fr' }}>
-          <div style={{ background: 'linear-gradient(135deg,#f3c06a,#d8e094 46%,#98c6e7)' }} />
-          <div style={{ padding: '0 5%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-            <div style={{ fontSize: '1.3cqi', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--fg-3)', marginBottom: '1.6cqi' }}>[ Case · FinTech 2025 ]</div>
-            <div style={{ fontFamily: 'var(--brij-serif)', fontSize: '3.2cqi', lineHeight: 1.15, color: 'var(--fg-1)', marginBottom: '2.2cqi' }}>Retention AI for a neobank</div>
-            <div style={{ fontSize: '1.6cqi', lineHeight: 1.55, color: 'var(--fg-2)' }}>Shipped a churn-prediction system into production in 6 weeks. Tripled the retention team{'’'}s reach without new headcount.</div>
-          </div>
-        </div>
-      </Slide>
-    </Component>
-  );
-}
-
-function SlideClose() {
-  return (
-    <Component id="slide-close" name="Closing Slide" tag="Deck" desc='Final slide. "Time to brij." as the last word.'>
-      <Slide tone="ink">
-        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <img src="../../assets/logos/brij-light.svg" alt="" style={{ position: 'absolute', width: '32%', opacity: 0.12 }} />
-          <div style={{ textAlign: 'center', position: 'relative' }}>
-            <div style={{ fontFamily: 'var(--brij-serif)', fontSize: '7.5cqi', color: 'var(--brij-cream)' }}>Time to brij.</div>
-            <div style={{ marginTop: '2.2cqi', fontSize: '1.4cqi', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--brij-t3)' }}>hello@brijlabs.ai</div>
-          </div>
-        </div>
-      </Slide>
-    </Component>
-  );
-}
 
 // ─── Doc Layouts ───────────────────────────────────────
 function DocPage({ children }) {
@@ -306,12 +195,11 @@ function PresentationTemplates() {
 // ─── Templates ─────────────────────────────────────────
 function Templates() {
   const items = [
-    { file: 'templates/blank-slide.html',     title: 'Slide Deck',      sub: '16:9 · 1920×1080 · cream' },
     { file: 'templates/blank-doc.html',       title: 'Document',        sub: 'US Letter · 8.5×11 · white' },
     { file: 'templates/blank-onepager.html',  title: 'One-Pager',       sub: 'Web · 1200 wide · cream' },
   ];
   return (
-    <Component id="templates" name="Starter Templates" tag="Templates" desc="Still valid, for docs and one-pagers. One workflow for everything - slides, documents, and pages are all HTML files. Duplicate, edit, and present from your browser. For a presentation, clone one of the two canonical templates above instead." stageTone="cream">
+    <Component id="templates" name="Starter Templates" tag="Templates" desc="Blank starting points for documents and one-pagers. One workflow for everything: documents and pages are HTML files. Duplicate, edit, and present from your browser. For anything presentation-shaped, clone one of the two canonical templates above instead." stageTone="cream">
       <div style={{ background: 'var(--brij-cream)', border: '1px solid var(--border)', borderRadius: 8, padding: '24px 28px', marginBottom: 24 }}>
         <div style={{ fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--fg-3)', marginBottom: 12 }}>How to use</div>
         <ol style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: 10, counterReset: 'how' }}>
@@ -373,7 +261,6 @@ function Rules() {
 }
 
 Object.assign(window, {
-  SlideTitle, SlideSection, SlideQuote, SlideStat, SlideCase, SlideClose,
   DocHeader, DocSection, DocCallout,
   PresentationTemplates, Templates, Rules,
 });

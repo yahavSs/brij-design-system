@@ -28,13 +28,6 @@ const NAV = [
   { tier: 'primary', route: 'templates', title: 'Templates', items: [
     { id: 'presentation-templates', label: 'Presentation Templates', tab: 'starter' },
     { id: 'templates',     label: 'Starter Templates', tab: 'starter' },
-    { kind: 'subhead', label: 'Slides' },
-    { id: 'slide-title',   label: 'Title',           tab: 'slides' },
-    { id: 'slide-section', label: 'Section Divider', tab: 'slides' },
-    { id: 'slide-quote',   label: 'Big Quote',       tab: 'slides' },
-    { id: 'slide-stat',    label: 'Stat Callout',    tab: 'slides' },
-    { id: 'slide-case',    label: 'Case Study',      tab: 'slides' },
-    { id: 'slide-close',   label: 'Closing',         tab: 'slides' },
     { kind: 'subhead', label: 'Documents' },
     { id: 'doc-header',    label: 'Page Header',  tab: 'documents' },
     { id: 'doc-section',   label: 'Section',      tab: 'documents' },

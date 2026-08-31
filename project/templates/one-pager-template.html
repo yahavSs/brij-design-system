@@ -1,0 +1,417 @@
+<!--
+  Brij one-pager template - Brij Signal identity
+  Worked example, not a skeleton: swap the copy, keep the mechanics.
+
+  ONE SOURCE FILE, TWO RENDERINGS
+  Screen keeps real backdrop-filter glass and a scroll reveal. Print flattens
+  the panels to solid white and calms the background: backdrop blur has nothing
+  to sample on paper and renders muddy. Everything print-specific lives in the
+  single @media print block at the bottom.
+
+  MAKE THE PDF
+  /Applications/Google Chrome.app/Contents/MacOS/Google Chrome --headless \
+    --disable-gpu --no-pdf-header-footer --print-to-pdf="out.pdf" \
+    --virtual-time-budget=12000 "file://$PWD/this-file.html"
+  Then confirm it is still ONE page. Copy changes push it to two easily; buy the
+  space back from spacing before you shrink the type.
+
+  FOUR THINGS THAT COST REAL TIME TO LEARN
+  1. Section labels belong in the left margin, not above the paragraph. A label
+     in the text flow forces the eye through it; in the margin it is a marker
+     you glance at. Fixed column width, white-space:nowrap, so labels never wrap
+     and every panel's text starts on the same line down the page.
+  2. Uppercase reads optically larger than lowercase at the same size. To make a
+     caps line look equal to body text, set it ~12% smaller. To look smaller,
+     ~20%.
+  3. Watch CSS specificity. `.panel p` (0,1,1) silently out-specifies `.lead`
+     (0,1,0), so a font-size or color on `.lead` alone never applies. Measure
+     computed styles in the browser rather than trusting the value you wrote.
+  4. Reveal animation must be overridden inside @media print, or the panels
+     print blank. The .js guard keeps the page readable with JS disabled.
+
+  MOBILE IS MANDATORY
+  Run brij-agent/scripts/check_mobile_html.py before shipping, and verify no
+  horizontal overflow at a true 390px viewport. Headless Chrome will not go
+  below ~500px wide; nest the page in a 390px iframe to measure it honestly.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brij Signal</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20170%20165%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%22-15.7%22%20y1%3D%22186.6%22%20x2%3D%22182%22%20y2%3D%2254.2%22%20gradientUnits%3D%22userSpaceOnUse%22%3E%3Cstop%20stop-color%3D%22%23DDE782%22%2F%3E%3Cstop%20offset%3D%22.92%22%20stop-color%3D%22%237DC0F0%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Cpath%20fill%3D%22url%28%23g%29%22%20d%3D%22M168.484%2071.4164C169.278%2070.9246%20170.245%2071.6013%20169.957%2072.4894L144.171%20151.85C141.773%20159.228%20134.898%20164.224%20127.139%20164.224H43.6941C42.0254%20164.224%2040.3974%20163.993%2038.8461%20163.556C33.0905%20161.938%2034.1149%20154.671%2039.1972%20151.522C82.2929%20124.82%20125.389%2098.1184%20168.484%2071.4164ZM74.8914%203.42002C81.1678-1.13998%2089.6668-1.14003%2095.9432%203.42002L163.451%2052.4679C165.043%2053.6246%20164.413%2055.9372%20162.536%2056.5283L20.6296%20101.214C15.3956%20102.862%209.81107%2099.9847%208.11544%2094.7659L0.877739%2072.4894C-1.51962%2065.111%201.10629%2057.028%207.38262%2052.4679L74.8914%203.42002Z%22%2F%3E%3C%2Fsvg%3E">
+<meta property="og:title" content="Brij Signal">
+<meta property="og:site_name" content="Brij Signal">
+<meta property="og:description" content="Signal intelligence for reputation. A live navigation system for where your company stands in the market.">
+<meta property="og:type" content="website">
+<meta name="description" content="Signal intelligence for reputation. A live navigation system for where your company stands in the market.">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Brij Signal">
+<meta name="twitter:description" content="Signal intelligence for reputation. A live navigation system for where your company stands in the market.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Arbutus+Slab&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --font-sans:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    --font-display:'Arbutus Slab',Georgia,'Times New Roman',serif;
+
+    --page:#EDEEE8;          /* sage greige */
+    --ink:#1A2540;           /* brij navy ink */
+    --ink-blue:hsl(223 42% 28%); /* same hue+sat, one step up: reads blue, not black */
+    --ink-deep:#131A2E;      /* hero surface */
+    --t2:#6B6B63;
+    --t3:#7A7A73;
+
+    --glass:rgba(255,255,255,.52);
+    --glass-edge:rgba(255,255,255,.80);
+    --glass-shadow:0 2px 4px rgb(26 37 64 / .03), 0 18px 44px -14px rgb(26 37 64 / .13);
+
+    --grad:linear-gradient(90deg,#F3C06A 0%,#D8E094 46%,#98C6E7 100%);
+    --signal-grad:linear-gradient(90deg,#DDE782 0%,#7DC0F0 100%);
+    --glow-sage:#D8E094;     /* leaf from the brand gradient */
+    --ease:cubic-bezier(.16,1,.3,1);   /* expo-out, the Signal default */
+    --on-dark:#F2F3F0;
+    --on-dark-soft:rgba(242,243,240,.58);
+  }
+
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0;
+    color:var(--ink);
+    font-family:var(--font-sans);
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    padding:clamp(14px,4vw,56px) clamp(14px,4vw,40px);
+    background:
+      radial-gradient(125% 95% at 104% -12%, rgba(152,198,231,.17) 0%, transparent 74%),
+      radial-gradient(115% 88% at -12% 108%, rgba(216,224,148,.13) 0%, transparent 72%),
+      var(--page);
+  }
+
+  .sheet{max-width:920px;margin:0 auto;}
+
+  /* ── Hero: the wilderness, in the dark ── */
+  .hero{
+    position:relative;
+    background:var(--ink-deep);
+    color:var(--on-dark);
+    border-radius:clamp(18px,2.4vw,24px);
+    padding:clamp(28px,5.2vw,52px) clamp(24px,4.6vw,52px) clamp(30px,5.4vw,54px);
+    overflow:hidden;
+    box-shadow:0 4px 10px rgb(26 37 64 / .06), 0 30px 66px -22px rgb(26 37 64 / .30);
+  }
+  .hero::before{
+    content:"";
+    position:absolute;
+    top:-42%;
+    right:-16%;
+    width:min(76%,540px);
+    aspect-ratio:1;
+    background:radial-gradient(circle,rgba(152,198,231,.20) 0%,rgba(216,224,148,.08) 44%,transparent 68%);
+    pointer-events:none;
+  }
+  .hero > *{position:relative;}
+
+  .masthead{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px 20px;
+    margin-bottom:clamp(34px,6.4vw,66px);
+  }
+  .lockup{display:flex;align-items:center;gap:clamp(11px,1.5vw,15px);}
+  .lockup svg{width:clamp(30px,4.4vw,41px);height:auto;display:block;}
+  .lockup span{opacity:.85;font-family:var(--font-display);font-weight:400;font-size:clamp(1.36rem,2.9vw,1.74rem);letter-spacing:-.005em;}
+
+  .eyebrow{
+    font-size:clamp(.58rem,1.35vw,.69rem);
+    font-weight:600;
+    letter-spacing:.17em;
+    text-transform:uppercase;
+    color:var(--on-dark-soft);
+  }
+
+  .hook{
+    color:#FDFEFB;
+    text-shadow:0 0 40px rgba(216,224,148,.14),0 0 96px rgba(152,198,231,.11);
+    font-family:var(--font-display);
+    font-weight:400;
+    font-size:clamp(1.95rem,6.1vw,3.35rem);
+    line-height:1.09;
+    letter-spacing:-.012em;
+    margin:0;
+    max-width:26ch;
+  }
+
+  .stack-top{height:clamp(12px,2vw,18px);}
+
+  /* ── Glass panels ── */
+  .stack{display:flex;flex-direction:column;gap:clamp(10px,1.6vw,15px);}
+
+  .panel{
+    position:relative;
+    background:var(--glass);
+    -webkit-backdrop-filter:blur(16px) saturate(1.25);
+    backdrop-filter:blur(16px) saturate(1.25);
+    border:1px solid var(--glass-edge);
+    border-radius:clamp(18px,2.4vw,24px);
+    padding:clamp(22px,3.4vw,32px) clamp(20px,3.4vw,38px);
+    overflow:hidden;
+    box-shadow:var(--glass-shadow);
+    display:grid;
+    grid-template-columns:minmax(0,98px) minmax(0,1fr);
+    gap:clamp(11px,1.9vw,22px);
+  }
+  .panel > *{position:relative;z-index:1;}
+
+  /* focal panel: the single earned accent */
+  .panel.focal::after{
+    content:"";
+    position:absolute;
+    right:-46px;
+    top:-64px;
+    width:min(48%,250px);
+    aspect-ratio:1;
+    border-radius:50%;
+    background:var(--glow-sage);
+    filter:blur(68px);
+    opacity:.22;
+    z-index:0;
+    pointer-events:none;
+  }
+
+  .label{
+    align-self:start;
+    padding-top:.3em;
+    line-height:1.45;
+    white-space:nowrap;          /* never break a label across lines */
+    font-size:clamp(.55rem,1.24vw,.66rem);
+    font-weight:600;
+    letter-spacing:.13em;
+    text-transform:uppercase;
+    color:var(--ink);
+  }
+  .panel p.lead{
+    color:var(--ink-blue);
+    font-size:clamp(.86rem,1.63vw,.96rem);
+    font-weight:600;
+    line-height:1.5;
+    letter-spacing:.045em;
+    text-transform:uppercase;
+    margin:0 0 .78em;
+  }
+  .panel p{
+    margin:0 0 .82em;
+    font-size:clamp(.98rem,1.85vw,1.09rem);
+    line-height:1.66;
+    color:var(--t2);
+  }
+  .panel p:last-child{margin-bottom:0;}
+
+  /* ── Close ── */
+  .close{
+    margin-top:clamp(26px,4vw,42px);
+    padding:0 clamp(20px,3.4vw,38px);
+  }
+  .cta{
+    text-align:center;
+    font-family:var(--font-display);
+    font-weight:400;
+    font-size:clamp(1.3rem,3.5vw,1.85rem);
+    line-height:1.1;
+    letter-spacing:-.012em;
+  }
+
+  .cta-rule{
+    height:3px;
+    width:clamp(112px,24vw,208px);
+    background:var(--signal-grad);
+    border-radius:3px;
+    margin:clamp(15px,2.3vw,21px) auto clamp(15px,2.3vw,21px);
+  }
+
+  .contact{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px clamp(16px,3.4vw,32px);
+    font-size:clamp(.84rem,1.65vw,.94rem);
+    color:var(--t2);
+  }
+  .contact .name{font-weight:600;color:var(--ink);}
+  .contact a{color:inherit;text-decoration:none;}
+  .contact .site{margin-left:auto;color:var(--t3);}
+
+  /* ── Scroll reveal. The .js guard means no-JS still shows everything. ── */
+  .js [data-reveal]{
+    opacity:0;
+    transform:translateY(20px);
+    transition:opacity .7s var(--ease),transform .7s var(--ease);
+  }
+  .js [data-reveal].in{opacity:1;transform:none;}
+
+  @media (prefers-reduced-motion:reduce){
+    .js [data-reveal]{opacity:1;transform:none;transition:none;}
+  }
+
+  /* ── Phone ── */
+  @media (max-width:700px){
+    .panel{grid-template-columns:minmax(0,1fr);gap:7px;}
+    .label{padding-top:0;}
+    .hook{max-width:none;}
+    .contact .site{margin-left:0;width:100%;}
+  }
+
+  /* ── A4 print / PDF ── */
+  @page{size:A4;margin:0;}
+  @media print{
+    [data-reveal],.js [data-reveal]{opacity:1 !important;transform:none !important;transition:none !important;}
+    body{
+      padding:7mm 8mm;
+      font-size:10pt;
+      background:
+        radial-gradient(130% 100% at 106% -14%, rgba(152,198,231,.09) 0%, transparent 76%),
+        var(--page);
+      -webkit-print-color-adjust:exact;
+      print-color-adjust:exact;
+    }
+    .sheet{max-width:none;}
+    .hero{padding:8.2mm 11mm 8.2mm;border-radius:5mm;}
+    .masthead{margin-bottom:6.5mm;}
+    .lockup svg{width:33px;}
+    .lockup span{font-size:18pt;}
+    .eyebrow{font-size:7.4pt;letter-spacing:.16em;}
+    .label{font-size:7pt;letter-spacing:.13em;}
+    .hook{font-size:22pt;line-height:1.09;max-width:26ch;}
+    .stack-top{height:3.4mm;}
+    .stack{gap:3.4mm;}
+    .panel{
+      padding:6.4mm 10mm;
+      border-radius:5mm;
+      grid-template-columns:minmax(0,22.5mm) minmax(0,1fr);
+      gap:5mm;
+      break-inside:avoid;
+      page-break-inside:avoid;
+      /* glass flattened for print: solid white reads crisp, translucency reads muddy */
+      background:#FFFFFF;
+      border-color:rgba(26,37,64,.05);
+      -webkit-backdrop-filter:none;
+      backdrop-filter:none;
+    }
+    .panel p.lead{font-size:9pt;line-height:1.5;margin-bottom:2.6mm;}
+    .panel p{font-size:10.3pt;line-height:1.58;margin-bottom:2.5mm;}
+    .close{
+      margin-top:6mm;
+      padding:0 10mm;
+      break-inside:avoid;
+      page-break-inside:avoid;
+    }
+    .cta{font-size:17pt;}
+    .cta-rule{width:42mm;margin:2.6mm auto;}
+    .contact{font-size:9.2pt;}
+  }
+</style>
+</head>
+<body>
+
+<main class="sheet">
+
+  <header class="hero" data-reveal>
+    <div class="masthead">
+      <div class="lockup">
+        <svg viewBox="0 0 170 165" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M168.484 71.4164C169.278 70.9246 170.245 71.6013 169.957 72.4894L144.171 151.85C141.773 159.228 134.898 164.224 127.139 164.224H43.6941C42.0254 164.224 40.3974 163.993 38.8461 163.556C33.0905 161.938 34.1149 154.671 39.1972 151.522C82.2929 124.82 125.389 98.1184 168.484 71.4164ZM74.8914 3.42002C81.1678 -1.13998 89.6668 -1.14003 95.9432 3.42002L163.451 52.4679C165.043 53.6246 164.413 55.9372 162.536 56.5283L20.6296 101.214C15.3956 102.862 9.81107 99.9847 8.11544 94.7659L0.877739 72.4894C-1.51962 65.111 1.10629 57.028 7.38262 52.4679L74.8914 3.42002Z" fill="url(#signalMark)"/>
+          <defs>
+            <linearGradient id="signalMark" x1="-15.7203" y1="186.564" x2="181.976" y2="54.2081" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#DDE782"/>
+              <stop offset="0.918805" stop-color="#7DC0F0"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <span>Brij Signal</span>
+      </div>
+      <div class="eyebrow">Signal intelligence for reputation</div>
+    </div>
+
+    <h1 class="hook">You&rsquo;re navigating the wilderness in the dark.</h1>
+  </header>
+
+  <div class="stack-top"></div>
+
+  <section class="stack">
+
+    <article class="panel" data-reveal>
+      <div class="label">The asset</div>
+      <div>
+        <p class="lead">Reputation is a critical business asset.</p>
+        <p>It shapes market value, brand premium, competitive standing, and your ability to attract customers, talent and capital. Reputation is formed as one interconnected reality. Companies catch glimpses through individual signals, but lack a continuous and holistic view of how stakeholder beliefs, narratives and competitive movement are affecting their standing. That standing shapes stakeholder behavior, which later shows up in hiring, sales, churn and stock performance.</p>
+      </div>
+    </article>
+
+    <article class="panel focal" data-reveal>
+      <div class="label">Brij Signal</div>
+      <div>
+        <p class="lead">Brij puts the wheel back in your hands.</p>
+        <p>You have a clear vision for where the company is headed and the position it should hold in the market. That ambition becomes the mandate for Brij&rsquo;s intelligence.</p>
+        <p>Specialized agents continuously build and refine a live model of your reputational position and the competitive landscape, detect emerging narratives, trends, anomalies and momentum shifts, and diagnose where your position is strengthening or eroding, where competitors are gaining ground or leaving space, and where opportunity is opening.</p>
+        <p>Brij turns that diagnosis into strategic recommendations on what to defend, where to double down, and where to move next.</p>
+      </div>
+    </article>
+
+    <article class="panel" data-reveal>
+      <div class="label">Why now</div>
+      <div>
+        <p>The environment shaping reputation is moving faster, becoming noisier and harder to read. Narratives gather momentum across channels at machine speed, reshaping the strategic landscape and narrowing the options available as they take hold.</p>
+      </div>
+    </article>
+
+    <article class="panel" data-reveal>
+      <div class="label">The result</div>
+      <div>
+        <p>A live navigation system, giving you the clarity and control to capitalize on opportunity, strengthen your position, and build a lasting competitive advantage.</p>
+      </div>
+    </article>
+
+  </section>
+
+  <footer class="close" data-reveal>
+    <div class="cta"><span>Cross the Brij.</span></div>
+    <div class="cta-rule"></div>
+    <div class="contact">
+      <span class="name">Roey Eliram, CEO</span>
+      <a href="mailto:roey@brijlabs.ai">roey@brijlabs.ai</a>
+      <span class="site">brijlabs.ai</span>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+document.documentElement.classList.add('js');
+(function(){
+  var els=[].slice.call(document.querySelectorAll('[data-reveal]'));
+  var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
+  function showAll(){els.forEach(function(el){el.classList.add('in');});}
+  if(reduce||!('IntersectionObserver' in window)){showAll();return;}
+  var io=new IntersectionObserver(function(entries){
+    entries.filter(function(e){return e.isIntersecting;}).forEach(function(e,i){
+      e.target.style.transitionDelay=(i*80)+'ms';   /* stagger only what enters together */
+      e.target.classList.add('in');
+      io.unobserve(e.target);
+    });
+  },{rootMargin:'0px 0px -6% 0px',threshold:.08});
+  els.forEach(function(el){io.observe(el);});
+  /* Safety net: only if the observer never fired at all. A blanket timeout would
+     reveal everything and kill the animation for anyone who scrolls slowly. */
+  setTimeout(function(){
+    if(!document.querySelector('[data-reveal].in')) showAll();
+  },2500);
+})();
+</script>
+
+</body>
+</html>

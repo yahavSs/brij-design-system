@@ -136,7 +136,9 @@ Now produce the final artifact. Pick the output format that matches the artifact
 - Clone the template that matches the Stage 0 Q2 answer: `templates/client-deck-template.html` is the canonical clone source for client-facing decks (dark identity, Ifat-deck visual language, mobile-responsive); `templates/internal-brief-template.html` for internal briefs (Signal light language: sage ground, white floating panels, gradient wash, scrolling document). `templates/deck-template.html` remains as a legacy reference for the HUD, animation system, soft-transition logic, print mode, and slide-type layouts.
 - Founders portraits available at `assets/team/` for team slides.
 
-**For editable documents** (one-pagers, briefs, proposals, anything the team will keep editing in Word or Google Docs): use `scripts/brij_doc.py`. See `scripts/README.md` for the full API. Quick form:
+**For a one-pager delivered as a PDF and a link** (a sales or product one-pager the team sends over WhatsApp, not a document they keep editing): clone `templates/one-pager-template.html`. One source file renders both: the screen keeps real glass and a scroll reveal, and its `@media print` block flattens to an A4 page you make with headless Chrome. Its header comment carries the mechanics and the four traps that cost time, including the CSS specificity one. Worked example: `brij-agent/presentations/brij-signal/one-pager/`.
+
+**For editable documents** (briefs, proposals, anything the team will keep editing in Word or Google Docs): use `scripts/brij_doc.py`. See `scripts/README.md` for the full API. Quick form:
 
 ```python
 from brij_doc import BrijDocument
@@ -264,7 +266,8 @@ Decide based on the artifact type from Stage 2 Q1:
 - **Production** (real shipped surface — website code in the brij.ai repo, a section being merged into the site, a product UI): work in the project's actual file structure, not a loose `lowfi.html` at the project root. Copy `colors_and_type.css` into the project's styles folder and align with the project's existing token names.
 - **Pitch deck** (multi-slide HTML deck for a product co-brand, investor / client pitch, often bilingual): **read `decks-pattern.md` first.** Clone the template that matches Stage 0 Q2: `templates/client-deck-template.html` for client-facing, `templates/internal-brief-template.html` for internal. Heebo for Hebrew, English for short labels, product logo top-left + Brij bottom signoff. `templates/deck-template.html` (built pre-rebrand as Zentx · Enlight) remains a legacy reference; today's product name is Brij Signal.
 - **Throwaway** (single slides, mocks, social posts, banners, sketches): output static HTML files in the working directory that the user can open immediately.
-- **Document** (one-pager, brief, proposal, internal doc — anything the team will edit in Google Docs / Word): use `scripts/brij_doc.py` to write a `.docx`. Pair it with an HTML preview when the visual matters too.
+- **One-pager** (a sales or product one-pager sent as a PDF and a link, not something the team keeps editing): clone `templates/one-pager-template.html`. One file renders the screen version and the A4 print version.
+- **Document** (brief, proposal, internal doc — anything the team will edit in Google Docs / Word): use `scripts/brij_doc.py` to write a `.docx`. Pair it with an HTML preview when the visual matters too.
 
 If unclear from Stage 2 alone, ask explicitly before Stage 4.
 

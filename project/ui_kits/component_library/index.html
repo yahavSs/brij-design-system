@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- @dsCard group="UI Kit — Component Library" name="Brij Component Library" subtitle="Foundations, text blocks, patterns, deck & doc layouts, starter templates" -->
+<!-- @dsCard group="UI Kit — Component Library" name="Brij Component Library" subtitle="Foundations, text blocks, patterns, doc & post layouts, starter templates" -->
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -19,14 +19,14 @@
        .jsx files hard, so an edit can look like it never happened.
        BUMP THE DATE ON EVERY ?v= BELOW whenever you change a .jsx file,
        otherwise the team keeps seeing the old brandbook. -->
-  <script type="text/babel" src="./Chrome.jsx?v=20260830"></script>
-  <script type="text/babel" src="./Foundations.jsx?v=20260830"></script>
-  <script type="text/babel" src="./TextBlocks.jsx?v=20260830"></script>
-  <script type="text/babel" src="./Actions.jsx?v=20260830"></script>
-  <script type="text/babel" src="./Patterns.jsx?v=20260830"></script>
-  <script type="text/babel" src="./Layouts.jsx?v=20260830"></script>
-  <script type="text/babel" src="./Products.jsx?v=20260830"></script>
-  <script type="text/babel" src="./LinkedIn.jsx?v=20260830"></script>
+  <script type="text/babel" src="./Chrome.jsx?v=20260831"></script>
+  <script type="text/babel" src="./Foundations.jsx?v=20260831"></script>
+  <script type="text/babel" src="./TextBlocks.jsx?v=20260831"></script>
+  <script type="text/babel" src="./Actions.jsx?v=20260831"></script>
+  <script type="text/babel" src="./Patterns.jsx?v=20260831"></script>
+  <script type="text/babel" src="./Layouts.jsx?v=20260831"></script>
+  <script type="text/babel" src="./Products.jsx?v=20260831"></script>
+  <script type="text/babel" src="./LinkedIn.jsx?v=20260831"></script>
 
   <script type="text/babel">
     // ─── Page renderers (one per route) ──────────────
@@ -94,29 +94,31 @@
 
     function TemplatesPage() {
       const TABS = [
-        { id: 'slides',    label: 'Slides',    desc: 'Six core slide layouts. All built on 16:9 · 1920×1080.' },
         { id: 'documents', label: 'Documents', desc: 'Patterns for briefs, proposals, and PDFs.' },
         { id: 'email',     label: 'Email',     desc: 'One canonical email signature for the team.' },
         { id: 'linkedin',  label: 'LinkedIn',  desc: 'Square 1:1 · 1080×1080. Visual companions for text posts - punchlines, numbers, announcements, and motion openers.' },
       ];
-      // Map anchor (sub-item id) → which tab should be open.
+      const DEFAULT_TAB = TABS[0].id;
+      // Map anchor (sub-item id) → which tab should be open. An anchor that no
+      // longer exists (an old #/templates/slide-* bookmark, say) falls through
+      // to the first tab rather than leaving the page on a dead tab.
       const anchor = (location.hash.split('/')[2] || '');
       const navItem = NAV.find(g => g.route === 'templates').items.find(i => i.id === anchor);
-      const initialTab = (navItem && navItem.tab && navItem.tab !== 'starter') ? navItem.tab : 'slides';
-      const [tab, setTab] = React.useState(initialTab);
+      const initialTab = (navItem && navItem.tab && navItem.tab !== 'starter') ? navItem.tab : DEFAULT_TAB;
+      const [tab, setTab] = React.useState(TABS.some(t => t.id === initialTab) ? initialTab : DEFAULT_TAB);
       // Switch tab when the user clicks a sidebar sub-item.
       React.useEffect(() => {
         const onHash = () => {
           const a = (location.hash.split('/')[2] || '');
           const item = NAV.find(g => g.route === 'templates').items.find(i => i.id === a);
-          if (item && item.tab && item.tab !== 'starter') setTab(item.tab);
+          if (item && item.tab && item.tab !== 'starter' && TABS.some(t => t.id === item.tab)) setTab(item.tab);
         };
         window.addEventListener('hashchange', onHash);
         return () => window.removeEventListener('hashchange', onHash);
       }, []);
       return (
         <Section num="02 - Category" title="Templates"
-          desc="Ready-made layouts you can duplicate and edit. Start with a canonical presentation template, or a starter file, then drop in any of the layouts below.">
+          desc="Ready-made layouts you can duplicate and edit. Every presentation starts from one of the two canonical templates. The starter files cover documents and one-pagers, and the tabs below hold the document, email, and LinkedIn layouts.">
           <PresentationTemplates />
           <Templates />
           <div className="lib-subtabs" role="tablist" aria-label="Template categories">
@@ -132,17 +134,7 @@
               </button>
             ))}
           </div>
-          <p className="lib-subtab-desc">{TABS.find(t => t.id === tab).desc}</p>
-          {tab === 'slides' && (
-            <React.Fragment>
-              <SlideTitle />
-              <SlideSection />
-              <SlideQuote />
-              <SlideStat />
-              <SlideCase />
-              <SlideClose />
-            </React.Fragment>
-          )}
+          <p className="lib-subtab-desc">{(TABS.find(t => t.id === tab) || TABS[0]).desc}</p>
           {tab === 'documents' && (
             <React.Fragment>
               <DocHeader />
