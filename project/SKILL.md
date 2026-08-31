@@ -12,22 +12,39 @@ This skill has been getting frustrated feedback for jumping straight to building
 
 ---
 
-## Stage 0 — Which brand?
+## Stage 0: Two questions, before anything else
 
-Brij has one product with its own identity: **Brij Signal** (signal intelligence for reputation, "The Operating System for Reputation"). Before anything else, confirm which brand the artifact belongs to:
+Ask these two questions first, in this order, and **stop and wait** for the answers. Do not guess, do not infer from context, do not start designing until both are answered.
 
-> *Which brand are we designing for?*
-> 1. **Brij** — the parent Intelligence Lab. The default. Cream surface, Plus Jakarta Sans + Arbutus Slab, the manifesto voice.
-> 2. **Brij Signal** — Brij's product. Sage-greige surface with floating white panels, navy ink `#1A2540`, same type family as Brij, product-token set in `signal/signal.css`.
+### Q1: Which product? (always ask)
 
-Decide using the routing table in `signal/brand.md` (or restate it here in short):
+> *Which product is this for: Brij Labs (company), Brij Signal, or Brij Agents?*
 
-- **Signal-native work** (product UI mocks, Signal-owned marketing, a page or deck about the product): switch to the Brij Signal identity. Read `signal/brand.md`, link `signal/signal.css`, use the logos in `signal/assets/`.
-- **Brij-led work that features Signal** (Brij selling the product, Brij investor deck mentioning it, the Brij website's product section): stay in Brij brand. The product is named in type; surface and voice are Brij's.
+The chosen product dictates the palette **and** the logo. Never mix products in one artifact.
 
-*(Brij Signal is the rebrand of the product formerly called Zentx. The old Zentx identity — Poppins, Z-mark, "Above The Noise" — is retired. Never use it.)*
+| Product | Tokens | Logos |
+|---|---|---|
+| **Brij Labs** (the company, the parent Intelligence Lab; the default) | `colors_and_type.css` | `assets/` logos: logotype-black / logotype-white, mark variants (pick per the Logo Decision Tree below) |
+| **Brij Signal** (signal intelligence for reputation, "The Operating System for Reputation") | `signal/signal.css` | `signal/assets/` logos |
+| **Brij Agents** | Company-level tokens: an aliases-only identity with the same palette, gradient, and fonts as Brij Labs (white surface, panel `#EBEDE7`, ink `#181B18`, accent `#F3C06A`, the signature gradient, Plus Jakarta Sans + Arbutus Slab + Heebo). The compiled reference is `dist/agent.css` in the unified token pipeline (`brij-command-center/design-system/`). | Same as Brij Labs |
 
-If unclear, ask. Then proceed to Stage 1.
+Routing notes for Signal (from `signal/brand.md`):
+
+- **Signal-native work** (product UI mocks, Signal-owned marketing, a page or deck about the product): use the Brij Signal identity. Read `signal/brand.md`, link `signal/signal.css`, use the logos in `signal/assets/`.
+- **Brij-led work that features Signal** (Brij selling the product, a Brij investor deck mentioning it, the Brij website's product section): stay in the Brij Labs identity. The product is named in type; surface and voice are Brij's.
+
+*(Brij Signal is the rebrand of the product formerly called Zentx. The old Zentx identity, Poppins, Z-mark, "Above The Noise", is retired. Never use it.)*
+
+### Q2: Client-facing or internal? (ask for any presentation, deck, or brief)
+
+> *Is this client-facing or internal?*
+
+- **Client-facing**: you MUST clone `templates/client-deck-template.html`. Dark identity. Anything a client will see is dark.
+- **Internal**: you MUST clone `templates/internal-brief-template.html`. The Signal light language: sage greige ground, white floating panels, navy ink, the brand gradient wash. A scrolling document for internal briefs.
+
+The rule is deliberate and absolute: **light means internal, dark means client**, so anyone can tell at a glance which kind of artifact they are holding. Both templates pass the mobile checker; keep them passing when you edit (see the mobile rule in Stage 6).
+
+If either answer is unclear, ask again. Then proceed to Stage 1.
 
 ---
 
@@ -113,7 +130,7 @@ Now produce the final artifact. Pick the output format that matches the artifact
 **For multi-slide pitch decks** (10–20 slide HTML decks, often bilingual, often product co-brand):
 
 - **Read `decks-pattern.md` first.** It captures rules earned through real user feedback that don't appear elsewhere.
-- Clone `templates/deck-template.html` as the starting point. It includes the HUD, animation system, soft-transition logic, print mode, and all slide-type layouts.
+- Clone the template that matches the Stage 0 Q2 answer: `templates/client-deck-template.html` is the canonical clone source for client-facing decks (dark identity, Ifat-deck visual language, mobile-responsive); `templates/internal-brief-template.html` for internal briefs (Signal light language: sage ground, white floating panels, gradient wash, scrolling document). `templates/deck-template.html` remains as a legacy reference for the HUD, animation system, soft-transition logic, print mode, and slide-type layouts.
 - Founders portraits available at `assets/team/` for team slides.
 
 **For editable documents** (one-pagers, briefs, proposals, anything the team will keep editing in Word or Google Docs): use `scripts/brij_doc.py`. See `scripts/README.md` for the full API. Quick form:
@@ -174,19 +191,25 @@ Re-read your own output and verify each box. If any fails, fix and re-run the fu
 - [ ] Buttons use 52px pill radius.
 - [ ] All spacing values come from the rhythm scale: 4 / 8 / 12 / 16 / 24 / 32 / 48 / 64 / 96 / 120.
 
+**Mobile-fit is mandatory**
+- [ ] Every HTML deliverable passes `python3 scripts/check_mobile_html.py <file.html>` from the `brij-agent` repo. Deliverables ship as raw HTML files over WhatsApp and are opened on phones, so mobile fit is not optional.
+- [ ] `templates/client-deck-template.html` and `templates/internal-brief-template.html` already pass the checker; keep them (and anything cloned from them) passing when you edit.
+
 If a check fails, state which one, fix it, then re-run the checklist from the top. Only then deliver.
 
 ---
 
 ## Logo Decision Tree
 
-The brandbook defines exactly **3 logo variants**. Every use must map to one of these three. Never invent a fourth, never use legacy alt files in `assets/` that aren't listed below (e.g. `logo-b-mark.svg`, `logo-c-mark.svg`, `logo-3variants.svg`, `logotype-black.svg`, `logotype-white.svg`, `mark-3colors.svg` — these are reference / draft files, not brand variants).
+The brandbook defines exactly **3 logo variants**. Every use must map to one of these three. Never invent a fourth, never use legacy alt files in `assets/` that aren't listed below (e.g. `logo-c-mark.svg`, `logo-3variants.svg`, `logotype-black.svg`, `logotype-white.svg`, `mark-3colors.svg` - these are reference / draft files, not brand variants).
+
+**The Brij mark is the pentagon WITH the diagonal cut through the middle.** A solid, uncut pentagon is NOT the Brij logo. The files `mark-gradient-md.svg`, `mark-dark-sm.svg`, `mark-dark-md.svg`, `mark-dark-lg.svg`, `mark-gradient-*.svg` are solid-pentagon drafts: never use them, and never draw a solid pentagon (or any invented shape) as a stand-in.
 
 | Brandbook variant | When to use | File |
 |---|---|---|
 | **Full logo** (mark + wordmark) | The brand named in full. Headers, footers, the top of decks, anywhere identification matters. Always on cream or white. | `assets/brij-wordmark.svg` |
-| **Mark · gradient** | Standalone pentagon mark on a **dark / ink background**. Deck intros, video bumpers, dark surfaces. | `assets/mark-gradient-md.svg` |
-| **Mark · ink** | Standalone pentagon mark on **cream or white**. Decorative anchor, section badge, contact CTA block at low opacity. Use `mark-dark-sm.svg` / `md` / `lg` for size — same variant, just sized. | `assets/mark-dark-md.svg` |
+| **Mark · gradient** | Standalone cut-pentagon mark. Works on dark / ink surfaces and on light surfaces (it is the same mark that sits inside the full logo). Deck intros, video bumpers, badges. | `assets/logo-b-mark-gradient.svg` |
+| **Mark · ink** | Standalone cut-pentagon mark in ink, on **cream or white**. Decorative anchor, section badge, contact CTA block at low opacity. It is one scalable SVG: size with width/height. | `assets/logo-b-mark.svg` |
 
 **Logo motion ident** (`assets/logo-motion.mp4`) is the canonical brand-open animation — 2× speed, looped, muted. Use at the top of decks, video bumpers, and the home page hero. It's not a fourth variant; it's the Full Logo in motion.
 
@@ -212,10 +235,12 @@ When brand values change: edit here → push to the Claude Design project with D
 
 **Brij (parent brand):**
 - `README.md` — brand context, voice, visual foundations, full rule list. Read once at the start of any non-trivial Brij task.
-- `decks-pattern.md` — **multi-slide HTML pitch decks**: bilingual rules, co-brand layout, slide types catalog, animation system, print/PDF workflow. **Read before any pitch deck.** Pairs with `templates/deck-template.html`.
+- `decks-pattern.md`: **multi-slide HTML pitch decks**. bilingual rules, co-brand layout, slide types catalog, animation system, mobile fit, print/PDF workflow. **Read before any pitch deck.** Pairs with `templates/client-deck-template.html`.
 - `colors_and_type.css` — every Brij CSS variable and primitive. Always link; never copy values into your output.
 - `preview/*.html` — 25 component exemplars. Read the relevant one **before** building (e.g. before designing a button, open `preview/component-buttons.html`).
-- `templates/deck-template.html` — canonical 16-slide pitch deck (built pre-rebrand as "Zentx · Enlight"). Clone for any product co-brand deck; don't reinvent. When cloning, the product is named **Brij Signal** and uses `signal/` tokens and logos.
+- `templates/client-deck-template.html`: canonical client-facing deck template (dark identity, mobile-responsive). Clone for any client-facing presentation.
+- `templates/internal-brief-template.html`: canonical internal brief template (Signal light language: sage ground, white floating panels, gradient wash, scrolling document). Clone for internal briefs.
+- `templates/deck-template.html`: legacy 16-slide pitch deck reference (built pre-rebrand as "Zentx · Enlight"). No longer the clone source; keep for the HUD, animation, and print-mode patterns.
 - `screenshots/*.png` — visual references for full sections of the brandbook.
 - `assets/` — all Brij logos, marks, arrows, lines. Copy required SVG into the working directory.
 - `assets/team/` — founders portraits (Roey, Yoel, Gidon, Ziv, Motti), ready for circular crop in team grids.
@@ -234,7 +259,7 @@ When brand values change: edit here → push to the Claude Design project with D
 Decide based on the artifact type from Stage 2 Q1:
 
 - **Production** (real shipped surface — website code in the brij.ai repo, a section being merged into the site, a product UI): work in the project's actual file structure, not a loose `lowfi.html` at the project root. Copy `colors_and_type.css` into the project's styles folder and align with the project's existing token names.
-- **Pitch deck** (multi-slide HTML deck for a product co-brand, investor / client pitch, often bilingual): **read `decks-pattern.md` first.** Clone `templates/deck-template.html` and edit content slide-by-slide. White surface, Heebo for Hebrew, English for short labels, product logo top-left + Brij bottom signoff. The deck template (built pre-rebrand as Zentx · Enlight) is the canonical reference; today's product name is Brij Signal.
+- **Pitch deck** (multi-slide HTML deck for a product co-brand, investor / client pitch, often bilingual): **read `decks-pattern.md` first.** Clone the template that matches Stage 0 Q2: `templates/client-deck-template.html` for client-facing, `templates/internal-brief-template.html` for internal. Heebo for Hebrew, English for short labels, product logo top-left + Brij bottom signoff. `templates/deck-template.html` (built pre-rebrand as Zentx · Enlight) remains a legacy reference; today's product name is Brij Signal.
 - **Throwaway** (single slides, mocks, social posts, banners, sketches): output static HTML files in the working directory that the user can open immediately.
 - **Document** (one-pager, brief, proposal, internal doc — anything the team will edit in Google Docs / Word): use `scripts/brij_doc.py` to write a `.docx`. Pair it with an HTML preview when the visual matters too.
 

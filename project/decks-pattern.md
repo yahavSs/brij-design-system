@@ -1,6 +1,6 @@
 # HTML Pitch Decks — Brij Pattern
 
-A canonical multi-slide HTML deck pattern, validated on the Zentx · Enlight pitch deck (May 2026, pre-rebrand: the product is now Brij Signal). Read this **before** building any multi-slide deck, product co-brand deck, or bilingual Hebrew/English presentation. The template at `templates/deck-template.html` is a fully working reference; clone it, don't reinvent it.
+A canonical multi-slide HTML deck pattern, validated on the Zentx · Enlight pitch deck (May 2026, pre-rebrand: the product is now Brij Signal). Read this **before** building any multi-slide deck, product co-brand deck, or bilingual Hebrew/English presentation. The canonical clone source for client-facing decks is `templates/client-deck-template.html` (dark identity, mobile-responsive); internal briefs clone `templates/internal-brief-template.html`. The older `templates/deck-template.html` stays as a working legacy reference for the co-brand patterns documented below: copy its patterns, but start new decks from the canonical templates.
 
 ---
 
@@ -12,6 +12,15 @@ A canonical multi-slide HTML deck pattern, validated on the Zentx · Enlight pit
 - **Always white surface, not cream.** This is the one deliberate exception to the brand's cream-default. Product co-brand decks read more clinical and tech-forward on pure white.
 
 If the artifact is a single slide, a poster, a one-pager, or a section on brij.ai — this is the wrong pattern. Use the standard brand rules from `README.md` instead.
+
+---
+
+## Client vs internal: two templates
+
+- **Client-facing** (anything a client will see): clone `templates/client-deck-template.html`. Dark identity, the Ifat-deck visual language, mobile-responsive.
+- **Internal brief**: clone `templates/internal-brief-template.html`. The Signal light language: sage greige ground, white floating panels, navy ink, the brand gradient wash. A scrolling document rather than a slide deck.
+
+The rule: **light means internal, dark means client**, so anyone can tell at a glance which kind of artifact they are holding. Never mix the two in one artifact. The white-surface co-brand rules in this doc describe the legacy `deck-template.html` pattern; when cloning the canonical client template, its dark surface wins.
 
 ---
 
@@ -175,6 +184,25 @@ Fixed top + bottom bars, visible on every slide.
 
 ---
 
+## Mobile fit (mandatory)
+
+Decks are designed desktop-first at 1920×1080, but they ship as raw `.html` files over WhatsApp and get opened on phones. Every deck MUST also collapse cleanly at narrow widths and pass the mobile checker. This wins over any older habit of locking layouts to the desktop canvas.
+
+- **Desktop-first, then collapse.** Design at 1920×1080. At `@media (max-width: 700px)` the deck switches to a vertical-scroll collapse: each slide becomes a static block, `min-height: 100svh`, slide navigation hidden.
+- **Fluid type.** Headings sized with `clamp()`; body text never below 15px on mobile.
+- **No fixed px widths of 500 or more outside `@media` blocks.** Use `max-width` + `width: 100%`, percentages, `minmax()` grids.
+- **No hover-only content.** Phones have no hover; reveals trigger on scroll (IntersectionObserver), never `:hover`.
+- **Self-contained single file.** No local asset references (the file gets forwarded alone); inline SVG, data URIs, or Google Fonts links with system fallbacks.
+- **The gate.** Before delivering, run the checker from the `brij-agent` repo. It must PASS:
+
+```bash
+python3 scripts/check_mobile_html.py deck.html
+```
+
+`templates/client-deck-template.html` is the reference implementation of this collapse; study its mobile media block before writing your own.
+
+---
+
 ## Print / PDF export
 
 The template supports a `?print=1` query that renders all slides stacked for PDF export. The flow:
@@ -191,7 +219,7 @@ The template supports a `?print=1` query that renders all slides stacked for PDF
 
 2. Output is 1920×1080 16:9 pages, one per slide. Animations disabled in print. HUD cloned into each slide so counter + branding appear correctly per-page.
 
-3. The `body.print-all` class overrides responsive media queries that would otherwise collapse grids on the narrow headless viewport. Always test in print mode if you add a new layout.
+3. The `body.print-all` class overrides responsive media queries that would otherwise collapse grids on the narrow headless viewport. This override applies to print export only: on screen, the mobile collapse from "Mobile fit (mandatory)" must remain intact. Always test in print mode if you add a new layout.
 
 ---
 
@@ -219,20 +247,24 @@ In addition to the standard Stage 6 checklist from `SKILL.md`, also verify:
 - [ ] Different-section slides use cinematic push.
 - [ ] Each slide's entrance animations resolve under 2 seconds total.
 
+**Mobile**
+- [ ] `python3 scripts/check_mobile_html.py` (from the `brij-agent` repo) passes.
+- [ ] At 700px and below, the deck collapses to a vertical scroll: static slides, `min-height: 100svh`, nav hidden.
+- [ ] No horizontal scroll at 390px; headings wrap, nothing clipped.
+
 **Print**
 - [ ] `?print=1` mode renders all slides stacked.
 - [ ] HUD appears on every page.
 - [ ] Counter shows correct number per page.
-- [ ] No responsive collapse on 1920×1080.
 
 ---
 
 ## Quick-start
 
-1. **Clone the template:**
+1. **Clone the template** (client-facing shown; internal briefs clone `internal-brief-template.html` instead):
    ```bash
    mkdir my-deck && cd my-deck
-   cp ~/.claude/skills/brij-design/templates/deck-template.html ./index.html
+   cp ~/.claude/skills/brij-design/templates/client-deck-template.html ./index.html
    cp ~/.claude/skills/brij-design/colors_and_type.css ./
    mkdir -p assets/team
    cp ~/.claude/skills/brij-design/assets/brij-wordmark.svg ./assets/
@@ -252,4 +284,4 @@ In addition to the standard Stage 6 checklist from `SKILL.md`, also verify:
 
 ## Reference deck
 
-The canonical example is the Zentx · Enlight pitch (16 slides, May 2026). Look at `templates/deck-template.html` for the full implementation. Every pattern documented here exists in that file.
+The legacy reference is the Zentx · Enlight pitch (16 slides, May 2026) at `templates/deck-template.html`; every co-brand and animation pattern documented here exists in that file. For new work, clone `templates/client-deck-template.html` (client-facing) or `templates/internal-brief-template.html` (internal) per the rule above.

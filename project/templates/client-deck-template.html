@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!--
+==============================================================
+BRIJ CLIENT DECK TEMPLATE  (canonical - clone it, never edit it)
+==============================================================
+HOW TO USE
+1. Clone, do not edit in place. Naming convention:
+     presentations/<brand>/<client>/<name>-YYYY-MM-DD.html
+   e.g. presentations/brij-signal/acme/kickoff-2026-09-14.html
+2. Replace every [BRACKETED] placeholder. Search the file for "["
+   to find them all: client name, promise, stats, names, dates.
+3. Slides are <section class="slide" data-ch="N">. Duplicate one to
+   add a slide, keep data-ch pointing at the right chapter. If you
+   change the story arc, update the CHAPTERS array in the script.
+4. Self-contained by design: fonts come from Google Fonts and the
+   logo is an inline SVG. Never reference local files (no ./assets,
+   no ./fonts).
+   LOGO BY PRODUCT (mandatory, ask which product before building):
+   - Brij Labs / Brij Agents: keep the mark already inlined here,
+     the pentagon with the diagonal cut (assets/logo-b-mark-gradient.svg).
+   - Brij Signal: replace both inline marks with the Signal mark
+     (signal/assets/brij-signal-mark-gradient.svg), inlined.
+   Never use a solid pentagon and never invent a shape.
+5. Hebrew decks: set <html lang="he" dir="rtl">. The layout uses
+   logical properties and mirrors automatically; Hebrew glyphs fall
+   through to Heebo (Arbutus Slab and Plus Jakarta Sans are Latin).
+6. Desktop (over 700px): fixed slides. Arrow keys, space, enter or
+   click to advance, F for fullscreen, #4 in the URL deep-links.
+   At 700px and below the deck becomes one vertical scroll of all
+   slides, WhatsApp-ready, chapter axis hidden.
+7. Before sending, it must PASS:
+     python3 scripts/check_mobile_html.py <file>
+8. Brand voice: never use the em-dash character in copy. Use a
+   comma, period, colon, or hyphen instead.
+==============================================================
+-->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>[CLIENT NAME] · Brij</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Arbutus+Slab&family=Heebo:wght@300..800&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
+<style>
+/* ============ tokens - the Brij Signal dark identity ============ */
+:root{
+  --font-sans:'Plus Jakarta Sans','Heebo',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --font-display:'Arbutus Slab','Heebo',Georgia,serif;
+
+  /* soft cool charcoal, never pure black */
+  --background:222 28% 10%;
+  --foreground:220 15% 93%;
+  --card:222 24% 14%;
+  --card-foreground:220 15% 93%;
+  --muted:222 20% 16%;
+  --muted-foreground:220 10% 77%;
+  --border:222 18% 26%;
+
+  --text-primary:220 15% 93%;
+  --text-secondary:220 10% 78%;
+  --text-tertiary:220 8% 62%;
+
+  --radius-sm:.25rem;--radius-md:.5rem;--radius-lg:.75rem;
+  --radius-xl:1rem;--radius-2xl:1.5rem;--radius-full:9999px;
+
+  --shadow-sm:0 1px 2px rgb(0 0 0 / .24),0 6px 16px -2px rgb(0 0 0 / .22);
+  --shadow-md:0 2px 4px rgb(0 0 0 / .26),0 14px 28px -6px rgb(0 0 0 / .30);
+  --shadow-lg:0 4px 8px rgb(0 0 0 / .28),0 28px 56px -12px rgb(0 0 0 / .36);
+
+  --ease-default:cubic-bezier(.16,1,.3,1);
+  --ease-emphasized:cubic-bezier(.22,1,.36,1);
+
+  /* the brand gradient: the only place green + blue exist, never solid fills */
+  --brand-grad-sun:#F3C06A;
+  --brand-grad-leaf:#D8E094;
+  --brand-grad-sky:#98C6E7;
+  --brand-gradient:linear-gradient(135deg,#F3C06A 0%,#D8E094 46%,#98C6E7 100%);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  overflow:hidden;
+  background:hsl(var(--background));
+  color:hsl(var(--foreground));
+  font-family:var(--font-sans);
+  font-size:16px;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ============ background wash: layered fixed radial gradients ============ */
+.wash{position:fixed;inset:0;z-index:0;pointer-events:none;background:
+  radial-gradient(58% 52% at 6% 94%, color-mix(in srgb, var(--brand-grad-sun) 9%, transparent), transparent 62%),
+  radial-gradient(46% 60% at 0% 34%, color-mix(in srgb, var(--brand-grad-leaf) 7%, transparent), transparent 60%),
+  radial-gradient(52% 46% at 98% 4%, color-mix(in srgb, var(--brand-grad-sky) 9%, transparent), transparent 64%)}
+
+/* ============ chrome ============ */
+.brandbar{position:fixed;top:30px;inset-inline-start:44px;z-index:40;display:flex;align-items:center;gap:11px;
+  background:hsl(var(--card));border-radius:var(--radius-full);padding:9px 18px 9px 14px;box-shadow:var(--shadow-sm)}
+[dir="rtl"] .brandbar{padding:9px 14px 9px 18px}
+.brandbar svg{height:20px;width:auto;display:block}
+.brandbar span{font:600 12.5px/1 var(--font-sans);letter-spacing:.02em;color:hsl(var(--foreground))}
+
+.counter{position:fixed;top:39px;inset-inline-end:46px;z-index:40;
+  font:700 11px/1 var(--font-sans);letter-spacing:.22em;color:hsl(var(--text-tertiary))}
+
+/* the chapter axis */
+.axis{position:fixed;inset-inline-start:50%;bottom:26px;transform:translateX(-50%);width:min(780px,74vw);z-index:40}
+[dir="rtl"] .axis{transform:translateX(50%)}
+.axis .line{position:relative;height:2px;border-radius:2px;background:hsl(var(--text-tertiary)/.22)}
+.axis .fill{position:absolute;inset-inline-start:0;top:0;bottom:0;border-radius:2px;background:var(--brand-gradient);
+  transition:width .8s var(--ease-default)}
+.stop{position:absolute;top:50%;transform:translate(-50%,-50%);width:7px;height:7px;border-radius:50%;
+  background:hsl(var(--background));border:1.5px solid hsl(var(--text-tertiary)/.45);transition:all .5s var(--ease-default)}
+[dir="rtl"] .stop{transform:translate(50%,-50%)}
+.stop.passed{background:var(--brand-gradient);border-color:transparent;
+  box-shadow:0 0 10px color-mix(in srgb, var(--brand-grad-leaf) 55%, transparent)}
+.word{position:absolute;top:12px;transform:translateX(-50%);font:700 10.5px/1 var(--font-sans);
+  letter-spacing:.26em;text-transform:uppercase;color:hsl(var(--text-tertiary)/.75);white-space:nowrap;
+  transition:color .5s,opacity .5s;opacity:.75}
+[dir="rtl"] .word{transform:translateX(50%)}
+.word.active{opacity:1;background:var(--brand-gradient);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* ============ slides ============ */
+.slide{position:fixed;inset:0;display:none;padding:112px clamp(24px,7vw,120px) 122px;z-index:10;opacity:0}
+.slide.active{display:flex;opacity:1}
+.slide.active.push-fwd{animation:pushf .75s var(--ease-emphasized) both}
+.slide.active.push-back{animation:pushb .75s var(--ease-emphasized) both}
+.slide.active.soft{animation:softf .45s ease both}
+@keyframes pushf{from{opacity:0;transform:translateX(64px) scale(.985);filter:blur(10px)}to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes pushb{from{opacity:0;transform:translateX(-64px) scale(.985);filter:blur(10px)}to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes softf{from{opacity:0}to{opacity:1}}
+
+/* type: Arbutus carries display moments, Plus Jakarta carries everything else */
+.eyebrow{font:700 12px/1 var(--font-sans);letter-spacing:.3em;text-transform:uppercase;color:hsl(var(--text-tertiary))}
+.display{font:400 clamp(38px,5.6vw,76px)/1.12 var(--font-display);color:hsl(var(--foreground))}
+.headline{font:400 clamp(26px,3.3vw,44px)/1.18 var(--font-display);color:hsl(var(--foreground))}
+.lead{font:400 clamp(15px,1.2vw,17px)/1.65 var(--font-sans);color:hsl(var(--text-secondary));max-width:50ch;margin-top:16px}
+.cap{font:500 clamp(12px,.95vw,13px)/1.75 var(--font-sans);color:hsl(var(--text-tertiary))}
+.gnum{font:400 clamp(28px,3.2vw,46px)/1.05 var(--font-display);color:hsl(var(--foreground))}
+.gword{background:var(--brand-gradient);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* gradient hairline */
+.rule{height:1.5px;background:var(--brand-gradient);border-radius:2px}
+
+/* floating panel: the card language */
+.panel{background:hsl(var(--card));border-radius:var(--radius-xl);box-shadow:var(--shadow-sm);padding:26px 28px}
+.panel .pn{font:700 12px/1.4 var(--font-sans);letter-spacing:.16em;text-transform:uppercase;color:hsl(var(--foreground))}
+.panel .pb{font:400 13.5px/1.65 var(--font-sans);color:hsl(var(--text-secondary));margin-top:12px}
+
+/* pills */
+.pill{display:inline-block;font:700 10.5px/1 var(--font-sans);letter-spacing:.18em;text-transform:uppercase;
+  border:1px solid hsl(var(--border));border-radius:var(--radius-full);padding:7px 13px;
+  color:hsl(var(--text-secondary));background:hsl(var(--card));white-space:nowrap}
+.pill.grad{border:none;position:relative;color:hsl(var(--foreground))}
+.pill.grad::before{content:"";position:absolute;inset:0;border-radius:var(--radius-full);padding:1.2px;
+  background:var(--brand-gradient);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.chiprow{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+
+/* fragments: revealed step by step on desktop, always visible on mobile */
+.frag{opacity:0;transform:translateY(14px);transition:opacity .6s var(--ease-emphasized),transform .6s var(--ease-emphasized)}
+.frag.show{opacity:1;transform:none}
+
+/* entrance rise for slide children, staggered via --d */
+.slide.active .rise{animation:riseup .85s var(--ease-emphasized) both;animation-delay:var(--d,0s)}
+@keyframes riseup{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+
+/* layout helpers */
+.split{flex-direction:row;align-items:center;gap:clamp(36px,5vw,90px)}
+.split>.copy{flex:0 0 38%}
+.split>.stage{flex:1;min-width:0}
+.centered{flex-direction:column;justify-content:center;align-items:center;text-align:center}
+.stack{flex-direction:column;justify-content:center}
+
+/* ------- 1 · cover ------- */
+.cover-mark{margin-bottom:42px}
+.cover-mark svg{width:clamp(56px,6vw,76px);height:auto;display:block;
+  filter:drop-shadow(0 0 26px color-mix(in srgb, var(--brand-grad-sun) 30%, transparent))}
+.cover-meta{display:flex;gap:10px;align-items:center;margin-top:56px;flex-wrap:wrap;justify-content:center}
+
+/* ------- 2 · agenda ------- */
+.arow{display:flex;align-items:baseline;gap:20px;padding:18px 2px;border-top:1px solid hsl(var(--border))}
+.arow:first-child{border-top:none}
+.arow .an{font:800 11px/1 var(--font-sans);letter-spacing:.2em;min-width:2.2em;
+  background:var(--brand-gradient);-webkit-background-clip:text;background-clip:text;color:transparent}
+.arow .at{font:700 13px/1.4 var(--font-sans);letter-spacing:.14em;text-transform:uppercase;color:hsl(var(--foreground))}
+.arow .ad{font:400 13px/1.55 var(--font-sans);color:hsl(var(--text-tertiary));margin-inline-start:auto;text-align:end;max-width:24ch}
+
+/* ------- 3 · problem ------- */
+.statrow{display:flex;gap:clamp(24px,3.5vw,56px);flex-wrap:wrap}
+.stat{max-width:240px}
+.stat .c{font:700 11px/1.7 var(--font-sans);letter-spacing:.18em;text-transform:uppercase;color:hsl(var(--text-tertiary));margin-top:8px}
+.quote{font:italic 500 clamp(15px,1.4vw,19px)/1.7 var(--font-sans);color:hsl(var(--text-secondary))}
+.quote .qa{display:block;margin-top:14px;font:700 11px/1 var(--font-sans);letter-spacing:.24em;text-transform:uppercase;
+  color:hsl(var(--text-tertiary));font-style:normal}
+
+/* ------- 4 · approach ------- */
+.lrow{padding:22px 0 20px;border-top:1px solid hsl(var(--border));max-width:58ch}
+.lrow:first-child{border-top:none}
+.lrow .lt{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.lrow .lnum{font:800 11px/1 var(--font-sans);letter-spacing:.2em;
+  background:var(--brand-gradient);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lrow .ln{font:800 13px/1.3 var(--font-sans);letter-spacing:.18em;text-transform:uppercase;color:hsl(var(--foreground))}
+.lrow .lb{font:400 14.5px/1.7 var(--font-sans);color:hsl(var(--text-secondary));margin-top:10px}
+
+/* ------- 5 · what we build ------- */
+.head-center{text-align:center;margin-bottom:clamp(28px,4vh,52px)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;width:100%;max-width:1180px;margin:0 auto;
+  align-content:center}
+.cards .panel{display:flex;flex-direction:column}
+.cards .panel .pill{align-self:flex-start;margin-top:auto;padding-top:7px;margin-top:18px}
+.cards .panel:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);transition:transform .3s var(--ease-default),box-shadow .3s var(--ease-default)}
+
+/* ------- 6 · proof ------- */
+.proof-quote{border-inline-start:2px solid transparent;padding-inline-start:22px;position:relative;margin-top:28px}
+.proof-quote::before{content:"";position:absolute;inset-inline-start:0;top:4px;bottom:4px;width:2px;border-radius:2px;
+  background:var(--brand-gradient)}
+.proof-quote .qt{font:400 clamp(18px,1.8vw,25px)/1.5 var(--font-display);color:hsl(var(--foreground))}
+.metrics{display:flex;flex-direction:column;gap:0;max-width:420px;margin-inline-start:auto;width:100%}
+.metric{padding:24px 4px;border-top:1px solid hsl(var(--border))}
+.metric:first-child{border-top:none}
+.metric .c{font:700 11px/1.7 var(--font-sans);letter-spacing:.18em;text-transform:uppercase;color:hsl(var(--text-tertiary));margin-top:6px}
+
+/* ------- 7 · team ------- */
+.team-grid{display:flex;flex-wrap:wrap;justify-content:center;align-content:center;gap:18px;max-width:700px;margin-inline-start:auto}
+.tcard{width:200px;background:hsl(var(--card));border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);
+  padding:30px 16px 26px;text-align:center}
+.tring{width:104px;height:104px;border-radius:50%;margin:0 auto;position:relative}
+.tring::before{content:"";position:absolute;inset:-3px;border-radius:50%;padding:1.5px;background:var(--brand-gradient);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:.8}
+.tava{width:104px;height:104px;border-radius:50%;background:hsl(var(--muted));overflow:hidden;
+  display:flex;align-items:flex-end;justify-content:center;color:hsl(var(--text-tertiary))}
+.tava svg{width:74%;height:auto;display:block}
+.tnm{font:700 15px/1.3 var(--font-sans);letter-spacing:.05em;margin-top:18px;color:hsl(var(--foreground))}
+.trl{font:600 10.5px/1.5 var(--font-sans);letter-spacing:.22em;text-transform:uppercase;color:hsl(var(--text-tertiary));margin-top:7px}
+
+/* ------- 8 · timeline ------- */
+.tl{position:relative;display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  gap:clamp(18px,2.5vw,36px);width:100%;max-width:1180px;margin:0 auto;padding-top:38px}
+.tl::before{content:"";position:absolute;top:0;inset-inline:0;height:2px;border-radius:2px;background:var(--brand-gradient);opacity:.9}
+.ph{position:relative}
+.ph::before{content:"";position:absolute;top:-42px;inset-inline-start:2px;width:9px;height:9px;border-radius:50%;
+  background:var(--brand-gradient);box-shadow:0 0 10px color-mix(in srgb, var(--brand-grad-leaf) 55%, transparent)}
+.ph .pw{font:700 10.5px/1 var(--font-sans);letter-spacing:.2em;text-transform:uppercase;color:hsl(var(--text-tertiary))}
+.ph .pn2{font:400 clamp(17px,1.5vw,22px)/1.3 var(--font-display);color:hsl(var(--foreground));margin-top:10px}
+.ph .pd{font:400 13px/1.65 var(--font-sans);color:hsl(var(--text-secondary));margin-top:9px;max-width:30ch}
+
+/* ------- 9 · closing ------- */
+.tagline{font:400 clamp(17px,1.5vw,22px)/1.3 var(--font-display);margin-top:44px}
+.foot{margin-top:26px}
+
+/* ============ reduced motion ============ */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01s!important;animation-delay:0s!important;transition-duration:.01s!important}
+}
+
+/* ============ mobile: one vertical scroll of the whole deck ============ */
+@media (max-width:700px){
+  html,body{height:auto}
+  body{overflow:auto}
+  .slide{position:static;display:flex;opacity:1;min-height:100svh;
+    padding:clamp(84px,18vw,110px) clamp(20px,6vw,40px) clamp(48px,12vw,72px);
+    animation:none!important}
+  /* centered flex children may not stretch: cap everything to the viewport */
+  .slide *{max-width:100%}
+  .slide .rise{animation:none!important}
+  .frag{opacity:1;transform:none}
+  .axis,.counter{display:none}
+  .brandbar{top:14px;inset-inline-start:16px;padding:8px 14px 8px 11px}
+  .split{flex-direction:column;align-items:stretch;justify-content:center;gap:40px}
+  .split>.copy{flex:none}
+  .centered{align-items:center}
+  .arow{flex-wrap:wrap;gap:10px 16px}
+  .arow .ad{margin-inline-start:0;text-align:start;max-width:none}
+  .team-grid{margin-inline-start:0}
+  .tcard{width:calc(50% - 9px);min-width:150px;padding:22px 10px 20px}
+  .metrics{margin-inline-start:0;max-width:none}
+  .head-center{text-align:start;margin-bottom:28px}
+  .cards{align-content:start}
+  /* timeline turns vertical: rail on the start side */
+  .tl{padding-top:0;padding-inline-start:24px;gap:30px}
+  .tl::before{inset-inline:auto;inset-inline-start:2px;top:4px;bottom:4px;width:2px;height:auto}
+  .ph::before{top:5px;inset-inline-start:-26px}
+  .ph .pd{max-width:none}
+}
+
+/* ============ print: all slides stacked, one per page ============ */
+@media print{
+  body{overflow:visible;height:auto}
+  .slide{position:relative;display:flex;opacity:1;min-height:100vh;page-break-after:always;animation:none!important}
+  .slide .rise{animation:none!important}
+  .frag{opacity:1;transform:none}
+  .axis,.counter{display:none}
+  .brandbar{position:absolute}
+}
+</style>
+</head>
+<body>
+
+<div class="wash"></div>
+
+<!-- shared gradient for SVG strokes/fills -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<linearGradient id="bgrad" x1="0" y1="1" x2="1" y2="0">
+<stop offset="0" stop-color="#98C6E7"/><stop offset=".5" stop-color="#D8E094"/><stop offset="1" stop-color="#F3C06A"/>
+</linearGradient>
+</defs></svg>
+
+<!-- [LOGO] brandbar: the official Brij mark (pentagon with the diagonal cut), from assets/logo-b-mark-gradient.svg. Never swap for a solid pentagon or an invented shape. For client co-branding, add the client mark beside it. -->
+<div class="brandbar">
+  <svg viewBox="0 0 133 128" aria-hidden="true">
+    <path d="M132.147 54.3483C132.036 54.9583 131.886 55.5668 131.691 56.1686L111.711 117.661C109.854 123.378 104.525 127.249 98.514 127.249H33.8568C29.5303 127.249 25.5581 125.243 22.9788 121.988C59.3679 99.4412 95.7577 76.895 132.147 54.3483ZM58.0296 2.65002C62.8929 -0.88334 69.4789 -0.883342 74.3421 2.65002L126.651 40.6549C127.535 41.2974 128.324 42.0314 129.015 42.8346C88.8973 55.4675 48.7791 68.1001 8.66146 80.733L0.68001 56.1686C-1.17759 50.4515 0.857793 44.1883 5.72103 40.6549L58.0296 2.65002Z" fill="url(#bgrad)"/>
+  </svg>
+  <span>Brij · [CLIENT NAME]</span>
+</div>
+
+<div class="counter" id="counter">01 / 09</div>
+
+<div class="axis" id="axis"><div class="line"><div class="fill" id="axfill"></div></div></div>
+
+<!-- ============ 1 · COVER ============ -->
+<section class="slide centered" data-ch="0">
+  <div class="cover-mark rise">
+    <svg viewBox="0 0 133 128" aria-hidden="true">
+      <path d="M132.147 54.3483C132.036 54.9583 131.886 55.5668 131.691 56.1686L111.711 117.661C109.854 123.378 104.525 127.249 98.514 127.249H33.8568C29.5303 127.249 25.5581 125.243 22.9788 121.988C59.3679 99.4412 95.7577 76.895 132.147 54.3483ZM58.0296 2.65002C62.8929 -0.88334 69.4789 -0.883342 74.3421 2.65002L126.651 40.6549C127.535 41.2974 128.324 42.0314 129.015 42.8346C88.8973 55.4675 48.7791 68.1001 8.66146 80.733L0.68001 56.1686C-1.17759 50.4515 0.857793 44.1883 5.72103 40.6549L58.0296 2.65002Z" fill="url(#bgrad)"/>
+    </svg>
+  </div>
+  <div class="eyebrow rise" style="--d:.1s">Brij Intelligence Lab</div>
+  <h1 class="display rise" style="--d:.2s;margin-top:20px">[DECK TITLE]</h1>
+  <p class="lead rise" style="--d:.3s;text-align:center;margin-top:18px">[ONE-LINE PROMISE: what the client walks away with.]</p>
+  <div class="rule rise" style="--d:.4s;width:min(210px,50vw);margin-top:44px"></div>
+  <div class="cover-meta rise" style="--d:.5s">
+    <span class="pill">Brij × [CLIENT NAME]</span>
+    <span class="pill">[DD.MM.YYYY]</span>
+    <span class="pill grad">[ENGAGEMENT TYPE]</span>
+  </div>
+</section>
+
+<!-- ============ 2 · AGENDA ============ -->
+<section class="slide split" data-ch="0">
+  <div class="copy">
+    <div class="eyebrow rise">Agenda</div>
+    <h2 class="headline rise" style="--d:.1s;margin-top:18px">Where this<br>hour goes.</h2>
+    <p class="lead rise" style="--d:.2s">[One framing sentence: why we are in the room, and what decision this meeting serves.]</p>
+  </div>
+  <div class="stage" style="max-width:560px">
+    <div class="arow rise" style="--d:.15s"><span class="an">01</span><span class="at">Context</span><span class="ad">[Where you are today]</span></div>
+    <div class="arow rise" style="--d:.25s"><span class="an">02</span><span class="at">Approach</span><span class="ad">[How we work]</span></div>
+    <div class="arow rise" style="--d:.35s"><span class="an">03</span><span class="at">What we build</span><span class="ad">[The system, piece by piece]</span></div>
+    <div class="arow rise" style="--d:.45s"><span class="an">04</span><span class="at">Proof</span><span class="ad">[Where it already works]</span></div>
+    <div class="arow rise" style="--d:.55s"><span class="an">05</span><span class="at">Team and plan</span><span class="ad">[Who, and by when]</span></div>
+    <div class="arow rise" style="--d:.65s"><span class="an">06</span><span class="at">Next steps</span><span class="ad">[The ask]</span></div>
+  </div>
+</section>
+
+<!-- ============ 3 · PROBLEM / CONTEXT ============ -->
+<section class="slide split" data-ch="1">
+  <div class="copy">
+    <div class="eyebrow rise">The problem</div>
+    <h2 class="headline rise" style="--d:.1s;margin-top:18px">[The pain,<br>in one honest sentence.]</h2>
+    <p class="lead rise" style="--d:.2s">[Two or three sentences on the client's current reality. Name the cost of standing still, in their words, not ours.]</p>
+  </div>
+  <div class="stage" style="max-width:560px">
+    <div class="statrow">
+      <div class="stat frag"><div class="gnum">[74%]</div><div class="c">[Stat caption: what this number says]</div></div>
+      <div class="stat frag"><div class="gnum">[12h]</div><div class="c">[Stat caption: time lost weekly]</div></div>
+      <div class="stat frag"><div class="gnum">[x3]</div><div class="c">[Stat caption: the gap to close]</div></div>
+    </div>
+    <div class="panel frag" style="margin-top:34px">
+      <p class="quote">"[Something the client's team actually says about this problem, verbatim.]"
+        <span class="qa">[Name · Role, Client]</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 4 · APPROACH ============ -->
+<section class="slide split" data-ch="2">
+  <div class="copy">
+    <div class="eyebrow rise">How we work</div>
+    <h2 class="headline rise" style="--d:.1s;margin-top:18px">Three moves.<br><span class="gword">In your building.</span></h2>
+    <p class="lead rise" style="--d:.2s">[One sentence on the working model: small senior team, weekly ships, your data stays yours.]</p>
+  </div>
+  <div class="stage" style="max-width:600px">
+    <div class="lrow frag">
+      <div class="lt"><span class="lnum">01</span><span class="ln">[Diagnose]</span></div>
+      <p class="lb">[What happens in the first weeks: where we look, who we talk to, what we map. End state: a shortlist of the highest-leverage builds.]</p>
+    </div>
+    <div class="lrow frag">
+      <div class="lt"><span class="lnum">02</span><span class="ln">[Build]</span></div>
+      <p class="lb">[How the first system ships: working software early, demos every week, feedback folded in as we go.]</p>
+    </div>
+    <div class="lrow frag">
+      <div class="lt"><span class="lnum">03</span><span class="ln">[Embed]</span></div>
+      <p class="lb">[How it sticks: training, handover, and the operating rhythm that keeps the system alive after we step back.]</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5 · WHAT WE BUILD ============ -->
+<section class="slide stack" data-ch="3">
+  <div class="head-center">
+    <div class="eyebrow rise">What we build</div>
+    <h2 class="headline rise" style="--d:.1s;margin-top:16px">[The system, piece by piece.]</h2>
+  </div>
+  <div class="cards">
+    <div class="panel rise" style="--d:.15s"><div class="pn">[Capability one]</div>
+      <p class="pb">[What it does for the client, in plain language. One outcome, not a feature list.]</p>
+      <span class="pill">[Weeks 1-3]</span></div>
+    <div class="panel rise" style="--d:.25s"><div class="pn">[Capability two]</div>
+      <p class="pb">[What it does for the client, in plain language. One outcome, not a feature list.]</p>
+      <span class="pill">[Weeks 2-5]</span></div>
+    <div class="panel rise" style="--d:.35s"><div class="pn">[Capability three]</div>
+      <p class="pb">[What it does for the client, in plain language. One outcome, not a feature list.]</p>
+      <span class="pill">[Weeks 4-7]</span></div>
+    <div class="panel rise" style="--d:.45s"><div class="pn">[Capability four]</div>
+      <p class="pb">[What it does for the client, in plain language. One outcome, not a feature list.]</p>
+      <span class="pill">[Weeks 6-9]</span></div>
+    <div class="panel rise" style="--d:.55s"><div class="pn">[Capability five]</div>
+      <p class="pb">[What it does for the client, in plain language. One outcome, not a feature list.]</p>
+      <span class="pill">[Weeks 8-10]</span></div>
+    <div class="panel rise" style="--d:.65s"><div class="pn">[Capability six]</div>
+      <p class="pb">[What it does for the client, in plain language. One outcome, not a feature list.]</p>
+      <span class="pill">[Ongoing]</span></div>
+  </div>
+</section>
+
+<!-- ============ 6 · PROOF ============ -->
+<section class="slide split" data-ch="4">
+  <div class="copy" style="flex:0 0 46%">
+    <div class="eyebrow rise">Proof</div>
+    <h2 class="headline rise" style="--d:.1s;margin-top:18px">[Case name:<br>what we shipped.]</h2>
+    <p class="lead rise" style="--d:.2s">[Two sentences of context: the client, the starting point, and the timeframe. Keep it concrete.]</p>
+    <div class="proof-quote rise" style="--d:.3s">
+      <p class="qt">"[The one line the client said after go-live.]"</p>
+      <p class="quote"><span class="qa">[Name · Role, Case client]</span></p>
+    </div>
+  </div>
+  <div class="stage">
+    <div class="metrics">
+      <div class="metric frag"><div class="gnum">[3.2x]</div><div class="c">[Metric: what multiplied]</div></div>
+      <div class="metric frag"><div class="gnum">[-40%]</div><div class="c">[Metric: what dropped]</div></div>
+      <div class="metric frag"><div class="gnum">[6 wks]</div><div class="c">[Metric: idea to production]</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 7 · TEAM ============ -->
+<section class="slide split" data-ch="5">
+  <div class="copy">
+    <div class="eyebrow rise">Who we are</div>
+    <h2 class="headline rise" style="--d:.1s;margin-top:18px">Small.<br>On purpose.</h2>
+    <p class="lead rise" style="--d:.2s">[One sentence on why this exact team fits this exact problem.]</p>
+    <div class="cap rise" style="--d:.3s;margin-top:20px;letter-spacing:.2em;text-transform:uppercase">Born in the age of AI</div>
+  </div>
+  <div class="team-grid">
+    <div class="tcard rise" style="--d:.15s"><div class="tring"><div class="tava">
+      <svg viewBox="0 0 100 78" aria-hidden="true"><circle cx="50" cy="26" r="16" fill="currentColor" opacity=".45"/><path d="M14 78c5-20 19-30 36-30s31 10 36 30Z" fill="currentColor" opacity=".45"/></svg>
+      </div></div><div class="tnm">[Full Name]</div><div class="trl">[Role · Title]</div></div>
+    <div class="tcard rise" style="--d:.25s"><div class="tring"><div class="tava">
+      <svg viewBox="0 0 100 78" aria-hidden="true"><circle cx="50" cy="26" r="16" fill="currentColor" opacity=".45"/><path d="M14 78c5-20 19-30 36-30s31 10 36 30Z" fill="currentColor" opacity=".45"/></svg>
+      </div></div><div class="tnm">[Full Name]</div><div class="trl">[Role · Title]</div></div>
+    <div class="tcard rise" style="--d:.35s"><div class="tring"><div class="tava">
+      <svg viewBox="0 0 100 78" aria-hidden="true"><circle cx="50" cy="26" r="16" fill="currentColor" opacity=".45"/><path d="M14 78c5-20 19-30 36-30s31 10 36 30Z" fill="currentColor" opacity=".45"/></svg>
+      </div></div><div class="tnm">[Full Name]</div><div class="trl">[Role · Title]</div></div>
+    <div class="tcard rise" style="--d:.45s"><div class="tring"><div class="tava">
+      <svg viewBox="0 0 100 78" aria-hidden="true"><circle cx="50" cy="26" r="16" fill="currentColor" opacity=".45"/><path d="M14 78c5-20 19-30 36-30s31 10 36 30Z" fill="currentColor" opacity=".45"/></svg>
+      </div></div><div class="tnm">[Full Name]</div><div class="trl">[Role · Title]</div></div>
+  </div>
+</section>
+
+<!-- ============ 8 · TIMELINE ============ -->
+<section class="slide stack" data-ch="6">
+  <div class="head-center">
+    <div class="eyebrow rise">The plan</div>
+    <h2 class="headline rise" style="--d:.1s;margin-top:16px">[N weeks, start to live.]</h2>
+  </div>
+  <div class="tl">
+    <div class="ph rise" style="--d:.15s"><div class="pw">[Weeks 1-2]</div><div class="pn2">[Kickoff and mapping]</div>
+      <p class="pd">[What happens, who is in the room, and what exists at the end of it.]</p></div>
+    <div class="ph rise" style="--d:.3s"><div class="pw">[Weeks 3-6]</div><div class="pn2">[First build]</div>
+      <p class="pd">[The first working system in real hands. Weekly demos, weekly feedback.]</p></div>
+    <div class="ph rise" style="--d:.45s"><div class="pw">[Weeks 7-10]</div><div class="pn2">[Expand and harden]</div>
+      <p class="pd">[Second wave of capabilities, integrations, and the boring-but-vital reliability work.]</p></div>
+    <div class="ph rise" style="--d:.6s"><div class="pw">[Week 11+]</div><div class="pn2">[Embed and hand over]</div>
+      <p class="pd">[Training, documentation, and the rhythm that keeps it running without us.]</p></div>
+  </div>
+</section>
+
+<!-- ============ 9 · CLOSING / CTA ============ -->
+<section class="slide centered" data-ch="7">
+  <div class="eyebrow rise">Next steps</div>
+  <h2 class="display rise" style="--d:.1s;margin-top:22px;max-width:16ch">[The ask, as one inviting line.]</h2>
+  <p class="lead rise" style="--d:.2s;text-align:center">[The concrete next step and its date: a working session, a pilot scope, a signature.]</p>
+  <div class="rule rise" style="--d:.3s;width:min(210px,50vw);margin-top:40px"></div>
+  <div class="chiprow rise" style="--d:.4s;margin-top:30px">
+    <span class="pill">[name@brij.ai]</span>
+    <span class="pill">[+972 00 000 0000]</span>
+    <span class="pill grad">brij.ai</span>
+  </div>
+  <p class="tagline rise" style="--d:.5s">Time to <span class="gword">brij</span>.</p>
+  <p class="cap rise foot" style="--d:.6s;letter-spacing:.2em;text-transform:uppercase">Brij Intelligence Lab · [YEAR]</p>
+</section>
+
+<script>
+/* ============ deck engine: fixed slides on desktop, plain scroll on mobile ============ */
+const CHAPTERS=['Opening','Context','Approach','Build','Proof','Team','Plan','Next'];
+const slides=[...document.querySelectorAll('.slide')];
+const isDeck=()=>matchMedia('(min-width:701px)').matches;
+let i=0,step=0;
+
+/* build the chapter axis */
+const line=document.querySelector('.axis .line');
+const stops=[],words=[];
+CHAPTERS.forEach((w,k)=>{
+  const pct=(k/(CHAPTERS.length-1))*100+'%';
+  const d=document.createElement('div');d.className='stop';d.style.insetInlineStart=pct;line.appendChild(d);stops.push(d);
+  const t=document.createElement('div');t.className='word';t.style.insetInlineStart=pct;t.textContent=w;line.appendChild(t);words.push(t);
+});
+
+const frags=s=>[...s.querySelectorAll('.frag')];
+function render(dirCls){
+  slides.forEach((s,n)=>{
+    s.classList.remove('push-fwd','push-back','soft');
+    s.classList.toggle('active',n===i);
+  });
+  const s=slides[i];
+  if(dirCls)s.classList.add(dirCls);
+  frags(s).forEach((f,n)=>f.classList.toggle('show',n<step));
+  const ch=+s.dataset.ch;
+  document.getElementById('axfill').style.width=(ch/(CHAPTERS.length-1))*100+'%';
+  stops.forEach((d,n)=>d.classList.toggle('passed',n<=ch));
+  words.forEach((w,n)=>w.classList.toggle('active',n===ch));
+  document.getElementById('counter').textContent=
+    String(i+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0');
+}
+function go(n,back){
+  const from=+slides[i].dataset.ch;
+  i=n;step=back?frags(slides[i]).length:0;
+  const to=+slides[i].dataset.ch;
+  render(from===to?'soft':(back?'push-back':'push-fwd'));
+}
+function next(){
+  const s=slides[i];
+  if(step<frags(s).length){step++;render();return}
+  if(i<slides.length-1)go(i+1);
+}
+function prev(){
+  if(step>0){step--;render();return}
+  if(i>0)go(i-1,true);
+}
+addEventListener('keydown',e=>{
+  if(!isDeck())return;
+  if(e.key==='ArrowRight'||e.key===' '||e.key==='Enter'){e.preventDefault();next()}
+  else if(e.key==='ArrowLeft'){e.preventDefault();prev()}
+  else if(e.key==='Home'){go(0)}
+  else if(e.key==='End'){go(slides.length-1)}
+  else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}
+});
+addEventListener('click',e=>{
+  if(!isDeck())return;
+  if(e.target.closest('a'))return;
+  next();
+});
+/* keep state sane when the viewport crosses the mobile breakpoint */
+matchMedia('(min-width:701px)').addEventListener('change',ev=>{if(ev.matches)render()});
+/* deep link: #4 opens slide 4 */
+const h=location.hash.match(/^#(\d+)$/);
+if(h)i=Math.min(slides.length-1,Math.max(0,+h[1]-1));
+render();
+</script>
+</body>
+</html>

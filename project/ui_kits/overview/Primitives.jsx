@@ -93,7 +93,7 @@ function Panel({ children, halo, haloColor = 'var(--brij-grad-orange)', style })
 }
 
 // ── Pentagon badge (number inside) ──────────────────────────────
-// Uses mark-dark-sm/md/lg SVG + absolutely-positioned Arbutus Slab number.
+// Uses logo-b-mark.svg (the cut pentagon, scaled per size) + absolutely-positioned Arbutus Slab number.
 function PentagonBadge({ n, size = 'md', active = false }) {
   const sizes = {
     sm: { w: 37, h: 35, f: 13 },
@@ -103,7 +103,7 @@ function PentagonBadge({ n, size = 'md', active = false }) {
   const s = sizes[size];
   return (
     <div style={{ position: 'relative', width: s.w, height: s.h, flexShrink: 0 }}>
-      <img src={`../../assets/mark-dark-${size}.svg`} alt="" style={{ width: '100%', height: '100%' }} />
+      <img src="../../assets/logo-b-mark.svg" alt="" style={{ width: '100%', height: '100%' }} />
       <span style={{
         position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
         fontFamily: 'var(--brij-serif)', fontSize: s.f,

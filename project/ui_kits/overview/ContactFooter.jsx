@@ -3,7 +3,7 @@ function ContactCTA() {
   return (
     <section id="contact" style={{ padding: '120px clamp(20px, 4vw, 48px)', maxWidth: 1120, margin: '0 auto', position: 'relative', overflow: 'hidden' }}>
       {/* Pentagon mark at ~4% opacity behind content */}
-      <img src="../../assets/mark-dark-lg.svg" alt="" aria-hidden style={{
+      <img src="../../assets/logo-b-mark.svg" alt="" aria-hidden style={{
         position: 'absolute', right: -80, top: '50%', transform: 'translateY(-50%)',
         width: 520, height: 'auto', opacity: 0.04, pointerEvents: 'none',
       }} />

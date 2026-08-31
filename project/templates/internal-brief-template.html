@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<!-- ═══════════════════════════════════════════════════════════════════
+  BRIJ INTERNAL BRIEF, canonical template (Signal light language)
+  ═══════════════════════════════════════════════════════════════════
+  HOW TO USE (10 minutes, no more):
+  1. Copy this file. Save it as: briefs/<topic>-YYYY-MM-DD.html
+  2. Type chip: in the "chips" row, keep ONE chip with class "chip active"
+     (Idea / Plan / QA / Deliverable / Update) and delete the other four.
+  3. Status chip: in the meta row, edit the text of .status to one of:
+     Draft / In review / Approved / Shipped.
+  4. Replace every [bracketed] placeholder and every sentence of
+     placeholder copy. Delete any section card you do not need.
+     Keep it short: TL;DR is 3 bullets max, no section over 5 lines.
+  4b. LOGO BY PRODUCT (mandatory, ask which product before building):
+     Brij Labs / Brij Agents briefs keep the mark already inlined in
+     the header, the pentagon with the diagonal cut
+     (assets/logo-b-mark-gradient.svg). Brij Signal briefs replace it
+     with the inlined Signal mark
+     (signal/assets/brij-signal-mark-gradient.svg). Never use a solid
+     pentagon and never invent a shape.
+  4c. MEDIA (optional card, after Approach): the file must stay
+     self-contained so it travels over WhatsApp as one file.
+     Screenshot: replace the placeholder src with a data URI
+     (base64: data:image/png;base64,...). Never reference a local
+     file path. Video: heavy video stays a hosted link (Drive /
+     Loom) in the line under the player; a small clip (a few MB)
+     may be embedded as a base64 data URI in the <source> src if
+     the file stays sendable. Delete the figure, the video block,
+     or the whole card if unused. Never ship the placeholder.
+  4d. Bullet markers: the navy check, everywhere. Never colored dots,
+     never the logo as a bullet. The marker is the inlined symbol
+     #bulletCheck; copy an existing <li> when adding lines so the
+     marker comes with it.
+  4e. Panels rise on scroll (IntersectionObserver script at the end of
+     the body). Reduced-motion safe, and everything is visible by
+     default if JS is off. Delete that script for a static file.
+  5. Hebrew / RTL: change <html lang="en" dir="ltr"> to
+     <html lang="he" dir="rtl">. That is the whole flip: the layout
+     uses logical properties and Hebrew text renders in Heebo.
+  6. Send the file as-is (self-contained, mobile-ready, no local assets).
+  Rule of the house: LIGHT = INTERNAL. Client decks are dark.
+  Never use the em-dash character in copy: comma, period, colon, hyphen.
+═══════════════════════════════════════════════════════════════════ -->
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brij internal brief</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Arbutus+Slab&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* Brij Signal light tokens (signal/signal.css). Raw HSL channels:
+     compose with hsl(var(--token)) and alpha as hsl(var(--token) / .1). */
+  :root {
+    --background: 75 9% 93%;          /* sage greige page; white panels float on it */
+    --foreground: 223 42% 18%;        /* navy ink #1A2540 */
+    --card: 0 0% 100%;
+    --muted: 80 14% 95%;              /* sage-tinted quiet surface */
+    --border: 43 13% 90%;             /* hairline #E8E6E1 */
+    --text-secondary: 60 4% 40%;      /* #6B6B63 */
+    --text-tertiary: 60 3% 46%;
+    --brand-grad-sun:  #F3C06A;
+    --brand-grad-leaf: #D8E094;
+    --brand-grad-sky:  #98C6E7;
+    --brand-gradient: linear-gradient(135deg, #F3C06A 0%, #D8E094 46%, #98C6E7 100%);
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-2xl: 24px;
+    --radius-full: 9999px;
+    /* Two-layer shadows tinted with navy ink, never black.
+       Surfaces read as floating, not outlined. */
+    --shadow-xs: 0 1px 2px rgb(26 37 64 / 0.03), 0 4px 12px -2px rgb(26 37 64 / 0.05);
+    --shadow-sm: 0 2px 4px rgb(26 37 64 / 0.03), 0 12px 32px -10px rgb(26 37 64 / 0.10);
+    --shadow-md: 0 2px 6px rgb(26 37 64 / 0.03), 0 24px 56px -16px rgb(26 37 64 / 0.14);
+    --sans:  'Plus Jakarta Sans', 'Heebo', system-ui, -apple-system, sans-serif;
+    --serif: 'Arbutus Slab', 'Heebo', Georgia, serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.5;
+    letter-spacing: 0.01em;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Signature gradient band, top of page. Light gradient = internal. ── */
+  .grad-band {
+    position: relative;
+    z-index: 2;
+    height: 6px;
+    background: var(--brand-gradient);
+  }
+
+  /* ── Gradient wash atmosphere, the product's luminous light-mode glow ── */
+  .wash {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(58% 46% at 4% 100%, color-mix(in srgb, var(--brand-grad-sun) 20%, transparent), transparent 62%),
+      radial-gradient(44% 54% at 0% 30%, color-mix(in srgb, var(--brand-grad-leaf) 18%, transparent), transparent 60%),
+      radial-gradient(50% 42% at 100% 0%, color-mix(in srgb, var(--brand-grad-sky) 18%, transparent), transparent 64%),
+      radial-gradient(70% 60% at 50% 40%, rgb(255 255 255 / 0.55), transparent 78%);
+  }
+
+  .page {
+    position: relative;
+    z-index: 1;
+    max-width: 860px;
+    width: 100%;
+    margin-inline: auto;
+    padding-block: clamp(32px, 6vw, 64px);
+    padding-inline: clamp(18px, 4vw, 48px);
+  }
+
+  /* ── Header ── */
+  .badge-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-block-end: clamp(24px, 4.5vw, 40px);
+  }
+  .badge-mark { flex-shrink: 0; display: block; }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: hsl(var(--foreground));
+    background: hsl(var(--card));
+    border-radius: var(--radius-full);
+    padding: 8px 16px;
+    box-shadow: var(--shadow-xs);
+  }
+  .badge .sep { color: hsl(var(--text-tertiary) / 0.7); padding-inline: 6px; }
+
+  /* ── Type chips, the product pill language ── */
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-block-end: clamp(20px, 4vw, 32px);
+  }
+  .chip {
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: hsl(var(--text-secondary));
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius-full);
+    padding: 7px 14px;
+    background: hsl(var(--card) / 0.72);
+  }
+  /* Active chip: gradient hairline ring on white, the earned accent */
+  .chip.active {
+    position: relative;
+    color: hsl(var(--foreground));
+    border-color: transparent;
+    background: hsl(var(--card));
+    box-shadow: var(--shadow-xs);
+  }
+  .chip.active::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-full);
+    padding: 1.4px;
+    background: var(--brand-gradient);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+
+  h1 {
+    /* The single Arbutus Slab display moment. Sentence case, never caps. */
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(30px, 5.5vw, 46px);
+    line-height: 1.12;
+    margin-block-end: 12px;
+  }
+  .summary {
+    font-size: clamp(15px, 2.4vw, 18px);
+    line-height: 1.55;
+    color: hsl(var(--text-secondary));
+    max-width: 62ch;
+  }
+
+  /* ── Meta row: one floating panel, hairline dividers, no outer stroke ── */
+  .meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1px;
+    background: hsl(var(--border));
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    margin-block: clamp(28px, 5vw, 48px);
+  }
+  .meta > div {
+    background: hsl(var(--card));
+    padding: 16px 20px;
+  }
+  .meta dt {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: hsl(var(--text-tertiary));
+    margin-block-end: 5px;
+  }
+  .meta dd { font-size: 14px; font-weight: 600; }
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: var(--radius-full);
+    padding: 4px 12px;
+    background: hsl(var(--muted));
+  }
+  /* Quiet ink marker, never a gradient dot */
+  .status::before {
+    content: "";
+    inline-size: 6px;
+    block-size: 6px;
+    border-radius: 50%;
+    background: hsl(var(--foreground) / 0.75);
+  }
+
+  /* ── Section cards: glass panels floating on the sage ground.
+     Solid white is the fallback; browsers with backdrop-filter get the
+     translucent Signal glass so the gradient wash glows through. ── */
+  .card {
+    background: hsl(var(--card));
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-sm);
+    padding: clamp(22px, 4vw, 30px) clamp(20px, 4.5vw, 34px);
+    margin-block-end: clamp(14px, 2.5vw, 18px);
+  }
+  @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .card {
+      background: hsl(var(--card) / 0.68);
+      -webkit-backdrop-filter: blur(14px);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgb(255 255 255 / 0.75);
+    }
+    .meta {
+      background: hsl(var(--border) / 0.85);
+      -webkit-backdrop-filter: blur(14px);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgb(255 255 255 / 0.75);
+    }
+    .meta > div { background: hsl(var(--card) / 0.66); }
+  }
+  /* The one featured card per view carries the gradient top hairline */
+  .card.featured {
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+  }
+  .card.featured::before {
+    content: "";
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline: 0;
+    height: 3px;
+    background: var(--brand-gradient);
+  }
+  /* Section header: uppercase eyebrow over a 1px gradient hairline,
+     the system's divider language. No marker shapes. */
+  .card-head {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-block-end: 11px;
+    margin-block-end: 14px;
+  }
+  .card-head::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 0;
+    height: 1px;
+    background: var(--brand-gradient);
+    opacity: 0.65;
+    border-radius: var(--radius-full);
+  }
+  .card-head h2 {
+    font-family: var(--sans);
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: hsl(var(--foreground));
+  }
+  .card-head .hint {
+    margin-inline-start: auto;
+    font-size: 11px;
+    font-weight: 500;
+    color: hsl(var(--text-tertiary));
+    letter-spacing: 0.04em;
+  }
+  .card p, .card li { font-size: 15px; line-height: 1.62; color: hsl(var(--text-secondary)); }
+  .card p + p { margin-block-start: 8px; }
+  .card strong { color: hsl(var(--foreground)); font-weight: 600; }
+  .card ul { list-style: none; }
+  /* Bullet marker: the navy check, on every bulleted list. Never a
+     colored dot, never the logo. Baseline flex keeps the marker on the
+     first line when a bullet wraps. */
+  .card ul li {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-block-end: 7px;
+  }
+  .card ul li > svg { flex: none; }
+  .card ul li > span { min-inline-size: 0; }
+  .b-check {
+    inline-size: 13px;
+    block-size: 13px;
+    color: hsl(var(--foreground));
+    transform: translateY(2.5px);
+  }
+  .card a {
+    color: hsl(var(--foreground));
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--brand-grad-sun);
+    word-break: break-word;
+  }
+
+  /* ── Media slots: screenshot figure and video block, both fluid ── */
+  .media-figure { margin: 0; }
+  .media-img {
+    display: block;
+    inline-size: 100%;
+    max-inline-size: 100%;
+    block-size: auto;
+    border-radius: var(--radius-lg);
+    background: hsl(var(--muted));
+    box-shadow: var(--shadow-xs);
+  }
+  .media-cap {
+    margin-block-start: 9px;
+    font-size: 12px;
+    color: hsl(var(--text-tertiary));
+    letter-spacing: 0.03em;
+  }
+  .media-video { margin-block-start: 20px; }
+  .media-vid {
+    display: block;
+    inline-size: 100%;
+    max-inline-size: 100%;
+    block-size: auto;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius-lg);
+    background: hsl(var(--muted));
+    box-shadow: var(--shadow-xs);
+  }
+  .media-link {
+    margin-block-start: 9px;
+    font-size: 13px;
+    color: hsl(var(--text-secondary));
+  }
+  .media-note {
+    margin-block-start: 16px;
+    padding-block-start: 11px;
+    border-block-start: 1px solid hsl(var(--border));
+    font-size: 11.5px;
+    line-height: 1.55;
+    color: hsl(var(--text-tertiary));
+    letter-spacing: 0.02em;
+  }
+
+  /* Two compact cards side by side, stacking on mobile */
+  .card-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(14px, 2.5vw, 18px);
+    margin-block-end: clamp(14px, 2.5vw, 18px);
+  }
+  .card-pair .card { margin-block-end: 0; }
+
+  /* ── Next steps rows (no table, stacks natively) ── */
+  .steps { display: grid; gap: 0; }
+  .step {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: 12px;
+    padding-block: 11px;
+    border-block-start: 1px solid hsl(var(--border));
+  }
+  .step:first-child { border-block-start: none; padding-block-start: 0; }
+  .step .what { font-size: 15px; color: hsl(var(--foreground)); min-inline-size: 0; }
+  /* Owner: the product's ink pill */
+  .owner {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: hsl(var(--card));
+    background: hsl(var(--foreground));
+    border-radius: var(--radius-full);
+    padding: 4px 12px;
+    white-space: nowrap;
+  }
+  .due { font-size: 12px; color: hsl(var(--text-tertiary)); white-space: nowrap; }
+
+  /* ── Footer ── */
+  .grad-rule {
+    height: 1.5px;
+    border: none;
+    background: var(--brand-gradient);
+    border-radius: var(--radius-full);
+    margin-block: clamp(28px, 5.5vw, 48px) 18px;
+  }
+  footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: hsl(var(--text-tertiary));
+    letter-spacing: 0.03em;
+  }
+  footer .code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 11px;
+    color: hsl(var(--text-secondary));
+    background: hsl(var(--muted));
+    border-radius: var(--radius-md);
+    padding: 3px 8px;
+    box-shadow: var(--shadow-xs);
+  }
+
+  /* ── Panels rise on scroll ──
+     SAFETY: the resting (visible) state is the DEFAULT here. The hidden
+     state only exists under .reveal-ready, a class the observer script
+     adds to <html> after it is wired. No JS, or a JS error, means the
+     document renders fully visible. Transform and opacity only. */
+  .reveal-ready .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  .reveal-ready .reveal.in {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 600ms cubic-bezier(0.22, 0.61, 0.36, 1),
+      transform 600ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+  /* Reduced motion: no travel, no fade, everything visible immediately. */
+  @media (prefers-reduced-motion: reduce) {
+    .reveal-ready .reveal,
+    .reveal-ready .reveal.in {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+
+  /* ── Mobile collapse ── */
+  @media (max-width: 700px) {
+    .card-pair { grid-template-columns: 1fr; }
+    .step {
+      grid-template-columns: 1fr;
+      gap: 4px;
+      align-items: start;
+    }
+    .step .what { order: 1; }
+    .owner { order: 2; justify-self: start; }
+    .due { order: 3; }
+    .card-head .hint { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="grad-band"></div>
+<div class="wash" aria-hidden="true"></div>
+
+<!-- Bullet marker symbol: the navy check, used by every bulleted list. -->
+<svg style="display:none" aria-hidden="true">
+  <symbol id="bulletCheck" viewBox="0 0 14 14">
+    <path d="M2 7.5 5.6 11 12 3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+</svg>
+
+<main class="page">
+
+  <!-- Header -->
+  <header>
+    <div class="badge-row">
+      <!-- The official Brij mark (pentagon with the diagonal cut), from assets/logo-b-mark-gradient.svg. Never swap for a solid pentagon. -->
+      <svg class="badge-mark" width="28" height="28" viewBox="0 0 133 128" aria-hidden="true">
+        <defs>
+          <linearGradient id="brijGrad" x1="0" y1="128" x2="132.147" y2="0" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#98C6E7"/>
+            <stop offset="0.5" stop-color="#D8E094"/>
+            <stop offset="1" stop-color="#F3C06A"/>
+          </linearGradient>
+        </defs>
+        <path d="M132.147 54.3483C132.036 54.9583 131.886 55.5668 131.691 56.1686L111.711 117.661C109.854 123.378 104.525 127.249 98.514 127.249H33.8568C29.5303 127.249 25.5581 125.243 22.9788 121.988C59.3679 99.4412 95.7577 76.895 132.147 54.3483ZM58.0296 2.65002C62.8929 -0.88334 69.4789 -0.883342 74.3421 2.65002L126.651 40.6549C127.535 41.2974 128.324 42.0314 129.015 42.8346C88.8973 55.4675 48.7791 68.1001 8.66146 80.733L0.68001 56.1686C-1.17759 50.4515 0.857793 44.1883 5.72103 40.6549L58.0296 2.65002Z" fill="url(#brijGrad)"/>
+      </svg>
+      <span class="badge">Brij<span class="sep">/</span>Internal</span>
+    </div>
+
+    <!-- Keep ONE chip as "chip active", delete the other four -->
+    <div class="chips">
+      <span class="chip active">Idea</span>
+      <span class="chip">Plan</span>
+      <span class="chip">QA</span>
+      <span class="chip">Deliverable</span>
+      <span class="chip">Update</span>
+    </div>
+
+    <h1>Brief title in one plain sentence</h1>
+    <p class="summary">One line on what this is and why it exists. If it needs two lines, it needs a rewrite.</p>
+  </header>
+
+  <!-- Meta row -->
+  <dl class="meta">
+    <div>
+      <dt>Author</dt>
+      <dd>[Name]</dd>
+    </div>
+    <div>
+      <dt>Date</dt>
+      <dd>[YYYY-MM-DD]</dd>
+    </div>
+    <div>
+      <dt>Status</dt>
+      <dd><span class="status">Draft</span></dd>
+      <!-- Options: Draft / In review / Approved / Shipped -->
+    </div>
+    <div>
+      <dt>Related project</dt>
+      <dd>[Project name]</dd>
+    </div>
+  </dl>
+
+  <!-- TL;DR: the one featured card, carries the gradient top hairline -->
+  <section class="card featured">
+    <div class="card-head">
+      <h2>TL;DR</h2>
+      <span class="hint">3 bullets max</span>
+    </div>
+    <ul>
+      <li><svg class="b-check" aria-hidden="true"><use href="#bulletCheck"/></svg><span><strong>The point:</strong> what this brief says, in one line.</span></li>
+      <li><svg class="b-check" aria-hidden="true"><use href="#bulletCheck"/></svg><span><strong>The ask:</strong> what you need from the reader.</span></li>
+      <li><svg class="b-check" aria-hidden="true"><use href="#bulletCheck"/></svg><span><strong>The deadline:</strong> when it matters.</span></li>
+    </ul>
+  </section>
+
+  <!-- Context -->
+  <section class="card">
+    <div class="card-head">
+      <h2>Context</h2>
+      <span class="hint">2-3 sentences</span>
+    </div>
+    <p>Where this came from and why now. Assume the reader knows the company, not the thread. Link the source conversation or doc instead of retelling it.</p>
+  </section>
+
+  <!-- Goal + success criteria -->
+  <section class="card">
+    <div class="card-head">
+      <h2>Goal and success criteria</h2>
+    </div>
+    <p><strong>Goal:</strong> the single outcome this exists to produce.</p>
+    <ul>
+      <li><svg class="b-check" aria-hidden="true"><use href="#bulletCheck"/></svg><span>Success criterion one, measurable if possible.</span></li>
+      <li><svg class="b-check" aria-hidden="true"><use href="#bulletCheck"/></svg><span>Success criterion two.</span></li>
+    </ul>
+  </section>
+
+  <!-- Approach / findings -->
+  <section class="card">
+    <div class="card-head">
+      <h2>Proposed approach or findings</h2>
+      <span class="hint">bullets over prose</span>
+    </div>
+    <ul>
+      <li><svg class="b-check" aria-hidden="true"><use href="#bulletCheck"/></svg><span>Step or finding one.</span></li>
+      <li><svg class="b-check" aria-hidden="true"><use href="#bulletCheck"/></svg><span>Step or finding two.</span></li>
+      <li><svg class="b-check" aria-hidden="true"><use href="#bulletCheck"/></svg><span>Step or finding three.</span></li>
+    </ul>
+  </section>
+
+  <!-- Media (optional). RULE: the brief must stay ONE self-contained file
+       so it travels over WhatsApp. Screenshot: swap the placeholder src for
+       a base64 data URI (data:image/png;base64,...), never a local path.
+       Video: heavy video stays a hosted Drive / Loom link in the line under
+       the player; only a small clip (a few MB) may be embedded as a base64
+       data URI in the <source> src. Delete the figure, the video block, or
+       this whole card if unused. -->
+  <section class="card">
+    <div class="card-head">
+      <h2>Media</h2>
+      <span class="hint">optional, delete if unused</span>
+    </div>
+
+    <!-- Screenshot slot: replace src with a data URI, edit alt + caption -->
+    <figure class="media-figure">
+      <img class="media-img" alt="[What the screenshot shows]"
+           src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 450'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='0'%3E%3Cstop offset='0' stop-color='%23F3C06A'/%3E%3Cstop offset='.5' stop-color='%23D8E094'/%3E%3Cstop offset='1' stop-color='%2398C6E7'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='800' height='450' fill='%23F2F3EE'/%3E%3Crect x='14' y='14' width='772' height='422' rx='10' fill='none' stroke='%23C9CAC2' stroke-width='1.5' stroke-dasharray='6 7'/%3E%3Crect x='378' y='196' width='44' height='3' rx='1.5' fill='url(%23g)'/%3E%3Ctext x='400' y='237' text-anchor='middle' font-family='Arial,sans-serif' font-size='15' font-weight='700' letter-spacing='3' fill='%236B6B63'%3ESCREENSHOT GOES HERE%3C/text%3E%3Ctext x='400' y='264' text-anchor='middle' font-family='Arial,sans-serif' font-size='12' fill='%238A8A82'%3EReplace this src with a base64 data URI, or delete the figure%3C/text%3E%3C/svg%3E">
+      <figcaption class="media-cap">[One line: what the reader should notice in this screenshot.]</figcaption>
+    </figure>
+
+    <!-- Video slot: small clip as data URI in the source src, or leave the
+         player out and keep only the hosted link line -->
+    <div class="media-video">
+      <video class="media-vid" controls playsinline preload="metadata"
+             poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 450'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='0'%3E%3Cstop offset='0' stop-color='%23F3C06A'/%3E%3Cstop offset='.5' stop-color='%23D8E094'/%3E%3Cstop offset='1' stop-color='%2398C6E7'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='800' height='450' fill='%23F2F3EE'/%3E%3Crect x='14' y='14' width='772' height='422' rx='10' fill='none' stroke='%23C9CAC2' stroke-width='1.5' stroke-dasharray='6 7'/%3E%3Crect x='378' y='196' width='44' height='3' rx='1.5' fill='url(%23g)'/%3E%3Ctext x='400' y='237' text-anchor='middle' font-family='Arial,sans-serif' font-size='15' font-weight='700' letter-spacing='3' fill='%236B6B63'%3EVIDEO SLOT%3C/text%3E%3Ctext x='400' y='264' text-anchor='middle' font-family='Arial,sans-serif' font-size='12' fill='%238A8A82'%3EEmbed a small clip as a data URI, or use the hosted link below%3C/text%3E%3C/svg%3E">
+        <!-- Small clip only: uncomment and paste a base64 data URI.
+        <source src="data:video/mp4;base64,PASTE_BASE64_HERE" type="video/mp4">
+        -->
+        Your browser cannot play this clip. Use the hosted link below.
+      </video>
+      <p class="media-link">Hosted video: <a href="https://example.com">[Drive or Loom link]</a></p>
+    </div>
+
+    <p class="media-note">Keep the brief one self-contained file: images embed as base64 data URIs, heavy video stays a hosted link, small clips may embed if the file stays sendable. Delete this card if unused.</p>
+  </section>
+
+  <!-- Open questions + Deliverables, side by side -->
+  <div class="card-pair">
+    <section class="card">
+      <div class="card-head">
+        <h2>Open questions</h2>
+      </div>
+      <ul>
+        <li><svg class="b-check" aria-hidden="true"><use href="#bulletCheck"/></svg><span>Decision needed: [question]. Who decides: [name].</span></li>
+        <li><svg class="b-check" aria-hidden="true"><use href="#bulletCheck"/></svg><span>Unknown: [question].</span></li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h2>Deliverables and links</h2>
+      </div>
+      <ul>
+        <li><svg class="b-check" aria-hidden="true"><use href="#bulletCheck"/></svg><span>[Deliverable name]: <a href="https://example.com">link</a></span></li>
+        <li><svg class="b-check" aria-hidden="true"><use href="#bulletCheck"/></svg><span>[Doc or repo]: <a href="https://example.com">link</a></span></li>
+      </ul>
+    </section>
+  </div>
+
+  <!-- Next steps -->
+  <section class="card">
+    <div class="card-head">
+      <h2>Next steps</h2>
+      <span class="hint">owner on every line</span>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <span class="what">First action, phrased as a verb.</span>
+        <span class="owner">[Owner]</span>
+        <span class="due">[date]</span>
+      </div>
+      <div class="step">
+        <span class="what">Second action.</span>
+        <span class="owner">[Owner]</span>
+        <span class="due">[date]</span>
+      </div>
+      <div class="step">
+        <span class="what">Third action.</span>
+        <span class="owner">[Owner]</span>
+        <span class="due">[date]</span>
+      </div>
+    </div>
+  </section>
+
+  <hr class="grad-rule">
+  <footer>
+    <span>Brij internal brief. Light means internal, dark means client.</span>
+    <span>Save as <span class="code">briefs/&lt;topic&gt;-YYYY-MM-DD.html</span></span>
+  </footer>
+
+</main>
+
+<!-- Panels rise on scroll. Delete this whole script for a static file:
+     the document is already complete and visible without it. -->
+<script>
+(function () {
+  var root = document.documentElement;
+  var panels = document.querySelectorAll('.meta, .card');
+  if (!panels.length) return;
+
+  // No IntersectionObserver (or reduced motion): leave everything visible.
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!('IntersectionObserver' in window) || reduced) return;
+
+  for (var i = 0; i < panels.length; i++) panels[i].classList.add('reveal');
+  // Only now, with the observer about to run, is it safe to hide them.
+  root.classList.add('reveal-ready');
+
+  function show(el, delay) {
+    if (el.classList.contains('in')) return;
+    el.style.transitionDelay = delay + 'ms';
+    el.classList.add('in');
+    io.unobserve(el);            // reveal once, then stop watching
+  }
+
+  var io = new IntersectionObserver(function (entries) {
+    var shown = 0;
+    for (var j = 0; j < entries.length; j++) {
+      var e = entries[j];
+      if (!e.isIntersecting) continue;
+      var idx = [].indexOf.call(panels, e.target);
+      // Anything earlier in the document is already above the viewport
+      // (a jump scroll or an anchor can skip past it), so reveal it at
+      // once rather than leaving an orphan hidden panel behind us.
+      for (var p = 0; p < idx; p++) show(panels[p], 0);
+      // Small stagger between neighbours arriving together, capped short.
+      show(e.target, Math.min(shown * 70, 210));
+      shown++;
+    }
+  }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+
+  for (var k = 0; k < panels.length; k++) io.observe(panels[k]);
+
+  // Belt and braces: if the observer never runs (print, restored scroll,
+  // an unexpected engine quirk), force everything visible.
+  setTimeout(function () {
+    for (var m = 0; m < panels.length; m++) show(panels[m], 0);
+  }, 2500);
+})();
+</script>
+
+</body>
+</html>
